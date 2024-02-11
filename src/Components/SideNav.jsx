@@ -22,6 +22,8 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
     backgroundColor: "#F1F3F4",
+    borderRight: "none",
+    boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.3)",
   },
   nested: {
     paddingLeft: theme.spacing(4),
@@ -84,13 +86,13 @@ const Sidebar = () => {
           <List component="div" disablePadding>
             <ListItem button className={classes.nested}>
               <ListItemIcon>
-                <InfoIcon />
+                <Dot />
               </ListItemIcon>
               <ListItemText primary="All Doctors" />
             </ListItem>
             <ListItem button className={classes.nested}>
               <ListItemIcon>
-                <InfoIcon />
+                <Dot />
               </ListItemIcon>
               <ListItemText primary="New Doctor" />
             </ListItem>
@@ -108,13 +110,13 @@ const Sidebar = () => {
           <List component="div" disablePadding>
             <ListItem button className={classes.nested}>
               <ListItemIcon>
-                <InfoIcon />
+                <Dot />
               </ListItemIcon>
               <ListItemText primary="All Pharmacies" />
             </ListItem>
             <ListItem button className={classes.nested}>
               <ListItemIcon>
-                <InfoIcon />
+                <Dot />
               </ListItemIcon>
               <ListItemText primary="New Pharmacy" />
             </ListItem>
@@ -132,13 +134,13 @@ const Sidebar = () => {
           <List component="div" disablePadding>
             <ListItem button className={classes.nested}>
               <ListItemIcon>
-                <InfoIcon />
+                <Dot />
               </ListItemIcon>
               <ListItemText primary="All Clinics" />
             </ListItem>
             <ListItem button className={classes.nested}>
               <ListItemIcon>
-                <InfoIcon />
+                <Dot />
               </ListItemIcon>
               <ListItemText primary="New Clinic" />
             </ListItem>
@@ -146,6 +148,19 @@ const Sidebar = () => {
         </Collapse>
       </List>
     </Drawer>
+  );
+};
+
+const Dot = ({ color, size }) => {
+  return (
+    <svg
+      width="6px"
+      height="6px"
+      viewBox="0 0 10 10"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="5" cy="5" r="5" fill="#717272" />
+    </svg>
   );
 };
 
