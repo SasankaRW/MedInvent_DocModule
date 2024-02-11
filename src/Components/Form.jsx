@@ -15,7 +15,7 @@ export default function Form({captions,detailList,title}) {
   });
   
   return (
-    <div className="form">
+    <div className="form"> 
       <div className="form-title">{title}</div>
         <div className="table-div">
           <table className="table-style">
