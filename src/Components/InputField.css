@@ -1,0 +1,25 @@
+.input-field {
+    border-radius: 5px;
+    border: 1px solid #D1D1D1;
+    font-size: 15px;
+    padding: 8px;
+    width: 350px;
+}
+
+.input-field::placeholder {
+    font-size: 15px;
+}
+
+.input-field:focus {
+    border-color: #6e6e6e;
+    outline: none;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-container>label {
+    margin-bottom: 5px;
+}
