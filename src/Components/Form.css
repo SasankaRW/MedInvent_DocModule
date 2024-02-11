@@ -1,0 +1,14 @@
+.form {
+    background-color: white;
+    margin: 20px;
+    padding: 30px;
+    box-shadow: 0px 0px 100px 2px rgb(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.form-title {
+    font-size: 25px;
+    font-weight: bold;
+    border-bottom: 1px solid #DBDBDB;
+    padding-bottom: 10px;
+}

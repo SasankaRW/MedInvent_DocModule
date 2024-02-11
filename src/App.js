@@ -1,6 +1,7 @@
 import "./App.css";
 import Sidebar from "./Components/SideNav";
-import TopBar from "./Components/TopBar"; 
+import TopBar from "./Components/TopBar";
+import Form from "./Components/Form";
 
 function App() {
   return (
@@ -10,7 +11,9 @@ function App() {
         <div className="content">
           <TopBar />
           <div className="main-content">
-            <h1>Content</h1>
+            <Form title="All Doctors">
+              <form></form>
+            </Form>
           </div>
         </div>
       </div>

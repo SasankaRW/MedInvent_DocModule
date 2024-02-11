@@ -7,12 +7,11 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Collapse from "@material-ui/core/Collapse";
 import HomeIcon from "@material-ui/icons/Home";
-import InfoIcon from "@material-ui/icons/Info";
 import LocalHospitalIcon from "@material-ui/icons/LocalHospital";
 import LocalPharmacyIcon from "@material-ui/icons/LocalPharmacy";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -151,7 +150,7 @@ const Sidebar = () => {
   );
 };
 
-const Dot = ({ color, size }) => {
+const Dot = () => {
   return (
     <svg
       width="6px"
