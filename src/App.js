@@ -2,6 +2,7 @@ import "./App.css";
 import Sidebar from "./Components/SideNav";
 import TopBar from "./Components/TopBar";
 import Form from "./Components/Form";
+import InputField from "./Components/InputField";
 
 const docDetails =[
   {
