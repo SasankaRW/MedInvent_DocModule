@@ -1,13 +1,10 @@
-import Login from './components/Login/login';
-import './App.css';
+import "./App.css";
+import Sidebar from "./Components/SideNav";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <Login />
-       
-      </header>
+      <Sidebar />
     </div>
   );
 }
