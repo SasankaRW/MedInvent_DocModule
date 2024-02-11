@@ -12,3 +12,27 @@
     border-bottom: 1px solid #DBDBDB;
     padding-bottom: 10px;
 }
+
+.table-style{
+  
+}
+
+.tr-style{
+    height: 40px;
+}
+
+.th-style{
+    height: 40px;
+    width: 400px;
+    font-weight: bold;
+}
+
+td 
+{
+    border-bottom: 1px solid #DBDBDB; /* Adjust border style and color as needed */
+}
+
+.table-div{
+    margin-top: 20px;
+}
+

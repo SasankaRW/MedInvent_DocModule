@@ -3,6 +3,30 @@ import Sidebar from "./Components/SideNav";
 import TopBar from "./Components/TopBar";
 import Form from "./Components/Form";
 
+const docDetails =[
+  {
+    Name:"Nithila",
+    Location:"katubedda",
+    Number:"0777997689"
+  },
+  {
+    Name:"Pramesh",
+    Location:"Panadura",
+    Number:"0777997689"
+  },
+  {
+    Name:"Sasanka",
+    Location:"Rathnapura",
+    Number:"0777997689"
+  },
+  {
+    Name:"Supun",
+    Location:"katubedda",
+    Number:"0777997689"
+  }
+]
+const tableTitleDeatils = ["Name","Location","Number"];
+
 function App() {
   return (
     <div className="App">
@@ -11,9 +35,7 @@ function App() {
         <div className="content">
           <TopBar />
           <div className="main-content">
-            <Form title="All Doctors">
-              <form></form>
-            </Form>
+            <Form title="All Doctors" detailList={docDetails} captions={tableTitleDeatils}/>
           </div>
         </div>
       </div>
