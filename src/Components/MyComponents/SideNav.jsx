@@ -108,6 +108,12 @@ export default function ResponsiveDrawer({
                         color: activeSubMenu === subMenu ? "white" : "inherit",
                         borderRadius:
                           activeSubMenu === subMenu ? "5px" : "inherit",
+                        transition: "background-color 0.3s, color 0.5s",
+                        "&:hover": {
+                          backgroundColor: "#BEE3F8",
+                          color: "#000",
+                          borderRadius: "5px",
+                        },
                       }}
                     >
                       <ListItemIcon>
