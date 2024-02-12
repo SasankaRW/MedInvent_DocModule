@@ -1,13 +1,17 @@
 .input-field {
+    font-family: 'Josefin Sans', sans-serif;
     border-radius: 5px;
     border: 1px solid #D1D1D1;
     font-size: 15px;
     padding: 8px;
     width: 350px;
+    margin-top: 12px;
 }
 
 .input-field::placeholder {
     font-size: 15px;
+    color: #C4C4C4;
+    ;
 }
 
 .input-field:focus {
