@@ -2,7 +2,6 @@ import "./App.css";
 import * as React from "react";
 import { useContext } from "react";
 import Sidebar from "./Components/MyComponents/SideNav";
-import Form from "./Components/MyComponents/Container";
 import AllDoctors from "./pages/doctors/DoctorList";
 import NewDoctorForm from "./pages/doctors/AddNewDoctor";
 import AllClinics from "./pages/clinics/ClinicList";
@@ -14,9 +13,9 @@ import Rout from "./Components/MyComponents/Routes";
 
 function App() {
   const [activeSubMenu, setActiveSubMenu] = React.useState("All Doctors");
-  const {navigate} = useContext(NavigationContex);
+  const { navigate } = useContext(NavigationContex);
 
-  const PathReturn=(getSubMenuText)=>{
+  const PathReturn = (getSubMenuText) => {
     switch (getSubMenuText) {
       case "All Doctors":
         return "";
@@ -33,12 +32,12 @@ function App() {
       default:
         return null;
     }
-  }
+  };
 
   const handleSubMenuClick = (subMenuText) => {
-    const path=PathReturn(subMenuText);
+    const path = PathReturn(subMenuText);
     navigate(path);
-    // setActiveSubMenu(subMenuText);
+    setActiveSubMenu(subMenuText);
   };
 
   // const renderSubMenuComponent = () => {
@@ -63,12 +62,24 @@ function App() {
   const renderSubMenu = (title) => {
     return (
       <>
-        <Rout path=""><AllDoctors /></Rout>
-        <Rout path="/pages/Home/New/Doctor"><NewDoctorForm /></Rout>
-        <Rout path="/pages/Clinics"><AllClinics /></Rout>
-        <Rout path="/pages/Pharmacies"><AllPharmacies /></Rout>
-        <Rout path="/pages/New/Clinic"><NewClinicForm /></Rout>
-        <Rout path="/pages/New/Pharmacy"><NewPharmacyForm /></Rout>
+        <Rout path="">
+          <AllDoctors />
+        </Rout>
+        <Rout path="/pages/Home/New/Doctor">
+          <NewDoctorForm />
+        </Rout>
+        <Rout path="/pages/Clinics">
+          <AllClinics />
+        </Rout>
+        <Rout path="/pages/Pharmacies">
+          <AllPharmacies />
+        </Rout>
+        <Rout path="/pages/New/Clinic">
+          <NewClinicForm />
+        </Rout>
+        <Rout path="/pages/New/Pharmacy">
+          <NewPharmacyForm />
+        </Rout>
       </>
     );
   };
