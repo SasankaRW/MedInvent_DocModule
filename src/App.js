@@ -20,15 +20,15 @@ function App() {
     switch (activeSubMenu) {
       case "All Doctors":
         return <AllDoctors />;
-      case "Add New Doctor":
+      case "New Doctor":
         return <NewDoctorForm />;
       case "All Clinics":
         return <AllClinics />;
       case "All Pharmacies":
         return <AllPharmacies />;
-      case "Add New Clinic":
+      case "New Clinic":
         return <NewClinicForm />;
-      case "Add New Pharmacy":
+      case "New Pharmacy":
         return <NewPharmacyForm />;
       default:
         return null;
