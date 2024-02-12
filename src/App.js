@@ -1,8 +1,8 @@
 import "./App.css";
-import Sidebar from "./Components/SideNav";
-import TopBar from "./Components/TopBar";
-import Form from "./Components/Form";
-import InputField from "./Components/InputField";
+import Sidebar from "./Components/MyComponents/SideNav";
+import TopBar from "./Components/MyComponents/TopBar";
+import Form from "./Components/MyComponents/Form";
+import InputField from "./Components/MyComponents/InputField";
 
 const docDetails =[
   {
