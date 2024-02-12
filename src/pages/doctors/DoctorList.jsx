@@ -1,5 +1,6 @@
 import React from "react";
 import "./DoctorList.css";
+import "../../Components/MyComponents/Container.css";
 
 const docDetails = [
   {
@@ -45,13 +46,16 @@ export default function AllDoctors() {
     );
   });
   return (
-    <div className="table-div">
-      <table className="table-style">
-        <thead>
-          <tr className="th-style">{headingSet}</tr>
-        </thead>
-        <tbody>{detailDisplay}</tbody>
-      </table>
+    <div className="cont">
+      <div className="cont-title">All Doctors</div>
+      <div className="table-div">
+        <table className="table-style">
+          <thead>
+            <tr className="th-style">{headingSet}</tr>
+          </thead>
+          <tbody>{detailDisplay}</tbody>
+        </table>
+      </div>
     </div>
   );
 }
