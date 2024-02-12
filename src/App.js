@@ -1,44 +1,57 @@
 import "./App.css";
+import * as React from "react";
 import Sidebar from "./Components/MyComponents/SideNav";
-import TopBar from "./Components/MyComponents/TopBar";
 import Form from "./Components/MyComponents/Form";
-import InputField from "./Components/MyComponents/InputField";
 
-const docDetails =[
+const docDetails = [
   {
-    Name:"Nithila",
-    Location:"katubedda",
-    Number:"0777997689"
+    Name: "Nithila",
+    Location: "katubedda",
+    Number: "0777997689",
   },
   {
-    Name:"Pramesh",
-    Location:"Panadura",
-    Number:"0777997689"
+    Name: "Pramesh",
+    Location: "Panadura",
+    Number: "0777997689",
   },
   {
-    Name:"Sasanka",
-    Location:"Rathnapura",
-    Number:"0777997689"
+    Name: "Sasanka",
+    Location: "Rathnapura",
+    Number: "0777997689",
   },
   {
-    Name:"Supun",
-    Location:"katubedda",
-    Number:"0777997689"
-  }
-]
-const tableTitleDeatils = ["Name","Location","Number"];
+    Name: "Supun",
+    Location: "katubedda",
+    Number: "0777997689",
+  },
+];
+const tableTitleDeatils = ["Name", "Location", "Number"];
 
 function App() {
+  const [activeSubMenu, setActiveSubMenu] = React.useState("All Doctors");
+
+  const handleSubMenuClick = (subMenuText) => {
+    setActiveSubMenu(subMenuText);
+  };
+
   return (
     <div className="App">
       <div className="container">
-        <Sidebar />
-        <div className="content">
-          <TopBar />
-          <div className="main-content">
-            <Form title="All Doctors" detailList={docDetails} captions={tableTitleDeatils}/>
+        <Sidebar
+          onSubMenuClick={handleSubMenuClick}
+          activeSubMenu={activeSubMenu}
+        >
+          {" "}
+          <div className="content">
+            <div className="main-content">
+              <Form
+                title="All Doctors"
+                detailList={docDetails}
+                captions={tableTitleDeatils}
+              />
+            </div>
           </div>
-        </div>
+        </Sidebar>
       </div>
     </div>
   );
