@@ -41,24 +41,24 @@ function App() {
     // setActiveSubMenu(subMenuText);
   };
 
-  const renderSubMenuComponent = () => {
-    switch (activeSubMenu) {
-      case "All Doctors":
-        return (<Rout path=""><AllDoctors /></Rout>);
-      case "Add New Doctor":
-        return (<Rout path="/pages/Home/New/Doctor"><NewDoctorForm /></Rout>);
-      case "All Clinics":
-        return (<Rout path="/pages/Clinics"><AllClinics /></Rout>);
-      case "All Pharmacies":
-        return (<Rout path="/pages/Pharmacies"><AllPharmacies /></Rout>);
-      case "Add New Clinic":
-        return (<Rout path="/pages/New/Clinic"><NewClinicForm /></Rout>);
-      case "Add New Pharmacy":
-        return (<Rout path="/pages/New/Pharmacy"><NewPharmacyForm /></Rout>);
-      default:
-        return null;
-    }
-  };
+  // const renderSubMenuComponent = () => {
+  //   switch (activeSubMenu) {
+  //     case "All Doctors":
+  //       return (<Rout path=""><AllDoctors /></Rout>);
+  //     case "Add New Doctor":
+  //       return (<Rout path="/pages/Home/New/Doctor"><NewDoctorForm /></Rout>);
+  //     case "All Clinics":
+  //       return (<Rout path="/pages/Clinics"><AllClinics /></Rout>);
+  //     case "All Pharmacies":
+  //       return (<Rout path="/pages/Pharmacies"><AllPharmacies /></Rout>);
+  //     case "Add New Clinic":
+  //       return (<Rout path="/pages/New/Clinic"><NewClinicForm /></Rout>);
+  //     case "Add New Pharmacy":
+  //       return (<Rout path="/pages/New/Pharmacy"><NewPharmacyForm /></Rout>);
+  //     default:
+  //       return null;
+  //   }
+  // };
 
   const renderSubMenu = (title) => {
     return (
