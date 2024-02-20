@@ -1,11 +1,13 @@
 import React from "react";
-import "../../Components/MyComponents/Container.css";
+import Container from "../../Components/MyComponents/Container";
+import Paper from "@mui/material/Paper";
 
 export default function NewClinicForm() {
   return (
-    <div className="cont">
-      <div className="cont-title">New Clinc</div>
-      <div>New Clinc</div>
-    </div>
+    <Paper elevation={5} sx={{ borderRadius: "10px" }}>
+      <Container title="New Clinc">
+        <div>New Clinc</div>
+      </Container>
+    </Paper>
   );
 }

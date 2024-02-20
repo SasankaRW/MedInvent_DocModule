@@ -1,11 +1,15 @@
 import React from "react";
 import "../../Components/MyComponents/Container.css";
+import Container from "../../Components/MyComponents/Container";
+import Paper from "@mui/material/Paper";
+import ClinicsTable from "./ClinicsTable";
 
 export default function AllClinics() {
   return (
-    <div className="cont">
-      <div className="cont-title">All Clinics</div>
-      <div>All Clinics</div>
-    </div>
+    <Paper elevation={5} sx={{ borderRadius: "10px" }}>
+      <Container title="All Clinics">
+        <ClinicsTable />
+      </Container>
+    </Paper>
   );
 }
