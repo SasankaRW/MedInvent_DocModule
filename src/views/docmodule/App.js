@@ -2,13 +2,13 @@ import "./App.css";
 import * as React from "react";
 import { useContext } from "react";
 import Sidebar from "./Components/MyComponents/SideNav";
-import AllDoctors from "./views/admin/pages/doctors/DoctorList";
-import NewDoctorForm from "./views/admin/pages/doctors/AddNewDoctor";
-import AllClinics from "./views/admin/pages/clinics/ClinicList";
-import AllPharmacies from "./views/admin/pages/pharmacies/PharmaciesList";
-import NewClinicForm from "./views/admin/pages/clinics/AddNewClinic";
-import NewPharmacyForm from "./views/admin/pages/pharmacies/AddNewPharmacy";
-import NavigationContex from "./views/admin/context/navigation";
+import AllDoctors from "./pages/doctors/DoctorList";
+import NewDoctorForm from "./pages/doctors/AddNewDoctor";
+import AllClinics from "./pages/clinics/ClinicList";
+import AllPharmacies from "./pages/pharmacies/PharmaciesList";
+import NewClinicForm from "./pages/clinics/AddNewClinic";
+import NewPharmacyForm from "./pages/pharmacies/AddNewPharmacy";
+import NavigationContex from "./context/navigation";
 import Rout from "./Components/MyComponents/Routes";
 
 function App() {
