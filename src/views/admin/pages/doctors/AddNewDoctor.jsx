@@ -16,14 +16,22 @@ export default function NewDoctorForm() {
           >
             <Grid item xs={6}>
               <div style={{ marginRight: "150px" }}>
+                <h4>Doctor name</h4>
                 <TextField
-                  label="Doctor Name"
+                  label="First Name"
                   placeholder="First Name"
                   variant="outlined"
                   fullWidth
                 />
+                <br/>
                 <TextField
-                  label="Doctor Name"
+                  label="Middle Name"
+                  placeholder="middle Name"
+                  variant="outlined"
+                  fullWidth
+                />
+                <TextField
+                  label="Last Name"
                   placeholder="Last Name"
                   variant="outlined"
                   fullWidth
@@ -41,12 +49,13 @@ export default function NewDoctorForm() {
               </div>
             </Grid>
             <Grid item xs={6}>
-              item
-            </Grid>
-            <Grid item xs={6}>
-              <div>item</div>
-            </Grid>
+              <div style={{ marginRight: "150px" }}>
+                <h4>Gender</h4>
+               
+            </div>
           </Grid>
+          </Grid>
+          
         </form>
       </Container>
     </Paper>
