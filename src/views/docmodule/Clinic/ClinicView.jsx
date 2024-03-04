@@ -1,10 +1,25 @@
-import SideNavClinic from "../../../Components/MyComponents/SideNavClinic";
+import SideNavClinic from "../../../Components/MyComponents/SideNavNew";
 import Typography from "@mui/material/Typography";
+import InsertInvitationOutlinedIcon from "@mui/icons-material/InsertInvitationOutlined";
+import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
+
+const menuItems = [
+  {
+    text: "Appointments",
+    subMenus: ["New Appointment", "Upcoming", "History"],
+    icon: <InsertInvitationOutlinedIcon />,
+  },
+  {
+    text: "Sessions",
+    subMenus: ["Upcoming", "New Session", "History", "Calender"],
+    icon: <LocalHospitalOutlinedIcon />,
+  },
+];
 
 function ClinicView() {
   return (
     <div>
-      <SideNavClinic>
+      <SideNavClinic menuItems={menuItems}>
         <Typography paragraph>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus

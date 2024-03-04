@@ -1,15 +1,12 @@
 import { useContext } from "react";
 import NavigationContex from "../../views/admin/context/navigation";
 
-function Rout({path,children})
-{
+function Route({ path, children }) {
   const { currentPath } = useContext(NavigationContex);
 
-  if(currentPath==path)
-  {
+  if (currentPath === path) {
     return children;
   }
   return null;
-
 }
-export default Rout;
+export default Route;

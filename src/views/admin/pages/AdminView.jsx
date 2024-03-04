@@ -6,7 +6,7 @@ import AllPharmacies from "./pharmacies/AllPharmacies";
 import NewClinicForm from "./clinics/NewClinicForm";
 import NewPharmacyForm from "./pharmacies/NewPharmacyForm";
 
-import Rout from "../../../Components/MyComponents/Routes";
+import Route from "../../../Components/MyComponents/Routes";
 import SideNav from "../../../Components/MyComponents/SideNav";
 import NavigationContex from "../context/navigation";
 
@@ -38,47 +38,28 @@ function AdminView() {
     navigate(path);
     setActiveSubMenu(subMenuText);
   };
-
-  // const renderSubMenuComponent = () => {
-  //   switch (activeSubMenu) {
-  //     case "All Doctors":
-  //       return (<Rout path=""><AllDoctors /></Rout>);
-  //     case "Add New Doctor":
-  //       return (<Rout path="/pages/Home/New/Doctor"><NewDoctorForm /></Rout>);
-  //     case "All Clinics":
-  //       return (<Rout path="/pages/Clinics"><AllClinics /></Rout>);
-  //     case "All Pharmacies":
-  //       return (<Rout path="/pages/Pharmacies"><AllPharmacies /></Rout>);
-  //     case "Add New Clinic":
-  //       return (<Rout path="/pages/New/Clinic"><NewClinicForm /></Rout>);
-  //     case "Add New Pharmacy":
-  //       return (<Rout path="/pages/New/Pharmacy"><NewPharmacyForm /></Rout>);
-  //     default:
-  //       return null;
-  //   }
-  // };
-
+  
   const renderSubMenu = (title) => {
     return (
       <>
-        <Rout path="">
+        <Route path="">
           <AllDoctors />
-        </Rout>
-        <Rout path="/pages/Home/New/Doctor">
+        </Route>
+        <Route path="/pages/Home/New/Doctor">
           <NewDoctorForm />
-        </Rout>
-        <Rout path="/pages/Clinics">
+        </Route>
+        <Route path="/pages/Clinics">
           <AllClinics />
-        </Rout>
-        <Rout path="/pages/Pharmacies">
+        </Route>
+        <Route path="/pages/Pharmacies">
           <AllPharmacies />
-        </Rout>
-        <Rout path="/pages/New/Clinic">
+        </Route>
+        <Route path="/pages/New/Clinic">
           <NewClinicForm />
-        </Rout>
-        <Rout path="/pages/New/Pharmacy">
+        </Route>
+        <Route path="/pages/New/Pharmacy">
           <NewPharmacyForm />
-        </Rout>
+        </Route>
       </>
     );
   };

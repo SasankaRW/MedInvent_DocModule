@@ -1,10 +1,19 @@
-import SideNavClinic from "../../../Components/MyComponents/SideNavClinic";
+import SideNavNew from "../../../Components/MyComponents/SideNavNew";
 import Typography from "@mui/material/Typography";
+import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
+
+const menuItems = [
+  {
+    text: "Sessions",
+    subMenus: ["Upcoming", "New Session", "History", "Calender"],
+    icon: <LocalHospitalOutlinedIcon />,
+  },
+];
 
 function DoctorView() {
   return (
     <div>
-      <SideNavClinic>
+      <SideNavNew menuItems={menuItems}>
         <Typography paragraph>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
@@ -34,7 +43,7 @@ function DoctorView() {
           eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
           posuere sollicitudin aliquam ultrices sagittis orci a.
         </Typography>
-      </SideNavClinic>
+      </SideNavNew>
     </div>
   );
 }

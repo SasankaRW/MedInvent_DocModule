@@ -13,19 +13,18 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Collapse from "@mui/material/Collapse";
-import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import InsertInvitationOutlinedIcon from "@mui/icons-material/InsertInvitationOutlined";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
 const drawerWidth = 250;
 
-export default function SideNavClinic({
+export default function SideNavNew({
   children,
   activeSubMenu,
   onSubMenuClick,
+  menuItems,
 }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
@@ -58,15 +57,15 @@ export default function SideNavClinic({
       <Toolbar
         sx={{
           backgroundColor: "#a7d2ef",
-          padding: "20px",
+          padding: "10px 20px",
           margin: "10px",
           borderRadius: "20px",
         }}
       >
         <img
-          src={"../../images/logo.png"}
+          src={"../../images/dp.png"}
           alt="Logo"
-          style={{ marginRight: 16, width: "20%" }}
+          style={{ marginRight: 16, width: "25%" }}
         />
         <div style={{ fontSize: "20px", fontWeight: "bold" }}>MedInvent</div>
       </Toolbar>
@@ -80,18 +79,7 @@ export default function SideNavClinic({
       >
         <div>
           <List>
-            {[
-              {
-                text: "Appointments",
-                subMenus: ["New Appointment", "Upcoming", "History"],
-                icon: <InsertInvitationOutlinedIcon />,
-              },
-              {
-                text: "Sessions",
-                subMenus: ["Upcoming", "New Session", "History", "Calender"],
-                icon: <LocalHospitalOutlinedIcon />,
-              },
-            ].map((menu, index) => (
+            {menuItems.map((menu, index) => (
               <React.Fragment key={menu.text}>
                 <ListItem>
                   <ListItemButton onClick={() => handleMenuExpand(menu.text)}>
