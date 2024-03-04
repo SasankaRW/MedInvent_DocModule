@@ -4,6 +4,11 @@ import Paper from "@mui/material/Paper";
 import { Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { DateField } from '@mui/x-date-pickers/DateField';
+import Button from '@mui/material/Button';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
 
 export default function NewDoctorForm() {
   return (
@@ -65,13 +70,13 @@ export default function NewDoctorForm() {
           <Grid item xs={6}>
               <div style={{ marginRight: "150px" }}>
               <h4>Date of birth</h4>
-                <datafiled
-                  label="Birth date"
-                  placeholder="mm/dd/yyyy"
-                  type="date"
-                
-                />
-
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={['DateField']}>
+                    <DateField label="Birth date" />
+                 </DemoContainer>
+              </LocalizationProvider>
+              
+              
               </div>
             </Grid>
           <Grid item xs={6}>
@@ -118,7 +123,19 @@ export default function NewDoctorForm() {
                 />
               </div>
             </Grid>
+            <Grid item xs={6}>
+            </Grid>
+            <Grid item xs={6}>
+            <h4 style={{ display: 'inline', paddingright:'100px' }}>Photo</h4>
+            <Button variant="contained" style={{ marginLeft:'100px' }}>Upload</Button>
+
+            </Grid>
+            <Grid item xs={6}></Grid>
+            <Grid item xs={6}>
+            <Button variant="contained">Add  Doctor</Button>
+            </Grid>
           </Grid>
+          
           
         </form>
       </Container>
