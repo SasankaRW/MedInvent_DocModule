@@ -1,5 +1,5 @@
 function NewSession() {
-  return <div>New Session</div>;
+  return <div>Doctor New Session</div>;
 }
 
 export default NewSession;

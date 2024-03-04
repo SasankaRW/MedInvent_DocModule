@@ -18,7 +18,7 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
-const drawerWidth = 250;
+const drawerWidth = 270;
 
 export default function SideNavNew({
   children,
@@ -108,7 +108,7 @@ export default function SideNavNew({
                         <ListItemButton
                           sx={{
                             backgroundColor:
-                              activeSubMenu === subMenu ? "#06B6D4" : "inherit",
+                              activeSubMenu === subMenu ? "#2980b9" : "inherit",
                             color:
                               activeSubMenu === subMenu ? "white" : "inherit",
                             borderRadius: "10px",
@@ -127,7 +127,7 @@ export default function SideNavNew({
                               }
                             />
                           </ListItemIcon>
-                          <ListItemText primary={subMenu} />
+                          <ListItemText primary={subMenu.split("|").at(0)} />
                         </ListItemButton>
                       </ListItem>
                     ))}
@@ -135,10 +135,12 @@ export default function SideNavNew({
                 </Collapse>
               </React.Fragment>
             ))}
-            <ListItem>
+            <ListItem onClick={() => onSubMenuClick("Profile")}>
               <ListItemButton
                 sx={{
-                  color: "inherit",
+                  backgroundColor:
+                    activeSubMenu === "Profile" ? "#2980b9" : "inherit",
+                  color: activeSubMenu === "Profile" ? "white" : "inherit",
                   borderRadius: "10px",
                   transition: "background-color 0.3s, color 0.5s",
                   "&:hover": {

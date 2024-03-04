@@ -1,5 +1,5 @@
 function Calender() {
-  return <div>Calender</div>;
+  return <div>Doctor Calender</div>;
 }
 
 export default Calender;

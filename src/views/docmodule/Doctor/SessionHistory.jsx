@@ -1,5 +1,5 @@
 function SessionHistory() {
-  return <div>Session history</div>;
+  return <div>Doctor Session history</div>;
 }
 
 export default SessionHistory;
