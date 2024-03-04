@@ -22,11 +22,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const drawerWidth = 240;
 
-export default function ResponsiveDrawer({
-  children,
-  activeSubMenu,
-  onSubMenuClick,
-}) {
+export default function SideNav({ children, activeSubMenu, onSubMenuClick }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   const [expandedMenus, setExpandedMenus] = React.useState({});
@@ -57,7 +53,7 @@ export default function ResponsiveDrawer({
     <div>
       <Toolbar>
         <img
-          src={"./images/logo.png"}
+          src={"../../images/logo.png"}
           alt="Logo"
           style={{ marginRight: 16, width: "20%" }}
         />

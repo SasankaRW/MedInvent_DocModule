@@ -1,5 +1,5 @@
 import React from "react";
-import "./DoctorList.css";
+import "./AllDoctors.css";
 import Container from "../../../../Components/MyComponents/Container";
 import Paper from "@mui/material/Paper";
 import DoctorsTable from "./DoctorsTable";
