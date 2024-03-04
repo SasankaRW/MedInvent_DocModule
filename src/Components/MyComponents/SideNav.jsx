@@ -53,7 +53,7 @@ export default function SideNav({ children, activeSubMenu, onSubMenuClick }) {
     <div>
       <Toolbar>
         <img
-          src={"../images/logo.png"}
+          src={"../../images/logo.png"}
           alt="Logo"
           style={{ marginRight: 16, width: "20%" }}
         />
