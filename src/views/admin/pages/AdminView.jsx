@@ -20,11 +20,11 @@ function AdminView() {
         return "";
       case "New Doctor":
         return "/pages/Home/New/Doctor";
-      case "All Clinics":
+      case "All Clinics /\n Dispensaries":
         return "/pages/Clinics";
       case "All Pharmacies":
         return "/pages/Pharmacies";
-      case "New Clinic":
+      case "New Clinic /\n Dispensaries":
         return "/pages/New/Clinic";
       case "New Pharmacy":
         return "/pages/New/Pharmacy";

@@ -75,8 +75,8 @@ export default function SideNav({ children, activeSubMenu, onSubMenuClick }) {
           {
             text: "Clinics /\nDispensaries",
             subMenus: [
-              "All Clinics /\nDispensaries",
-              "New Clinic /\nDispensaries",
+              "All Clinics /\n Dispensaries",
+              "New Clinic /\n Dispensaries",
             ],
             icon: <LocalHospitalIcon />,
           },
