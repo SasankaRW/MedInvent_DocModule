@@ -1,0 +1,36 @@
+@media (min-width: 1200px) {
+    .main {
+        margin-right: 10vw;
+    }
+}
+
+@media (max-width: 1199px) {
+    .main {
+        margin: 0 50px;
+    }
+}
+
+.content {
+    border-radius: 30px;
+}
+
+.image {
+    background: linear-gradient(to bottom, #2980B9, #7bc2f1);
+    border-radius: 30px;
+}
+
+.image>img {
+    position: relative;
+    right: 30px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+}
+
+.gridItem {
+    background-color: #dddddd;
+    margin: 10px;
+}
+
+.content> :first-child {
+    width: 100%;
+}

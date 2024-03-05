@@ -202,7 +202,7 @@ export default function SideNavNew({
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+            sx={{ mr: 2, display: { lg: "none" } }}
           >
             <MenuIcon />
           </IconButton>
@@ -216,8 +216,8 @@ export default function SideNavNew({
       <Box
         component="nav"
         sx={{
-          width: { sm: drawerWidth + 50 },
-          flexShrink: { sm: 0 },
+          width: { lg: drawerWidth + 50 },
+          flexShrink: { lg: 0 },
           backgroundColor: "#EDF8FF",
         }}
         aria-label="mailbox folders"
@@ -231,7 +231,7 @@ export default function SideNavNew({
             keepMounted: true,
           }}
           sx={{
-            display: { xs: "block", sm: "none" },
+            display: { xs: "block", lg: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
@@ -249,7 +249,7 @@ export default function SideNavNew({
         <Drawer
           variant="permanent"
           sx={{
-            display: { xs: "none", sm: "block" },
+            display: { xs: "none", lg: "block" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
@@ -273,7 +273,7 @@ export default function SideNavNew({
           flexGrow: 1,
           p: 3,
           pt: 5,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          width: { lg: `calc(100% - ${drawerWidth}px)` },
           backgroundColor: "#EDF8FF",
         }}
       >
