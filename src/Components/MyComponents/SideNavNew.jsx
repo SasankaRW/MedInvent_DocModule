@@ -25,6 +25,7 @@ export default function SideNavNew({
   activeSubMenu,
   onSubMenuClick,
   menuItems,
+  username,
 }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
@@ -67,7 +68,7 @@ export default function SideNavNew({
           alt="Logo"
           style={{ marginRight: 16, width: "25%" }}
         />
-        <div style={{ fontSize: "20px", fontWeight: "bold" }}>MedInvent</div>
+        <div style={{ fontSize: "20px", fontWeight: "bold" }}>{username}</div>
       </Toolbar>
       <div
         style={{

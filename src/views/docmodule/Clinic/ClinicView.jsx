@@ -117,6 +117,7 @@ function ClinicView() {
         menuItems={menuItems}
         onSubMenuClick={handleSubMenuClick}
         activeSubMenu={activeSubMenu}
+        username={"Clinic"}
       >
         {renderSubMenu(activeSubMenu)}
       </SideNavClinic>

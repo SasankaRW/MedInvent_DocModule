@@ -1,5 +1,12 @@
+import Title from "../../../Components/MyComponents/Title";
+
 function SessionHistory() {
-  return <div>Doctor Session history</div>;
+  return (
+    <div>
+      <Title>Sessions History</Title>
+      Doctor Session history
+    </div>
+  );
 }
 
 export default SessionHistory;

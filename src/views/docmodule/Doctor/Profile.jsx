@@ -1,5 +1,12 @@
+import Title from "../../../Components/MyComponents/Title";
+
 function Profile() {
-  return <div>Doctor Profile</div>;
+  return (
+    <div>
+      <Title>Profile</Title>
+      Doctor Profile
+    </div>
+  );
 }
 
 export default Profile;

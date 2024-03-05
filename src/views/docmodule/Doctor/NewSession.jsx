@@ -1,5 +1,12 @@
+import Title from "../../../Components/MyComponents/Title";
+
 function NewSession() {
-  return <div>Doctor New Session</div>;
+  return (
+    <div>
+      <Title>New Session</Title>
+      Doctor New Session
+    </div>
+  );
 }
 
 export default NewSession;

@@ -1,5 +1,11 @@
+import Title from "../../../Components/MyComponents/Title";
+
 function UpcomingAppointments() {
-  return <div>Upcoming appointments</div>;
+  return (
+    <div>
+      <Title>Upcoming appointments</Title>
+    </div>
+  );
 }
 
 export default UpcomingAppointments;

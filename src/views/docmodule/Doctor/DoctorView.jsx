@@ -30,14 +30,8 @@ function DoctorView() {
 
   const PathReturn = (getSubMenuText) => {
     switch (getSubMenuText) {
-      case "":
-        return "/upcoming-appointments";
-
-      case "History|Appointments":
-        return "/appointments-history";
-
       case "Upcoming|Sessions":
-        return "/upcoming-sessions";
+        return "";
 
       case "New Session":
         return "/new-session";
@@ -91,6 +85,7 @@ function DoctorView() {
         menuItems={menuItems}
         onSubMenuClick={handleSubMenuClick}
         activeSubMenu={activeSubMenu}
+        username={"Doctor"}
       >
         {renderSubMenu(activeSubMenu)}
       </SideNavNew>

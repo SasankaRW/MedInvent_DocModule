@@ -1,5 +1,11 @@
+import Title from "../../../Components/MyComponents/Title";
+
 function AppointmentHistory() {
-  return <div>Appointments history</div>;
+  return (
+    <div>
+      <Title>Appointments history</Title>
+    </div>
+  );
 }
 
 export default AppointmentHistory;

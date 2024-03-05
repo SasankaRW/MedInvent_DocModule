@@ -1,5 +1,11 @@
+import Title from "../../../Components/MyComponents/Title";
+
 function Calender() {
-  return <div>Calender</div>;
+  return (
+    <div>
+      <Title>Calender</Title>
+    </div>
+  );
 }
 
 export default Calender;
