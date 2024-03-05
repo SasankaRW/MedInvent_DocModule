@@ -14,6 +14,10 @@
     border-radius: 30px;
 }
 
+.title {
+    color: grey;
+}
+
 .image {
     background: linear-gradient(to bottom, #2980B9, #7bc2f1);
     border-radius: 30px;
@@ -27,10 +31,13 @@
 }
 
 .gridItem {
-    background-color: #dddddd;
-    margin: 10px;
+    margin-bottom: 25px;
 }
 
 .content> :first-child {
     width: 100%;
+}
+
+.time {
+    border-radius: 50px !important;
 }

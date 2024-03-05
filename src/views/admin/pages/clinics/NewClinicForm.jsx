@@ -1,7 +1,6 @@
 import React from "react";
-import Container from "../../../../Components/MyComponents/Container";
+import Container from "../../../../Components/MyComponents/Container/Container";
 import Paper from "@mui/material/Paper";
-
 
 export default function NewClinicForm() {
   return (
