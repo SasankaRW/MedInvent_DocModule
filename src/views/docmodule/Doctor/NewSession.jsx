@@ -7,6 +7,7 @@ import Button from "../../../Components/MyComponents/Button/Button";
 
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import NumberSelect from "../../../Components/MyComponents/NumberSelect/NumberSelect";
+import AppointmentDatePicker from "../../../Components/MyComponents/AppointmentDatePicker/AppointmentDatePicker";
 
 const clinics = [
   "First Street Clinic",
@@ -67,16 +68,23 @@ function NewSession() {
               <div className={`${styles.gridItem} ${styles.title}`}>Dates</div>
             </div>
             <div className="col-sm-7">
-              <div className={styles.gridItem} style={{ display: "flex" }}>
-                <MyDatePicker
-                  selectedDate={startDate}
-                  setSelectedDate={setStartDate}
-                  label={"Start date"}
-                />
-                <MyDatePicker
-                  selectedDate={endDate}
-                  setSelectedDate={setEndDate}
-                  label={"End date"}
+              <div className={styles.gridItem}>
+                <div style={{ display: "flex" }}>
+                  <MyDatePicker
+                    selectedDate={startDate}
+                    setSelectedDate={setStartDate}
+                    label={"Start date"}
+                  />
+                  <MyDatePicker
+                    selectedDate={endDate}
+                    setSelectedDate={setEndDate}
+                    label={"End date"}
+                    minDate={startDate}
+                  />
+                </div>
+                <AppointmentDatePicker
+                  startDate={startDate}
+                  endDate={endDate}
                 />
               </div>
             </div>

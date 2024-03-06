@@ -1,6 +1,11 @@
 import { useState } from "react";
 
-const MyDatePicker = ({ selectedDate, setSelectedDate, label }) => {
+const MyDatePicker = ({
+  selectedDate,
+  setSelectedDate,
+  label,
+  minDate = new Date().toISOString().split("T")[0],
+}) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleDateChange = (date) => {
@@ -15,8 +20,6 @@ const MyDatePicker = ({ selectedDate, setSelectedDate, label }) => {
     setIsFocused(false);
   };
 
-  const today = new Date().toISOString().split("T")[0];
-
   return (
     <div>
       <div className="m-1" style={{ fontSize: "14px" }}>
@@ -28,7 +31,7 @@ const MyDatePicker = ({ selectedDate, setSelectedDate, label }) => {
         onChange={(e) => handleDateChange(e.target.value)}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        min={today}
+        min={minDate}
         style={{
           outline: isFocused ? "2px solid #1565c0" : "1px solid #ccc",
           border: "none",
