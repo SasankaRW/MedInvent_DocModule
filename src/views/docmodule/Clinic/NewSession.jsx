@@ -1,7 +1,7 @@
 import { MenuItem, Select } from "@mui/material";
 import Title from "../../../Components/MyComponents/Title";
 import styles from "../Doctor/NewSession.module.css";
-import { useState } from "react";
+import { useReducer } from "react";
 import MyDatePicker from "../../../Components/MyComponents/MyDatePicker";
 import Button from "../../../Components/MyComponents/Button/Button";
 
@@ -23,49 +23,103 @@ const doctors = [
   "Dr. Lucas Garcia",
 ];
 
+const initialState = {
+  startDate: "",
+  endDate: "",
+  selectedDoctor: "--Select doctor--",
+  noOfPatients: 1,
+  isRefundable: false,
+  startTime: "",
+  endTime: "",
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "selectedDoctor":
+      return { ...state, selectedDoctor: action.payload };
+
+    case "startDate":
+      return { ...state, startDate: action.payload };
+
+    case "endDate":
+      return { ...state, endDate: action.payload };
+
+    case "noOfPatients":
+      return { ...state, noOfPatients: action.payload };
+
+    case "isRefundable":
+      return { ...state, isRefundable: !state.isRefundable };
+
+    case "startTime":
+      return { ...state, startTime: action.payload };
+
+    case "endTime":
+      return { ...state, endTime: action.payload };
+
+    case "initial":
+      return initialState;
+
+    default:
+      throw Error("invalid");
+  }
+}
+
 function NewSession() {
   const clinicName = "First Street Clinic";
   const clinicFee = 800;
   const doctorFee = 2200;
 
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [selectDoctor, setSelectedDoctor] = useState("--Select doctor--");
-  const [noOfPatients, setNoOfPatients] = useState(1);
-  const [isRefundable, setIsRefundable] = useState(false);
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [
+    {
+      startDate,
+      endDate,
+      selectedDoctor,
+      noOfPatients,
+      isRefundable,
+      startTime,
+      endTime,
+    },
+    dispatch,
+  ] = useReducer(reducer, initialState);
 
   function handleSelectedDoctor(e) {
-    setSelectedDoctor(e.target.value);
+    dispatch({ type: "selectedClinic", payload: e.target.value });
   }
 
   function handleNoOfPatients(e) {
-    setNoOfPatients(Number(e.target.value));
+    dispatch({ type: "noOfPatients", payload: e.target.value });
   }
 
   function handleIsRefundable() {
-    setIsRefundable(!isRefundable);
+    dispatch({ type: "isRefundable" });
   }
 
   function handleStartTime(e) {
-    setStartTime(e.target.value);
+    dispatch({ type: "startTime", payload: e.target.value });
   }
 
   function handleEndTime(e) {
-    setEndTime(e.target.value);
+    dispatch({ type: "endTime", payload: e.target.value });
   }
 
+  function handleStartDate(e) {
+    dispatch({ type: "startDate", payload: e.target.value });
+  }
+
+  function handleEndDate(e) {
+    dispatch({ type: "endDate", payload: e.target.value });
+  }
   function handleSubmit(e) {
     e.preventDefault();
     if (
       startDate !== null &&
       endDate !== null &&
-      selectDoctor !== "--Select doctor--" &&
+      selectedDoctor !== "--Select doctor--" &&
       startTime !== "" &&
       endTime !== ""
     ) {
       alert("New schedule added");
+      dispatch({ type: "initial" });
     } else {
       alert("please enter details");
     }
@@ -97,7 +151,7 @@ function NewSession() {
                       padding: "0 10px",
                     }}
                     fullWidth
-                    value={selectDoctor}
+                    value={selectedDoctor}
                     onChange={handleSelectedDoctor}
                   >
                     {["--Select doctor--", ...doctors].map((c) => (
@@ -123,12 +177,12 @@ function NewSession() {
                   <div style={{ display: "flex" }}>
                     <MyDatePicker
                       selectedDate={startDate}
-                      setSelectedDate={setStartDate}
+                      handleDateChange={handleStartDate}
                       label={"Start date"}
                     />
                     <MyDatePicker
                       selectedDate={endDate}
-                      setSelectedDate={setEndDate}
+                      handleDateChange={handleEndDate}
                       label={"End date"}
                       minDate={startDate}
                     />

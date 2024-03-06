@@ -2,15 +2,11 @@ import { useState } from "react";
 
 const MyDatePicker = ({
   selectedDate,
-  setSelectedDate,
+  handleDateChange,
   label,
   minDate = new Date().toISOString().split("T")[0],
 }) => {
   const [isFocused, setIsFocused] = useState(false);
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
 
   const handleFocus = () => {
     setIsFocused(true);
@@ -28,7 +24,7 @@ const MyDatePicker = ({
       <input
         type="date"
         value={selectedDate}
-        onChange={(e) => handleDateChange(e.target.value)}
+        onChange={(e) => handleDateChange(e)}
         onFocus={handleFocus}
         onBlur={handleBlur}
         min={minDate}
