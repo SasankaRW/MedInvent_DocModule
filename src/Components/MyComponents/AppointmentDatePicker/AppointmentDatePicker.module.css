@@ -1,0 +1,58 @@
+.dates {
+    margin: 20px 0;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 25vw;
+    white-space: nowrap;
+    scrollbar-width: thin;
+    scrollbar-color: #2980b9 #f1f1f1;
+}
+
+.dates::-webkit-scrollbar-button {
+    display: none;
+}
+
+
+.btn {
+    background-color: white;
+    border: none;
+}
+
+.day {
+    border: 1px solid rgb(163, 163, 163);
+    min-width: 50px;
+    text-align: center;
+    border-radius: 15px;
+    padding: 8px;
+    margin: 0 3px;
+    transition: 300ms;
+}
+
+.day>div {
+    font-size: 14px;
+}
+
+.daySelected>div {
+    font-size: 14px;
+}
+
+.daySelected {
+    min-width: 50px;
+    text-align: center;
+    border-radius: 15px;
+    padding: 8px;
+    margin: 0 3px;
+    background-color: #2980b9;
+    color: white;
+    border: 1px solid #2980b9;
+    transition: 300ms;
+}
+
+.day:hover {
+    cursor: pointer;
+}
+
+.daySelected:hover {
+    cursor: pointer;
+}

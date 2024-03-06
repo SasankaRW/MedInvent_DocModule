@@ -27,8 +27,8 @@ function NewSession() {
   const clinicFee = 800;
   const doctorFee = 2200;
 
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [selectClinic, setSelectedClinic] = useState(clinics.at(0));
   const [noOfPatients, setNoOfPatients] = useState(1);
   const [isRefundable, setIsRefundable] = useState(false);
@@ -50,7 +50,7 @@ function NewSession() {
       <Title>New Session</Title>
 
       <div
-        className={`d-flex bg-white shadow p-3 justify-content-between ${styles.content}`}
+        className={`d-flex bg-white shadow p-1 justify-content-between ${styles.content}`}
       >
         <div className="p-4">
           <div className="row">
