@@ -130,14 +130,12 @@ function NewSession() {
     <div className={styles.main}>
       <Title>New Session</Title>
 
-      <div
-        className={`d-flex bg-white shadow p-1 justify-content-between ${styles.content}`}
-      >
-        <form action="" onSubmit={handleSubmit}>
-          <div className="p-4">
+      <div className="d-flex bg-white shadow p-1 justify-content-between rounded-5">
+        <form action="" onSubmit={handleSubmit} className="w-100">
+          <div className="p-5">
             <div className="row">
               <div className="col-sm-5">
-                <div className={`${styles.gridItem} ${styles.title}`}>
+                <div className={`${styles.gridItem} text-secondary`}>
                   Doctor's Name
                 </div>
               </div>
@@ -147,9 +145,7 @@ function NewSession() {
             </div>
             <div className="row">
               <div className="col-sm-5">
-                <div className={`${styles.gridItem} ${styles.title}`}>
-                  Dates
-                </div>
+                <div className={`${styles.gridItem} text-secondary`}>Dates</div>
               </div>
               <div className="col-sm-7">
                 <div className={styles.gridItem}>
@@ -175,7 +171,7 @@ function NewSession() {
             </div>
             <div className="row">
               <div className="col-sm-5">
-                <div className={`${styles.gridItem} ${styles.title}`}>
+                <div className={`${styles.gridItem} text-secondary`}>
                   Clinic Name
                 </div>
               </div>
@@ -207,7 +203,7 @@ function NewSession() {
             </div>
             <div className="row">
               <div className="col-sm-5">
-                <div className={`${styles.gridItem} ${styles.title}`}>
+                <div className={`${styles.gridItem} text-secondary`}>
                   Time slot
                 </div>
               </div>
@@ -228,7 +224,7 @@ function NewSession() {
             </div>
             <div className="row">
               <div className="col-sm-5">
-                <div className={`${styles.gridItem} ${styles.title}`}>
+                <div className={`${styles.gridItem} text-secondary`}>
                   Number of patients
                 </div>
               </div>
@@ -244,7 +240,7 @@ function NewSession() {
             <hr />
             <div className="row">
               <div className="col-sm-5">
-                <div className={`${styles.gridItem} ${styles.title}`}>
+                <div className={`${styles.gridItem} text-secondary`}>
                   Doctor's fee
                 </div>
               </div>
@@ -266,7 +262,7 @@ function NewSession() {
             </div>
             <div className="row">
               <div className="col-sm-5">
-                <div className={`${styles.gridItem} ${styles.title}`}>
+                <div className={`${styles.gridItem} text-secondary`}>
                   Clinic fee
                 </div>
               </div>
