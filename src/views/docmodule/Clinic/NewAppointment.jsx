@@ -18,9 +18,12 @@ const doctors = [
   "Dr. Lucas Garcia",
 ];
 
+const timeSlots = ["5.00 PM", "9.30 PM"];
+
 const initialState = {
   doctor: "",
   date: null,
+  time: "",
   apppointmentNo: 0,
   title: "Mr.",
   patientName: "",
@@ -38,6 +41,9 @@ function reducer(state, action) {
 
     case "date":
       return { ...state, date: action.payload };
+
+    case "time":
+      return { ...state, time: action.payload };
 
     case "appointmentNo":
       return { ...state, apppointmentNo: action.payload };
@@ -73,6 +79,7 @@ function NewAppointment() {
     {
       doctor,
       date,
+      time,
       apppointmentNo,
       title,
       patientName,
@@ -118,6 +125,10 @@ function NewAppointment() {
     dispatch({ type: "isRefundable" });
   }
 
+  function handleTime(e) {
+    dispatch({ type: "time", payload: e.target.value });
+  }
+
   function onSubmit(e) {
     e.preventDefault();
   }
@@ -141,12 +152,37 @@ function NewAppointment() {
           <div className="row">
             <div className="col-md-6 col-sm-12 mb-4">
               <InputLabel className="mb-2">Time</InputLabel>
+              <Select
+                className="p-0 rounded-5 col-10"
+                value={time}
+                onChange={handleTime}
+                displayEmpty
+                sx={{
+                  borderRadius: "20px",
+                  height: "40px",
+                  padding: "0 10px",
+                }}
+              >
+                {timeSlots.map((x) => (
+                  <MenuItem key={x} value={x}>
+                    {x}
+                  </MenuItem>
+                ))}
+              </Select>
             </div>
             <div className="col-md-6 col-sm-12 mb-4">
               <InputLabel className="mb-2">Appointment number</InputLabel>
-              <span className="border px-3 py-1 rounded-5">
-                {apppointmentNo}
-              </span>
+              <TextField
+                value={apppointmentNo}
+                className="col-2"
+                InputProps={{
+                  style: {
+                    borderRadius: "50px",
+                    padding: 0,
+                    height: "40px",
+                  },
+                }}
+              />
             </div>
           </div>
 
