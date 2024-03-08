@@ -106,7 +106,7 @@ function NewAppointment() {
 
   function handleMobileNumber(e) {
     const mobileNo = e.target.value.replace(/[^0-9]/g, "");
-    dispatch({ type: "mobileNumber", payload: Number(mobileNo) });
+    dispatch({ type: "mobileNumber", payload: mobileNo });
   }
 
   function handleEmailAddress(e) {
