@@ -21,6 +21,7 @@ const initialState = {
   city: "",
   district: Object.keys(cities).at(0),
   email: "",
+  password: "",
   locationURL: "",
   position: null,
   isURLcorrect: false,
@@ -58,6 +59,9 @@ function reducer(state, action) {
     case "email":
       return { ...state, email: action.payload };
 
+    case "password":
+      return { ...state, password: action.payload };
+
     case "locationURL":
       return {
         ...state,
@@ -89,6 +93,7 @@ export default function NewPharmacyForm() {
       city,
       district,
       email,
+      password,
       locationURL,
       position,
       isURLcorrect,
@@ -277,6 +282,14 @@ export default function NewPharmacyForm() {
                 value={email}
                 onChange={(e) =>
                   dispatch({ type: "email", payload: e.target.value })
+                }
+              />
+              <TextField
+                className="w-75 mt-3"
+                placeholder="Enter a password"
+                value={password}
+                onChange={(e) =>
+                  dispatch({ type: "password", payload: e.target.value })
                 }
               />
             </div>

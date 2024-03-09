@@ -83,6 +83,7 @@ const initialState = {
   gender: null,
   nicNo: "",
   email: "",
+  password: "",
   dob: null,
   MLNo: "",
   speciality: null,
@@ -112,6 +113,9 @@ function reducer(state, action) {
     case "email":
       return { ...state, email: action.payload };
 
+    case "password":
+      return { ...state, password: action.payload };
+
     case "dob":
       return { ...state, dob: action.payload };
 
@@ -138,6 +142,7 @@ export default function NewDoctorForm() {
       gender,
       nicNo,
       email,
+      password,
       dob,
       MLNo,
       speciality,
@@ -192,13 +197,21 @@ export default function NewDoctorForm() {
               </div>
             </div>
             <div className="col-md-6">
-              <div className="lead mb-2">Contact Number</div>
+              <div className="lead mb-2">Email Address & password</div>
               <TextField
+                placeholder="Enter email address"
                 className="w-75"
-                placeholder="Enter contact number"
-                value={contactNo}
+                value={email}
                 onChange={(e) =>
-                  dispatch({ type: "contactNo", payload: e.target.value })
+                  dispatch({ type: "email", payload: e.target.value })
+                }
+              />
+              <TextField
+                placeholder="Enter a password"
+                className="w-75 mt-3"
+                value={password}
+                onChange={(e) =>
+                  dispatch({ type: "password", payload: e.target.value })
                 }
               />
             </div>
@@ -244,13 +257,13 @@ export default function NewDoctorForm() {
 
           <div className="row mb-4">
             <div className="col-md-6">
-              <div className="lead mb-2">Email Address</div>
+              <div className="lead mb-2">Contact Number</div>
               <TextField
-                placeholder="Enter email address"
                 className="w-75"
-                value={email}
+                placeholder="Enter contact number"
+                value={contactNo}
                 onChange={(e) =>
-                  dispatch({ type: "email", payload: e.target.value })
+                  dispatch({ type: "contactNo", payload: e.target.value })
                 }
               />
             </div>
