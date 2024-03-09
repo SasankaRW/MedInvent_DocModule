@@ -11,13 +11,14 @@ import IconButton from "@mui/material/IconButton";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import MyModal from "../../../../Components/MyComponents/MyModal";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 200 },
   {
     id: "location",
     label: "Location",
-    minWidth: 150,
+    minWidth: 200,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
@@ -29,21 +30,62 @@ const columns = [
   {
     id: "actions",
     label: "",
-    minWidth: 170,
+    minWidth: 50,
     align: "right",
   },
 ];
 
-function createData(name, location, mobileNo) {
-  return { name, location, mobileNo };
-}
-
 const rows = [
-  createData("Harcourt Pharmacy", "Katubedda", "0771234567"),
-  createData("MediCare Pharmacy", "Colombo 03", "0712345678"),
-  createData("HealthyLife Pharmacy", "Dehiwala", "0765432109"),
-  createData("Wellness Pharmacy", "Mount Lavinia", "0756789012"),
-  createData("MediPlus Pharmacy", "Nugegoda", "0709876543"),
+  {
+    name: "Wallace, Garza and Hayes Pharmacy",
+    location: "82938 Amber Isle\nRobinsonfurt, KS 88454",
+    mobileNo: "801-037-6065x61887",
+  },
+  {
+    name: "Henderson, Oneill and Martin Pharmacy",
+    location: "PSC 2350, Box 5990\nAPO AP 73895",
+    mobileNo: "560-280-5153x23846",
+  },
+  {
+    name: "Ellison PLC Pharmacy",
+    location: "93921 Lara Turnpike Suite 931\nMillerland, HI 20447",
+    mobileNo: "878.907.6675x0636",
+  },
+  {
+    name: "Burton, Ward and Campbell Pharmacy",
+    location: "7684 Carpenter Hill\nJanetberg, NY 65506",
+    mobileNo: "+1-636-538-1289x42820",
+  },
+  {
+    name: "Mccormick and Sons Pharmacy",
+    location: "667 Caleb Locks Apt. 165\nKennethfurt, TN 32698",
+    mobileNo: "693.504.6403x946",
+  },
+  {
+    name: "Ibarra-Fry Pharmacy",
+    location: "6710 Richards Mountain Suite 609\nHallville, RI 51710",
+    mobileNo: "(363)862-1570",
+  },
+  {
+    name: "Robinson, Morton and Sloan Pharmacy",
+    location: "38339 Gomez Point Suite 346\nSouth Jessicatown, VT 72861",
+    mobileNo: "(064)205-0982x61113",
+  },
+  {
+    name: "Hubbard, Morris and Tucker Pharmacy",
+    location: "USS Flores\nFPO AE 86386",
+    mobileNo: "(646)115-2172x429",
+  },
+  {
+    name: "Thomas PLC Pharmacy",
+    location: "07869 Timothy Lake\nJenniferbury, HI 01189",
+    mobileNo: "232-155-6509x1946",
+  },
+  {
+    name: "Giles-Jordan Pharmacy",
+    location: "PSC 2731, Box 7239\nAPO AA 84788",
+    mobileNo: "032.842.4070x9848",
+  },
 ];
 
 export default function PharmaciesTable() {
@@ -77,34 +119,37 @@ export default function PharmaciesTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align}>
-                        {column.id === "actions" ? (
-                          <>
-                            <IconButton style={{ fontSize: 10 }}>
-                              <RemoveRedEyeOutlinedIcon />
-                            </IconButton>
-                            <IconButton style={{ fontSize: 10 }}>
-                              <DeleteOutlineIcon />
-                            </IconButton>
-                            <IconButton style={{ fontSize: 10 }}>
-                              <BorderColorOutlinedIcon />
-                            </IconButton>
-                          </>
-                        ) : (
-                          value
-                        )}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
+            {(rowsPerPage > 0
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : rows
+            ).map((row) => (
+              <TableRow key={row.name} hover>
+                <TableCell component="th" scope="row" style={{ width: 200 }}>
+                  {row.name}
+                </TableCell>
+                <TableCell style={{ width: 200 }} align="left">
+                  {row.location}
+                </TableCell>
+                <TableCell style={{ width: 100 }} align="left">
+                  {row.mobileNo}
+                </TableCell>
+                <TableCell style={{ width: 50 }} align="left">
+                  <div className="d-flex">
+                    <MyModal
+                      icon={<RemoveRedEyeOutlinedIcon fontSize="small" />}
+                    >
+                      <PharmacyDetails doctor={row} />
+                    </MyModal>
+                    <IconButton style={{ padding: "0px 5px" }}>
+                      <DeleteOutlineIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton style={{ padding: "0px 5px" }}>
+                      <BorderColorOutlinedIcon fontSize="small" />
+                    </IconButton>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -119,4 +164,8 @@ export default function PharmaciesTable() {
       />
     </>
   );
+}
+
+function PharmacyDetails({ doctor }) {
+  return <div>{doctor.name}</div>;
 }

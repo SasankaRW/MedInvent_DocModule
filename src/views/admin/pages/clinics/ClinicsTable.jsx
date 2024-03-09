@@ -11,49 +11,66 @@ import IconButton from "@mui/material/IconButton";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import MyModal from "../../../../Components/MyComponents/MyModal";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 200 },
   {
     id: "location",
     label: "Location",
-    minWidth: 150,
+    minWidth: 200,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "mobileNo",
     label: "Mobile Number",
-    minWidth: 100,
+    minWidth: 200,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "actions",
     label: "",
-    minWidth: 170,
+    minWidth: 50,
     align: "right",
   },
 ];
 
-function createData(name, location, mobileNo) {
-  return { name, location, mobileNo };
-}
-
 const rows = [
-  createData("Medicare Clinic", "Katubedda", "0771234567"),
-  createData("XYZ Clinic", "Kandy", "0812345678"),
-  createData("City Medical Center", "Galle", "0912345678"),
-  createData("Sunrise Hospital", "Negombo", "0312345678"),
-  createData("Greenview Clinic", "Anuradhapura", "0256789012"),
-  createData("Golden Gate Hospital", "Matara", "0412345678"),
-  createData("Pristine Healthcare", "Jaffna", "0212345678"),
-  createData("Sunset Medical Center", "Trincomalee", "0267890123"),
-  createData("Wellness Hospital", "Batticaloa", "0356789012"),
-  createData("Lakeview Clinic", "Ratnapura", "0456789012"),
-  createData("Oceanview Hospital", "Hambantota", "0556789012"),
-  createData("Hilltop Medical Center", "Badulla", "0656789012"),
-  createData("Central Hospital", "Kegalle", "0712345678"),
-  createData("Northern Clinic", "Mannar", "0812345678"),
-  createData("Southern Medical Center", "Mullaitivu", "0956789012"),
+  { name: "Medicare Clinic", location: "Katubedda", mobileNo: "0771234567" },
+  { name: "XYZ Clinic", location: "Kandy", mobileNo: "0812345678" },
+  { name: "City Medical Center", location: "Galle", mobileNo: "0912345678" },
+  { name: "Sunrise Hospital", location: "Negombo", mobileNo: "0312345678" },
+  {
+    name: "Greenview Clinic",
+    location: "Anuradhapura",
+    mobileNo: "0256789012",
+  },
+  { name: "Golden Gate Hospital", location: "Matara", mobileNo: "0412345678" },
+  { name: "Pristine Healthcare", location: "Jaffna", mobileNo: "0212345678" },
+  {
+    name: "Sunset Medical Center",
+    location: "Trincomalee",
+    mobileNo: "0267890123",
+  },
+  { name: "Wellness Hospital", location: "Batticaloa", mobileNo: "0356789012" },
+  { name: "Lakeview Clinic", location: "Ratnapura", mobileNo: "0456789012" },
+  {
+    name: "Oceanview Hospital",
+    location: "Hambantota",
+    mobileNo: "0556789012",
+  },
+  {
+    name: "Hilltop Medical Center",
+    location: "Badulla",
+    mobileNo: "0656789012",
+  },
+  { name: "Central Hospital", location: "Kegalle", mobileNo: "0712345678" },
+  { name: "Northern Clinic", location: "Mannar", mobileNo: "0812345678" },
+  {
+    name: "Southern Medical Center",
+    location: "Mullaitivu",
+    mobileNo: "0956789012",
+  },
 ];
 
 export default function ClinicsTable() {
@@ -87,34 +104,37 @@ export default function ClinicsTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align}>
-                        {column.id === "actions" ? (
-                          <>
-                            <IconButton style={{ fontSize: 10 }}>
-                              <RemoveRedEyeOutlinedIcon />
-                            </IconButton>
-                            <IconButton style={{ fontSize: 10 }}>
-                              <DeleteOutlineIcon />
-                            </IconButton>
-                            <IconButton style={{ fontSize: 10 }}>
-                              <BorderColorOutlinedIcon />
-                            </IconButton>
-                          </>
-                        ) : (
-                          value
-                        )}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
+            {(rowsPerPage > 0
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : rows
+            ).map((row) => (
+              <TableRow key={row.name} hover>
+                <TableCell component="th" scope="row" style={{ width: 200 }}>
+                  {row.name}
+                </TableCell>
+                <TableCell style={{ width: 200 }} align="left">
+                  {row.location}
+                </TableCell>
+                <TableCell style={{ width: 100 }} align="left">
+                  {row.mobileNo}
+                </TableCell>
+                <TableCell style={{ width: 50 }} align="left">
+                  <div className="d-flex">
+                    <MyModal
+                      icon={<RemoveRedEyeOutlinedIcon fontSize="small" />}
+                    >
+                      <ClinicDetails doctor={row} />
+                    </MyModal>
+                    <IconButton style={{ padding: "0px 5px" }}>
+                      <DeleteOutlineIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton style={{ padding: "0px 5px" }}>
+                      <BorderColorOutlinedIcon fontSize="small" />
+                    </IconButton>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -129,4 +149,8 @@ export default function ClinicsTable() {
       />
     </>
   );
+}
+
+function ClinicDetails({ doctor }) {
+  return <div>{doctor.name}</div>;
 }
