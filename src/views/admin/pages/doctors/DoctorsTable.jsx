@@ -12,6 +12,7 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useState } from "react";
 import MyModal from "../../../../Components/MyComponents/MyModal";
+import { DeleteItemModal } from "../../../../Components/MyComponents/DeleteItemModal";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 200 },
@@ -140,9 +141,9 @@ export default function DoctorsTable() {
                     >
                       <DoctorDetails doctor={row} />
                     </MyModal>
-                    <IconButton style={{ padding: "0px 5px" }}>
-                      <DeleteOutlineIcon fontSize="small" />
-                    </IconButton>
+                    <MyModal icon={<DeleteOutlineIcon fontSize="small" />}>
+                      <DeleteItemModal item={row} />
+                    </MyModal>
                     <IconButton style={{ padding: "0px 5px" }}>
                       <BorderColorOutlinedIcon fontSize="small" />
                     </IconButton>

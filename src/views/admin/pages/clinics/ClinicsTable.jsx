@@ -1,5 +1,4 @@
 import * as React from "react";
-import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -12,6 +11,7 @@ import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import MyModal from "../../../../Components/MyComponents/MyModal";
+import { DeleteItemModal } from "../../../../Components/MyComponents/DeleteItemModal";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 200 },
@@ -125,9 +125,9 @@ export default function ClinicsTable() {
                     >
                       <ClinicDetails doctor={row} />
                     </MyModal>
-                    <IconButton style={{ padding: "0px 5px" }}>
-                      <DeleteOutlineIcon fontSize="small" />
-                    </IconButton>
+                    <MyModal icon={<DeleteOutlineIcon fontSize="small" />}>
+                      <DeleteItemModal item={row} />
+                    </MyModal>
                     <IconButton style={{ padding: "0px 5px" }}>
                       <BorderColorOutlinedIcon fontSize="small" />
                     </IconButton>

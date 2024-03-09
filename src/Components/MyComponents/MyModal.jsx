@@ -5,16 +5,18 @@ import { Modal as BaseModal } from "@mui/base/Modal";
 import Fade from "@mui/material/Fade";
 import { IconButton } from "@mui/material";
 
-
 export default function MyModal({ children, icon }) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const childrenWithProps = React.Children.map(children, (child) =>
+    React.cloneElement(child, { closeModal: handleClose })
+  );
+
   return (
     <div>
       <IconButton style={{ padding: "0px 5px" }} onClick={handleOpen}>
-        
         {icon}
       </IconButton>
       <Modal
@@ -26,7 +28,7 @@ export default function MyModal({ children, icon }) {
         slots={{ backdrop: StyledBackdrop }}
       >
         <Fade in={open}>
-          <ModalContent sx={style}>{children}</ModalContent>
+          <ModalContent sx={style}>{childrenWithProps}</ModalContent>
         </Fade>
       </Modal>
     </div>
