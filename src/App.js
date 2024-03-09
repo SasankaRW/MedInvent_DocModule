@@ -6,8 +6,8 @@ import ClinicView from "./views/docmodule/Clinic/ClinicView";
 function App() {
   return (
     <div className="App">
-      <AdminView />
-      {/* <DoctorView /> */}
+      {/* <AdminView /> */}
+      <DoctorView />
       {/* <ClinicView /> */}
     </div>
   );

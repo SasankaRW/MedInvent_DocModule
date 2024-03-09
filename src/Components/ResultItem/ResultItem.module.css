@@ -1,0 +1,10 @@
+.item {
+    border: 1px solid #2980b9;
+    cursor: pointer;
+    transition: 300ms;
+}
+
+.item:hover {
+    background-color: #2980b9;
+    color: white;
+}
