@@ -1,10 +1,7 @@
-import { IconButton } from "@mui/material";
-import Button from "../../../Components/MyComponents/Button/Button";
 import Title from "../../../Components/MyComponents/Title";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import ClinicSearchModal from "../../../Components/ClinicSearchModal";
+import ClinicSearchModal from "../../../Components/AddClinicModal";
 import { useState } from "react";
+import { VisitingClinicElement } from "../../../Components/VisitingClinicElement";
 
 const doctorInfo = {
   name: "Dr. John Doe",
@@ -86,10 +83,7 @@ function Profile() {
           <div className="container p-4 d-flex align-items-center justify-content-between">
             <div className="lead">Visiting Clinics</div>
             <div>
-              <ClinicSearchModal
-                setVisitingClinics={setVisitingClinics}
-                visitingClinics={visitingClinics}
-              />
+              <ClinicSearchModal />
             </div>
           </div>
           <hr className="my-0 mx-4" />
@@ -98,7 +92,7 @@ function Profile() {
             style={{ maxHeight: "60vh", scrollbarWidth: "thin" }}
           >
             {visitingClinics.map((clinic) => (
-              <VisitingClinicElement clinic={clinic} />
+              <VisitingClinicElement clinic={clinic} key={clinic.clinicName} />
             ))}
           </div>
         </div>
@@ -109,35 +103,3 @@ function Profile() {
 
 export default Profile;
 
-function VisitingClinicElement({ clinic }) {
-  return (
-    <div
-      className="d-flex justify-content-between align-items-center px-4 py-3 rounded-4 mb-2"
-      style={{
-        backgroundColor: "#edf8ff",
-      }}
-    >
-      <div>
-        <div style={{ fontSize: "18px" }}>{clinic.clinicName}</div>
-        <div className="mt-1 d-flex align-items-center">
-          Doctor fee : Rs.{" "}
-          <span>
-            <b>{clinic.doctorFee}</b>
-          </span>
-          <IconButton disableFocusRipple disableRipple>
-            <BorderColorIcon
-              fontSize="small"
-              className="mx-3"
-              style={{ color: "gray" }}
-            />
-          </IconButton>
-        </div>
-      </div>
-      <div>
-        <IconButton>
-          <DeleteOutlineIcon fontSize="medium" style={{ color: "gray" }} />
-        </IconButton>
-      </div>
-    </div>
-  );
-}

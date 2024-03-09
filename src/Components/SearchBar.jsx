@@ -2,9 +2,10 @@ import * as React from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { InputAdornment, OutlinedInput } from "@mui/material";
 
-export const SearchBar = ({ setSearchQuery }) => (
+export const SearchBar = ({ setSearchQuery, searchQuery }) => (
   <OutlinedInput
-    onInput={(e) => {
+    value={searchQuery}
+    onChange={(e) => {
       setSearchQuery(e.target.value);
     }}
     variant="outlined"

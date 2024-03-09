@@ -6,35 +6,24 @@ import Fade from "@mui/material/Fade";
 import Button from "./MyComponents/Button/Button";
 
 import { useState } from "react";
-import { ResultItem } from "./ResultItem/ResultItem";
-import { SearchBar } from "./SearchBar";
-import { InputAdornment, OutlinedInput } from "@mui/material";
+import { ClinicSearch } from "./ClinicSearch";
+import { SetDocFee } from "./SetDocFee";
 
-export default function ClinicSearchModal({
-  setVisitingClinics,
-  visitingClinics,
-}) {
-  const [open, setOpen] = React.useState(false);
+export default function ClinicSearchModal({}) {
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  let dataFiltered = filterData(searchQuery, clinics);
-
   const [selectedItem, setSelectedItem] = useState(null);
-  const [docFee, setDocFee] = useState(null);
+  const [docFee, setDocFee] = useState("");
 
-  const handleSelectItem = (item) => {
+  const handleSelectedItem = (item) => {
     setSelectedItem(item);
   };
 
   function handleAddClinic() {
-    setVisitingClinics(() => [
-      ...visitingClinics,
-      { clinicName: selectedItem, doctorFee: docFee },
-    ]);
-    dataFiltered = [];
-    setDocFee(null);
+    console.log(docFee, selectedItem);
+    setDocFee("");
     setSelectedItem(null);
     handleClose();
   }
@@ -53,49 +42,15 @@ export default function ClinicSearchModal({
         <Fade in={open}>
           <ModalContent sx={style}>
             {selectedItem === null && (
-              <div
-                style={{
-                  display: "flex",
-                  alignSelf: "center",
-                  justifyContent: "center",
-                  flexDirection: "column",
-                  padding: 20,
-                }}
-              >
-                <SearchBar
-                  searchQuery={searchQuery}
-                  setSearchQuery={setSearchQuery}
-                />
-                <div className="p-2 mt-3">
-                  {dataFiltered.map((d) => (
-                    <div onClick={() => handleSelectItem(d)} key={d.id}>
-                      <ResultItem item={d} />
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <ClinicSearch handleSelectedItem={handleSelectedItem} />
             )}
             {selectedItem && (
-              <div className="text-center">
-                <div className="lead">
-                  Enter doctor's fee for {selectedItem}
-                </div>
-                <OutlinedInput
-                  value={docFee}
-                  onChange={(e) => setDocFee(e.target.value)}
-                  type="number"
-                  size="small"
-                  placeholder="Enter fee"
-                  className="mt-3 rounded-5"
-                  startAdornment={
-                    <InputAdornment position="start"> Rs.</InputAdornment>
-                  }
-                />
-
-                <div className="mt-4">
-                  <Button text="Add Clinic" onClick={handleAddClinic} />
-                </div>
-              </div>
+              <SetDocFee
+                selectedItem={selectedItem}
+                docFee={docFee}
+                setDocFee={setDocFee}
+                handleAddClinic={handleAddClinic}
+              />
             )}
           </ModalContent>
         </Fade>
@@ -157,7 +112,7 @@ const ModalContent = styled("div")(
   `
 );
 
-const clinics = [
+export const clinics = [
   "Bright Horizon Clinics",
   "PrimeCare Health Solutions",
   "Vista Health Clinic",
@@ -170,7 +125,7 @@ const clinics = [
   "Beacon Medical Associates",
 ];
 
-const filterData = (query, data) => {
+export const filterData = (query, data) => {
   if (!query) {
     return [];
   } else {
