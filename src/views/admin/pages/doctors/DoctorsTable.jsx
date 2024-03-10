@@ -1,5 +1,3 @@
-import * as React from "react";
-import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -10,14 +8,18 @@ import TableRow from "@mui/material/TableRow";
 import IconButton from "@mui/material/IconButton";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { useState } from "react";
+import MyModal from "../../../../Components/MyComponents/MyModal";
+import { DeleteItemModal } from "../../../../Components/MyComponents/DeleteItemModal";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 200 },
   {
-    id: "speciality",
-    label: "speciality",
-    minWidth: 150,
+    id: "specialty",
+    label: "Specialty",
+    minWidth: 200,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
@@ -29,32 +31,67 @@ const columns = [
   {
     id: "actions",
     label: "",
-    minWidth: 170,
+    minWidth: 50,
     align: "right",
   },
 ];
 
-function createData(name, speciality, mobileNo) {
-  return { name, speciality, mobileNo };
-}
-
 const rows = [
-  createData("Dr Stephen Strange", "Cardiologist", "0771234567"),
-  createData("Dr John Doe", "Neurologist", "0887654321"),
-  createData("Dr Jane Smith", "Pediatrician", "0998765432"),
-  createData("Dr Emily Brown", "Dermatologist", "0112345678"),
-  createData("Dr Michael Johnson", "Orthopedic Surgeon", "0223456789"),
-  createData("Dr Sarah Williams", "Psychiatrist", "0334567890"),
-  createData("Dr David Wilson", "Oncologist", "0445678901"),
-  createData("Dr Olivia Garcia", "Gynecologist", "0556789012"),
-  createData("Dr William Martinez", "Endocrinologist", "0667890123"),
-  createData("Dr Sophia Rodriguez", "Urologist", "0778901234"),
-  createData("Dr Ethan Taylor", "Ophthalmologist", "0889012345"),
+  {
+    name: "Dr. John Smith",
+    specialty: "Cardiology",
+    mobileNo: "123-456-7890",
+  },
+  {
+    name: "Dr. Lisa White",
+    specialty: "Dermatology",
+    mobileNo: "098-765-4321",
+  },
+  {
+    name: "Dr. Mark Johnson",
+    specialty: "Neurology",
+    mobileNo: "456-789-1230",
+  },
+  {
+    name: "Dr. Sarah Brown",
+    specialty: "Pediatrics",
+    mobileNo: "321-654-0987",
+  },
+  {
+    name: "Dr. Emily Davis",
+    specialty: "General Surgery",
+    mobileNo: "234-567-8910",
+  },
+  {
+    name: "Dr. Alex Green",
+    specialty: "Orthopedics",
+    mobileNo: "543-210-9876",
+  },
+  {
+    name: "Dr. Samantha Blue",
+    specialty: "Psychiatry",
+    mobileNo: "678-123-4567",
+  },
+  {
+    name: "Dr. Michael Orange",
+    specialty: "Gastroenterology",
+    mobileNo: "987-654-3210",
+  },
+  {
+    name: "Dr. Olivia Black",
+    specialty: "Ophthalmology",
+    mobileNo: "132-465-7980",
+  },
+  {
+    name: "Dr. Ethan Gray",
+    specialty: "Pulmonology",
+    mobileNo: "564-738-2910",
+  },
 ];
 
 export default function DoctorsTable() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -83,34 +120,37 @@ export default function DoctorsTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row, index) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align}>
-                        {column.id === "actions" ? (
-                          <>
-                            <IconButton style={{ fontSize: 10 }}>
-                              <RemoveRedEyeOutlinedIcon />
-                            </IconButton>
-                            <IconButton style={{ fontSize: 10 }}>
-                              <DeleteOutlineIcon />
-                            </IconButton>
-                            <IconButton style={{ fontSize: 10 }}>
-                              <BorderColorOutlinedIcon />
-                            </IconButton>
-                          </>
-                        ) : (
-                          value
-                        )}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
+            {(rowsPerPage > 0
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : rows
+            ).map((row) => (
+              <TableRow key={row.name} hover>
+                <TableCell component="th" scope="row" style={{ width: 200 }}>
+                  {row.name}
+                </TableCell>
+                <TableCell style={{ width: 200 }} align="left">
+                  {row.specialty}
+                </TableCell>
+                <TableCell style={{ width: 100 }} align="left">
+                  {row.mobileNo}
+                </TableCell>
+                <TableCell style={{ width: 50 }} align="left">
+                  <div className="d-flex">
+                    <MyModal
+                      icon={<RemoveRedEyeOutlinedIcon fontSize="small" />}
+                    >
+                      <DoctorDetails doctor={row} />
+                    </MyModal>
+                    <MyModal icon={<DeleteOutlineIcon fontSize="small" />}>
+                      <DeleteItemModal item={row} />
+                    </MyModal>
+                    <IconButton style={{ padding: "0px 5px" }}>
+                      <BorderColorOutlinedIcon fontSize="small" />
+                    </IconButton>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -125,4 +165,8 @@ export default function DoctorsTable() {
       />
     </>
   );
+}
+
+function DoctorDetails({ doctor }) {
+  return <div>{doctor.name}</div>;
 }

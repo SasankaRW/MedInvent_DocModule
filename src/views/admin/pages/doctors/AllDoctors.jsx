@@ -1,6 +1,6 @@
 import React from "react";
 import "./AllDoctors.css";
-import Container from "../../../../Components/MyComponents/Container";
+import Container from "../../../../Components/MyComponents/Container/Container";
 import Paper from "@mui/material/Paper";
 import DoctorsTable from "./DoctorsTable";
 

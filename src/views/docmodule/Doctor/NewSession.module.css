@@ -1,0 +1,32 @@
+@media (min-width: 1200px) {
+    .main {
+        margin-right: 10vw;
+    }
+}
+
+@media (max-width: 1199px) {
+    .main {
+        margin: 0 50px;
+    }
+}
+
+.image {
+    background: linear-gradient(to bottom, #2980B9, #7bc2f1);
+    border-radius: 30px;
+}
+
+.image>img {
+    position: relative;
+    right: 30px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+}
+
+.gridItem {
+    margin-bottom: 25px;
+}
+
+
+.time {
+    border-radius: 50px !important;
+}

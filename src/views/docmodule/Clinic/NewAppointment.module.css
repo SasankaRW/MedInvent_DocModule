@@ -1,0 +1,37 @@
+@media (min-width: 1200px) {
+    .main {
+        margin-right: 10vw;
+    }
+}
+
+@media (max-width: 1199px) {
+    .main {
+        margin: 0 50px;
+    }
+}
+
+.results {
+    border-radius: 0 0 20px 20px;
+    position: absolute;
+    z-index: 2;
+    padding: 20px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border-top: none;
+    max-height: 50vh;
+    overflow: auto;
+    scrollbar-width: thin;
+    width: 350px;
+    scrollbar-color: #2980b9 #f1f1f1;
+}
+
+.results>div {
+    border-bottom: 1px solid #cccc;
+    padding: 10px 10px !important;
+    transition: 300ms;
+}
+
+.results>div:hover {
+    background-color: rgb(238, 238, 238);
+    border-radius: 10px;
+}

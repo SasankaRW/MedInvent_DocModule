@@ -14,11 +14,11 @@ import ListItemText from "@mui/material/ListItemText";
 import PersonIcon from "@mui/icons-material/Person";
 import LocalPharmacyIcon from "@mui/icons-material/LocalPharmacy";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
-import MenuIcon from "@mui/icons-material/Menu";
-import Toolbar from "@mui/material/Toolbar";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import MenuIcon from "@mui/icons-material/Menu";
+import Toolbar from "@mui/material/Toolbar";
 
 const drawerWidth = 240;
 
@@ -53,7 +53,7 @@ export default function SideNav({ children, activeSubMenu, onSubMenuClick }) {
     <div>
       <Toolbar>
         <img
-          src={"../../images/logo.png"}
+          src={"/images/logo.png"}
           alt="Logo"
           style={{ marginRight: 16, width: "20%" }}
         />

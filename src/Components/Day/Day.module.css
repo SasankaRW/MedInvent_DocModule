@@ -1,0 +1,14 @@
+.day {
+    padding: 5px 10px;
+    border: 1px solid #b3b3b3;
+    width: 60px;
+    cursor: pointer;
+    transition: 300ms;
+    margin-bottom: 5px;
+}
+
+.selected {
+    background-color: #1976d2;
+    color: white;
+    border: 1px solid #1976d2;
+}
