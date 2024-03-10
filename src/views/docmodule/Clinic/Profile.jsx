@@ -11,13 +11,19 @@ let clinicInfo = {
   },
   clinicFees: "$50",
   location: {
-    lat: 40.7128,
-    long: -74.006,
+    lat: 6.794668,
+    long: 79.901444,
   },
+  visitingDoctors: [
+    "Dr. Emily Watson",
+    "Dr. Michael Brown",
+    "Dr. Sophia Johnson",
+    "Dr. Ethan Smith",
+  ],
 };
 
 function Profile() {
-  const mapURL = `https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3961.3885038149997!2d79.95378307475634!3d6.84394199315426!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNsKwNTAnMzguMiJOIDc5wrA1NycyMi45IkU!5e0!3m2!1sen!2slk!4v1709995715108!5m2!1sen!2slk`;
+  const mapURL = `https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3961.3885038149997!2d${clinicInfo.location.long}!3d${clinicInfo.location.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNsKwNTAnMzguMiJOIDc5wrA1NycyMi45IkU!5e0!3m2!1sen!2slk!4v1709995715108!5m2!1sen!2slk`;
   return (
     <div>
       <Title>Profile</Title>
@@ -64,6 +70,7 @@ function Profile() {
               <div className="col-4 text-muted">Location</div>
               <div className="col-8">
                 <iframe
+                  className="rounded-4"
                   title="map"
                   src={mapURL}
                   width="100%"
@@ -76,18 +83,22 @@ function Profile() {
           </div>
         </div>
         <div className="col-lg-5 col-md-5 col-12 bg-white shadow rounded-5 p-2 mx-md-4 mt-md-0 mt-sm-3 mt-3">
-          <div className="container p-4 d-flex align-items-center justify-content-between">
-            <div className="lead">Visiting Doctors</div>
-            <div>{/* <ClinicSearchModal /> */}</div>
-          </div>
+          <div className="container p-4 lead">Visiting Doctors</div>
           <hr className="my-0 mx-4" />
           <div
             className="container p-4 overflow-y-auto"
             style={{ maxHeight: "60vh", scrollbarWidth: "thin" }}
           >
-            {/* {visitingClinics.map((clinic) => (
-              <VisitingClinicElement clinic={clinic} key={clinic.clinicName} />
-            ))} */}
+            {clinicInfo.visitingDoctors.map((doctor) => (
+              <div
+                className="mb-2 p-3 rounded-4"
+                style={{
+                  backgroundColor: "#edf8ff",
+                }}
+              >
+                {doctor}
+              </div>
+            ))}
           </div>
         </div>
       </div>
