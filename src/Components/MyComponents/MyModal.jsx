@@ -82,7 +82,7 @@ const ModalContent = styled("div")(
     gap: 8px;
     overflow: hidden;
     background-color: white;
-    border-radius: 8px;
+    border-radius: 25px;
     padding: 24px;
     color: black;
   `

@@ -175,6 +175,7 @@ function NewSession() {
                       selectedDate={startDate}
                       handleDateChange={handleStartDate}
                       label={"Start date"}
+                      minDate={new Date().toISOString().split("T")[0]}
                     />
                     <MyDatePicker
                       selectedDate={endDate}

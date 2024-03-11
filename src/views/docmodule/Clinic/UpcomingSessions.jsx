@@ -21,6 +21,7 @@ import MyModal from "../../../Components/MyComponents/MyModal";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { SessionDetailsModal } from "../../../Components/SessionDetailsModal";
 
 const doctors = [
   "Dr. Emily Watson",
@@ -73,6 +74,7 @@ function UpcomingSessions() {
           <MyDatePicker
             selectedDate={date}
             handleDateChange={(e) => setDate(e.target.value)}
+            minDate={new Date().toISOString().split("T")[0]}
           />
           <FormControl fullWidth>
             <InputLabel id="doctor" size="small">
@@ -129,7 +131,10 @@ function UpcomingSessions() {
                           <MyModal
                             icon={<RemoveRedEyeOutlinedIcon fontSize="small" />}
                           >
-                            <SessionDetailsModal session={row} />
+                            <SessionDetailsModal
+                              session={row}
+                              type="upcoming"
+                            />
                           </MyModal>
                           <MyModal
                             icon={<DeleteOutlineIcon fontSize="small" />}
@@ -156,49 +161,6 @@ function UpcomingSessions() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </div>
-    </div>
-  );
-}
-
-function SessionDetailsModal({ session }) {
-  return (
-    <div style={{ width: "500px" }}>
-      <div>
-        <div>
-          <small className="text-secondary">Doctor's name</small>
-        </div>
-        <div>
-          <big>{session.doctor}</big>
-        </div>
-      </div>
-      <hr className="my-2" />
-      <div>
-        <div>
-          <small className="text-secondary">Clinic</small>
-        </div>
-        <div>
-          <big>{session.clinic}</big>
-        </div>
-      </div>
-      <hr className="my-2" />
-      <div className="row">
-        <div className="col-6">
-          <div>
-            <small className="text-secondary">Doctor's name</small>
-          </div>
-          <div>
-            <big>{session.doctor}</big>
-          </div>
-        </div>
-        <div className="col-6">
-          <div>
-            <small className="text-secondary">Doctor's name</small>
-          </div>
-          <div>
-            <big>{session.doctor}</big>
-          </div>
-        </div>
       </div>
     </div>
   );

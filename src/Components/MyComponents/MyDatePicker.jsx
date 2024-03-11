@@ -4,7 +4,8 @@ const MyDatePicker = ({
   selectedDate,
   handleDateChange,
   label,
-  minDate = new Date().toISOString().split("T")[0],
+  minDate,
+  maxDate,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -28,6 +29,7 @@ const MyDatePicker = ({
         onFocus={handleFocus}
         onBlur={handleBlur}
         min={minDate}
+        max={maxDate}
         style={{
           outline: isFocused ? "2px solid #1565c0" : "1px solid #ccc",
           border: "none",
