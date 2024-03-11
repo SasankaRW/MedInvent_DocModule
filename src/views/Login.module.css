@@ -1,0 +1,10 @@
+.image {
+    background: linear-gradient(to bottom, #2980B9, #7bc2f1);
+    border-radius: 30px;
+}
+
+.image>img {
+    position: relative;
+    right: 40px;
+    padding-bottom: 50px;
+}
