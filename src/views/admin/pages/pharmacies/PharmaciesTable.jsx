@@ -12,19 +12,20 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import MyModal from "../../../../Components/MyComponents/MyModal";
 import { DeleteItemModal } from "../../../../Components/MyComponents/DeleteItemModal";
+import { PharmacyNClinicDetailsModal } from "../../../../Components/PharmacyNClinicDetailsModal";
 
 const columns = [
-  { id: "name", label: "Name", minWidth: 200 },
+  { id: "name", label: "Name", minWidth: 300 },
   {
     id: "location",
     label: "Location",
-    minWidth: 200,
+    minWidth: 250,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "mobileNo",
     label: "Mobile Number",
-    minWidth: 100,
+    minWidth: 50,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
@@ -124,21 +125,15 @@ export default function PharmaciesTable() {
               : rows
             ).map((row) => (
               <TableRow key={row.name} hover>
-                <TableCell component="th" scope="row" style={{ width: 200 }}>
-                  {row.name}
-                </TableCell>
-                <TableCell style={{ width: 200 }} align="left">
-                  {row.location}
-                </TableCell>
-                <TableCell style={{ width: 100 }} align="left">
-                  {row.mobileNo}
-                </TableCell>
-                <TableCell style={{ width: 50 }} align="left">
-                  <div className="d-flex">
+                <TableCell align="left">{row.name}</TableCell>
+                <TableCell align="left">{row.location}</TableCell>
+                <TableCell align="left">{row.mobileNo}</TableCell>
+                <TableCell align="left">
+                  <div className="d-flex justify-content-end">
                     <MyModal
                       icon={<RemoveRedEyeOutlinedIcon fontSize="small" />}
                     >
-                      <PharmacyDetails doctor={row} />
+                      <PharmacyNClinicDetailsModal row={row} type="pharmacy" />
                     </MyModal>
                     <MyModal icon={<DeleteOutlineIcon fontSize="small" />}>
                       <DeleteItemModal item={row} />
@@ -164,8 +159,4 @@ export default function PharmaciesTable() {
       />
     </>
   );
-}
-
-function PharmacyDetails({ doctor }) {
-  return <div>{doctor.name}</div>;
 }
