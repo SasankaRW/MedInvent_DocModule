@@ -7,8 +7,8 @@ import Login from "./views/Login";
 function App() {
   return (
     <div className="App">
-      <Login />
-      {/* <AdminView /> */}
+      {/* <Login /> */}
+      <AdminView />
       {/* <DoctorView /> */}
       {/* <ClinicView /> */}
     </div>
