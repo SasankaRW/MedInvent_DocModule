@@ -7,10 +7,10 @@ import Login from "./views/Login";
 function App() {
   return (
     <div className="App">
-      <Login />
-      {/* <AdminView /> */}
-      {/* <DoctorView /> */}
-      {/* <ClinicView /> */}
+      {/*<Login />*/}
+      {/* <AdminView />*/}
+       {/*<DoctorView /> */}
+      <ClinicView />  
     </div>
   );
 }

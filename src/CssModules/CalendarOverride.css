@@ -41,7 +41,11 @@
 .cancellable {
     background-color: red; 
 }
-
+.showContent{
+    margin: 10px;
+    padding: 5px;
+    border-radius: 10px;
+}
 
 /*overrided classes*/
 
@@ -77,5 +81,6 @@
     font-weight: bold;
 }
 .fc-event {
-    background-color: black;
+    background-color: rgb(252, 252, 252);
+    border: none;
 }
