@@ -13,6 +13,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useState } from "react";
 import MyModal from "../../../../Components/MyComponents/MyModal";
 import { DeleteItemModal } from "../../../../Components/MyComponents/DeleteItemModal";
+import { DoctorDetailsModal } from "../../../../Components/DoctorDetailsModal";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 200 },
@@ -134,12 +135,12 @@ export default function DoctorsTable() {
                 <TableCell style={{ width: 100 }} align="left">
                   {row.mobileNo}
                 </TableCell>
-                <TableCell style={{ width: 50 }} align="left">
-                  <div className="d-flex">
+                <TableCell style={{ width: 50 }} align="right">
+                  <div className="d-flex justify-content-end">
                     <MyModal
                       icon={<RemoveRedEyeOutlinedIcon fontSize="small" />}
                     >
-                      <DoctorDetails doctor={row} />
+                      <DoctorDetailsModal doctor={row} />
                     </MyModal>
                     <MyModal icon={<DeleteOutlineIcon fontSize="small" />}>
                       <DeleteItemModal item={row} />
@@ -165,8 +166,4 @@ export default function DoctorsTable() {
       />
     </>
   );
-}
-
-function DoctorDetails({ doctor }) {
-  return <div>{doctor.name}</div>;
 }
