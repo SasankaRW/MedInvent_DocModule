@@ -27,6 +27,9 @@ const initialState = {
   isURLcorrect: false,
 };
 
+// At the top of your component, outside of the NewPharmacyForm function
+const googleMapsURL = "https://maps.google.com"; 
+
 function reducer(state, action) {
   switch (action.type) {
     case "pharmacyName":
@@ -136,6 +139,10 @@ export default function NewPharmacyForm() {
   function onSubmit(e) {
     e.preventDefault();
     alert("clinic added");
+  }
+
+  function openGoogleMaps() {
+    window.open(googleMapsURL, '_blank');
   }
 
   return (
@@ -297,7 +304,7 @@ export default function NewPharmacyForm() {
           <div>
             <div className="lead mb-3">Location</div>
             <div className="d-flex align-items-center">
-              <Button variant="contained">Select on map</Button>{" "}
+              <Button variant="contained" onClick={openGoogleMaps}>Select on map</Button>{" "}
               <span className="mx-5">or</span>
               <TextField
                 value={locationURL}
@@ -315,6 +322,7 @@ export default function NewPharmacyForm() {
                 >
                   verify
                 </Button>
+                
               ) : (
                 <span
                   className="mx-4"
