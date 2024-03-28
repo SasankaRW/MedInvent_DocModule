@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -36,52 +36,18 @@ const columns = [
   },
 ];
 
-const rows = [
-  { name: "Medicare Clinic", location: "Katubedda", mobileNo: "0771234567" },
-  { name: "XYZ Clinic", location: "Kandy", mobileNo: "0812345678" },
-  { name: "City Medical Center", location: "Galle", mobileNo: "0912345678" },
-  { name: "Sunrise Hospital", location: "Negombo", mobileNo: "0312345678" },
-  {
-    name: "Greenview Clinic",
-    location: "Anuradhapura",
-    mobileNo: "0256789012",
-  },
-  { name: "Golden Gate Hospital", location: "Matara", mobileNo: "0412345678" },
-  { name: "Pristine Healthcare", location: "Jaffna", mobileNo: "0212345678" },
-  {
-    name: "Sunset Medical Center",
-    location: "Trincomalee",
-    mobileNo: "0267890123",
-  },
-  { name: "Wellness Hospital", location: "Batticaloa", mobileNo: "0356789012" },
-  { name: "Lakeview Clinic", location: "Ratnapura", mobileNo: "0456789012" },
-  {
-    name: "Oceanview Hospital",
-    location: "Hambantota",
-    mobileNo: "0556789012",
-  },
-  {
-    name: "Hilltop Medical Center",
-    location: "Badulla",
-    mobileNo: "0656789012",
-  },
-  { name: "Central Hospital", location: "Kegalle", mobileNo: "0712345678" },
-  { name: "Northern Clinic", location: "Mannar", mobileNo: "0812345678" },
-  {
-    name: "Southern Medical Center",
-    location: "Mullaitivu",
-    mobileNo: "0956789012",
-  },
-];
-
 export default function ClinicsTable() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const handleChangePage = (event, newPage) => {
+  //state management using useState hook
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+   //function to handle page change
+  const handleChangePage = (newPage) => {
     setPage(newPage);
   };
 
+  //function to handle how many rows should be displayed per page
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -147,3 +113,42 @@ export default function ClinicsTable() {
     </>
   );
 }
+
+//dummy data to display clinics
+const rows = [
+  { name: "Medicare Clinic", location: "Katubedda", mobileNo: "0771234567" },
+  { name: "XYZ Clinic", location: "Kandy", mobileNo: "0812345678" },
+  { name: "City Medical Center", location: "Galle", mobileNo: "0912345678" },
+  { name: "Sunrise Hospital", location: "Negombo", mobileNo: "0312345678" },
+  {
+    name: "Greenview Clinic",
+    location: "Anuradhapura",
+    mobileNo: "0256789012",
+  },
+  { name: "Golden Gate Hospital", location: "Matara", mobileNo: "0412345678" },
+  { name: "Pristine Healthcare", location: "Jaffna", mobileNo: "0212345678" },
+  {
+    name: "Sunset Medical Center",
+    location: "Trincomalee",
+    mobileNo: "0267890123",
+  },
+  { name: "Wellness Hospital", location: "Batticaloa", mobileNo: "0356789012" },
+  { name: "Lakeview Clinic", location: "Ratnapura", mobileNo: "0456789012" },
+  {
+    name: "Oceanview Hospital",
+    location: "Hambantota",
+    mobileNo: "0556789012",
+  },
+  {
+    name: "Hilltop Medical Center",
+    location: "Badulla",
+    mobileNo: "0656789012",
+  },
+  { name: "Central Hospital", location: "Kegalle", mobileNo: "0712345678" },
+  { name: "Northern Clinic", location: "Mannar", mobileNo: "0812345678" },
+  {
+    name: "Southern Medical Center",
+    location: "Mullaitivu",
+    mobileNo: "0956789012",
+  },
+];

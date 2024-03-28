@@ -10,6 +10,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
+// Initial state for the form
 const initialState = {
   pharmacyName: "",
   contactNumber: "",
@@ -27,9 +28,7 @@ const initialState = {
   isURLcorrect: false,
 };
 
-// At the top of your component, outside of the NewPharmacyForm function
-const googleMapsURL = "https://maps.google.com"; 
-
+// Reducer function to handle state updates
 function reducer(state, action) {
   switch (action.type) {
     case "pharmacyName":
@@ -84,6 +83,7 @@ function reducer(state, action) {
 }
 
 export default function NewPharmacyForm() {
+  // State management using useReducer hook
   const [
     {
       pharmacyName,
@@ -104,6 +104,7 @@ export default function NewPharmacyForm() {
     dispatch,
   ] = useReducer(reducer, initialState);
 
+  // Function to extract latitude and longitude from Google Maps URL
   function extractLatLongFromGoogleMapsURL(url) {
     var regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
 
@@ -120,6 +121,7 @@ export default function NewPharmacyForm() {
     }
   }
 
+  // Function to handle URL verification
   function handleURLVerification() {
     dispatch({
       type: "latLong",
@@ -127,6 +129,7 @@ export default function NewPharmacyForm() {
     });
   }
 
+  // Function to toggle selected days for clinic open hours
   function toggleDay(day) {
     dispatch({
       type: "openDays",
@@ -136,19 +139,17 @@ export default function NewPharmacyForm() {
     });
   }
 
+  // Function to handle form submission
   function onSubmit(e) {
     e.preventDefault();
     alert("clinic added");
-  }
-
-  function openGoogleMaps() {
-    window.open(googleMapsURL, '_blank');
   }
 
   return (
     <Paper elevation={5} sx={{ borderRadius: "10px" }}>
       <Container title="New clinic">
         <form style={{ margin: "50px 0px" }} onSubmit={onSubmit}>
+          {/* Clinic Name and Contact Number fields */}
           <div className="row mb-4">
             <div className="col-md-6">
               <div className="lead mb-2">Clinic Name</div>
@@ -177,7 +178,7 @@ export default function NewPharmacyForm() {
               />
             </div>
           </div>
-
+          {/* Open Hours and Open days fields */}
           <div className="row mb-4">
             <div className="col-md-6">
               <div className="lead mb-2">Open Hours</div>
@@ -222,7 +223,7 @@ export default function NewPharmacyForm() {
               </div>
             </div>
           </div>
-
+          {/* Address and Email fields */}
           <div className="row mb-4">
             <div className="col-md-6">
               <div className="lead mb-2">Address</div>
@@ -252,6 +253,7 @@ export default function NewPharmacyForm() {
                   />
                 </div>
               </div>
+              {/* Dropdown for selecting district */}
               <div className="row mt-3">
                 <div className="col-sm-5">
                   <Select
@@ -301,10 +303,13 @@ export default function NewPharmacyForm() {
               />
             </div>
           </div>
+          {/* Location field with URL verification */}
           <div>
             <div className="lead mb-3">Location</div>
             <div className="d-flex align-items-center">
-              <Button variant="contained" onClick={openGoogleMaps}>Select on map</Button>{" "}
+              <Button variant="contained" onClick={() => {}}>
+                Select on map
+              </Button>{" "}
               <span className="mx-5">or</span>
               <TextField
                 value={locationURL}
@@ -322,7 +327,6 @@ export default function NewPharmacyForm() {
                 >
                   verify
                 </Button>
-                
               ) : (
                 <span
                   className="mx-4"

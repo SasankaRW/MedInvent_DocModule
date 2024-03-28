@@ -16,14 +16,7 @@ import { SessionDetailsModal } from "../../../Components/SessionDetailsModal";
 
 import { useState } from "react";
 
-const clinics = [
-  "HealthyCare Clinic",
-  "City General Hospital",
-  "Sunrise Medical Center",
-  "Metro Health Clinic",
-  "Central Family Practice",
-];
-
+//colums of the table
 const columns = [
   { id: "clinic", label: "Clinic", minWidth: 170 },
   { id: "date", label: "Date", minWidth: 100 },
@@ -45,16 +38,20 @@ const columns = [
 ];
 
 function SessionHistory() {
+
+  //state management using useState hook
   const [date, setDate] = useState("");
   const [clinic, setClinic] = useState("");
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  //function to handle page change
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
+  //function to handle how many rows should be displayed per page
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -148,6 +145,8 @@ function SessionHistory() {
 
 export default SessionHistory;
 
+
+//dummy data for sessions
 const sessions = [
   {
     doctor: "Dr Stephen Strange",
@@ -189,4 +188,13 @@ const sessions = [
     isRefundableAppointments: false,
     docFee: 1900,
   },
+];
+
+//dummy data for clinics
+const clinics = [
+  "HealthyCare Clinic",
+  "City General Hospital",
+  "Sunrise Medical Center",
+  "Metro Health Clinic",
+  "Central Family Practice",
 ];
