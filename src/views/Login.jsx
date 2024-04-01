@@ -1,5 +1,4 @@
 import {
-  Checkbox,
   FormControl,
   IconButton,
   InputAdornment,
@@ -7,14 +6,21 @@ import {
   OutlinedInput,
 } from "@mui/material";
 import styles from "./Login.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Button from "../Components/MyComponents/Button/Button";
 
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../Contexts/AuthContext";
+
 function Login() {
+  const { login, isAuthenticated, user } = useAuth();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
+
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -23,6 +29,26 @@ function Login() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
+  function handleLogin() {
+    login(username, password);
+  }
+
+  useEffect(
+    function () {
+      if (isAuthenticated && user !== null) {
+        if (user.role === "admin") {
+          navigate("/admin", { replace: true });
+        } else if (user.role === "doctor") {
+          navigate("/doctor", { replace: true });
+        } else if (user.role === "clinic") {
+          navigate("/clinic", { replace: true });
+        }
+      }
+    },
+    [isAuthenticated, navigate]
+  );
+
   return (
     <div
       style={{ backgroundColor: "#edf8ff", height: "100vh" }}
@@ -96,7 +122,7 @@ function Login() {
             </div>
           </div> */}
           <div className="mt-5">
-            <Button text="Log in" width="100%" />
+            <Button onClick={handleLogin} text="Log in" width="100%" />
           </div>
         </div>
         <div

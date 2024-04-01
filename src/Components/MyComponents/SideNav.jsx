@@ -19,6 +19,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
+import { useAuth } from "../../Contexts/AuthContext";
 
 const drawerWidth = 240;
 
@@ -26,6 +27,8 @@ export default function SideNav({ children, activeSubMenu, onSubMenuClick }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   const [expandedMenus, setExpandedMenus] = React.useState({});
+
+  const { logout } = useAuth();
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -157,10 +160,19 @@ export default function SideNav({ children, activeSubMenu, onSubMenuClick }) {
             <MenuIcon />
           </IconButton>
           <div></div>
-          <span style={{ display: "flex" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <span style={{ marginRight: "15px" }}>Hi Admin</span>
             <AccountCircleIcon />
-          </span>
+            <button className="btn btn-primary mx-2" onClick={logout}>
+              LOG OUT
+            </button>
+          </div>
         </Toolbar>
       </AppBar>
       <Box
