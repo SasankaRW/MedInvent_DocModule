@@ -1,8 +1,8 @@
 import { IconButton, OutlinedInput } from "@mui/material";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import MyModal from "./MyComponents/MyModal";
-import Button from "./MyComponents/Button/Button";
+import MyModal from "./MyModal";
+import Button from "./Button/Button";
 
 export function VisitingClinicElement({ clinic }) {
   const handleClose = () => {};

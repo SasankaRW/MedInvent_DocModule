@@ -1,5 +1,5 @@
 import * as React from "react";
-import Button from "./MyComponents/Button/Button";
+import Button from "./Button/Button";
 import { InputAdornment, OutlinedInput } from "@mui/material";
 
 export function SetDocFee({

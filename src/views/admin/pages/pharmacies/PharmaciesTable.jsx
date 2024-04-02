@@ -10,8 +10,8 @@ import IconButton from "@mui/material/IconButton";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import MyModal from "../../../../Components/MyComponents/MyModal";
-import { DeleteItemModal } from "../../../../Components/MyComponents/DeleteItemModal";
+import MyModal from "../../../../Components/MyModal";
+import { DeleteItemModal } from "../../../../Components/DeleteItemModal";
 import { PharmacyNClinicDetailsModal } from "../../../../Components/PharmacyNClinicDetailsModal";
 
 const columns = [

@@ -19,7 +19,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
-import { useAuth } from "../../Contexts/AuthContext";
+import { useAuth } from "../Contexts/AuthContext";
 
 const drawerWidth = 240;
 

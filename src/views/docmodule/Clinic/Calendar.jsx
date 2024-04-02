@@ -3,10 +3,9 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import Title from "../../../Components/MyComponents/Title";
+import Title from "../../../Components/Title";
 import "../../../CssModules/CalendarOverride.css";
 import { color } from "@mui/system";
-
 
 const sessions = [
   {
@@ -42,7 +41,7 @@ const sessions = [
     patientsFilled: 8,
     cancellable: false,
   },
-  
+
   // Other session objects...
 ];
 
@@ -74,7 +73,7 @@ function Calendar() {
 
   const eventContent = (eventInfo) => (
     <div
-        className={`event-content ${
+      className={`event-content ${
         eventInfo.event.extendedProps.cancellable ? "cancellable" : ""
       }`}
       style={{
@@ -88,7 +87,7 @@ function Calendar() {
       <p>{eventInfo.timeText}</p>
     </div>
   );
-  
+
   const handleDayCellDidMount = (arg) => {
     const today = new Date();
     if (
@@ -134,7 +133,8 @@ function Calendar() {
               <p>Start Time: {selectedEvent.start.toLocaleTimeString()}</p>
               <p>End Time: {selectedEvent.end.toLocaleTimeString()}</p>
               <p>
-                Patients Filled: { selectedEvent.extendedProps.patientsFilled} / {selectedEvent.extendedProps.maxPatients}
+                Patients Filled: {selectedEvent.extendedProps.patientsFilled} /{" "}
+                {selectedEvent.extendedProps.maxPatients}
               </p>
               <button
                 onClick={handleToggleCancellable}

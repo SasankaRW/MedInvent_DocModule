@@ -6,8 +6,8 @@ import AllPharmacies from "./pharmacies/AllPharmacies";
 import NewClinicForm from "./clinics/NewClinicForm";
 import NewPharmacyForm from "./pharmacies/NewPharmacyForm";
 
-import Route from "../../../Components/MyComponents/Routes";
-import SideNav from "../../../Components/MyComponents/SideNav";
+import Route from "../../../Components/Routes";
+import SideNav from "../../../Components/SideNav";
 import NavigationContex from "../context/navigation";
 
 function AdminView() {
@@ -38,7 +38,7 @@ function AdminView() {
     navigate(path);
     setActiveSubMenu(subMenuText);
   };
-  
+
   const renderSubMenu = (title) => {
     return (
       <>

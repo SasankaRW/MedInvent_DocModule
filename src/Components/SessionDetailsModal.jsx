@@ -1,4 +1,4 @@
-import Button from "./MyComponents/Button/Button";
+import Button from "./Button/Button";
 
 export function SessionDetailsModal({ session, type }) {
   return (

@@ -1,4 +1,4 @@
-import Title from "../../../Components/MyComponents/Title";
+import Title from "../../../Components/Title";
 import ClinicSearchModal from "../../../Components/AddClinicModal";
 import { useState } from "react";
 import { VisitingClinicElement } from "../../../Components/VisitingClinicElement";
@@ -102,4 +102,3 @@ function Profile() {
 }
 
 export default Profile;
-

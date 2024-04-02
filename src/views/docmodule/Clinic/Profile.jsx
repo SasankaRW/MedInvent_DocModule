@@ -1,4 +1,4 @@
-import Title from "../../../Components/MyComponents/Title";
+import Title from "../../../Components/Title";
 
 let clinicInfo = {
   name: "Example Clinic",

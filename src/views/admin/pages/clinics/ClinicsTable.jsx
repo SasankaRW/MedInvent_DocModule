@@ -10,8 +10,8 @@ import IconButton from "@mui/material/IconButton";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import MyModal from "../../../../Components/MyComponents/MyModal";
-import { DeleteItemModal } from "../../../../Components/MyComponents/DeleteItemModal";
+import MyModal from "../../../../Components/MyModal";
+import { DeleteItemModal } from "../../../../Components/DeleteItemModal";
 import { PharmacyNClinicDetailsModal } from "../../../../Components/PharmacyNClinicDetailsModal";
 
 const columns = [
@@ -37,12 +37,11 @@ const columns = [
 ];
 
 export default function ClinicsTable() {
-
   //state management using useState hook
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-   //function to handle page change
+  //function to handle page change
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };

@@ -1,14 +1,14 @@
 import { MenuItem, Select } from "@mui/material";
-import Title from "../../../Components/MyComponents/Title";
+import Title from "../../../Components/Title";
 import styles from "./NewSession.module.css";
 import { useReducer } from "react";
-import MyDatePicker from "../../../Components/MyComponents/MyDatePicker";
-import Button from "../../../Components/MyComponents/Button/Button";
+import MyDatePicker from "../../../Components/MyDatePicker";
+import Button from "../../../Components/Button/Button";
 
 import BorderColorIcon from "@mui/icons-material/BorderColor";
-import NumberSelect from "../../../Components/MyComponents/NumberSelect/NumberSelect";
-import AppointmentDatePicker from "../../../Components/MyComponents/AppointmentDatePicker/AppointmentDatePicker";
-import TimePicker from "../../../Components/MyComponents/TimePicker/TimePicker";
+import NumberSelect from "../../../Components/NumberSelect/NumberSelect";
+import AppointmentDatePicker from "../../../Components/AppointmentDatePicker/AppointmentDatePicker";
+import TimePicker from "../../../Components/TimePicker/TimePicker";
 
 const clinics = [
   "First Street Clinic",

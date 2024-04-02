@@ -1,10 +1,10 @@
-import SideNavClinic from "../../../Components/MyComponents/SideNavNew";
+import SideNavClinic from "../../../Components/SideNavNew.jsx";
 import InsertInvitationOutlinedIcon from "@mui/icons-material/InsertInvitationOutlined";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import { useContext } from "react";
 import { useState } from "react";
 
-import Route from "../../../Components/MyComponents/Routes";
+import Route from "../../../Components/Routes.js";
 import NavigationContex from "../../admin/context/navigation";
 
 import NewAppointment from "../../docmodule/Clinic/NewAppointment.jsx";

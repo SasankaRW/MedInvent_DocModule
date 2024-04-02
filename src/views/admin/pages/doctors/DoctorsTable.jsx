@@ -11,8 +11,8 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useState } from "react";
-import MyModal from "../../../../Components/MyComponents/MyModal";
-import { DeleteItemModal } from "../../../../Components/MyComponents/DeleteItemModal";
+import MyModal from "../../../../Components/MyModal";
+import { DeleteItemModal } from "../../../../Components/DeleteItemModal";
 import { DoctorDetailsModal } from "../../../../Components/DoctorDetailsModal";
 
 const columns = [

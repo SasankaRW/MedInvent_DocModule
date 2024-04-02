@@ -8,10 +8,10 @@ import {
 import styles from "./Login.module.css";
 import { useEffect, useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import Button from "../Components/MyComponents/Button/Button";
+import Button from "../../Components/Button/Button";
 
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../Contexts/AuthContext";
+import { useAuth } from "../../Contexts/AuthContext";
 
 function Login() {
   const { login, isAuthenticated, user } = useAuth();

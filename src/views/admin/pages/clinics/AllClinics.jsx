@@ -1,6 +1,6 @@
 import React from "react";
-import "../../../../Components/MyComponents/Container/Container.css";
-import Container from "../../../../Components/MyComponents/Container/Container";
+import "../../../../Components/Container/Container.css";
+import Container from "../../../../Components/Container/Container";
 import Paper from "@mui/material/Paper";
 import ClinicsTable from "./ClinicsTable";
 

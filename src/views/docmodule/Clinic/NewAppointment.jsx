@@ -1,9 +1,9 @@
 import { Input, InputLabel, MenuItem, Select, TextField } from "@mui/material";
-import Title from "../../../Components/MyComponents/Title";
+import Title from "../../../Components/Title";
 import styles from "./NewAppointment.module.css";
-import MyDatePicker from "../../../Components/MyComponents/MyDatePicker";
+import MyDatePicker from "../../../Components/MyDatePicker";
 import { useReducer, useState } from "react";
-import Button from "../../../Components/MyComponents/Button/Button";
+import Button from "../../../Components/Button/Button";
 
 const doctors = [
   "Dr. Emily Watson",

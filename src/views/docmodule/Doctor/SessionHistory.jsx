@@ -1,5 +1,5 @@
-import Title from "../../../Components/MyComponents/Title";
-import MyDatePicker from "../../../Components/MyComponents/MyDatePicker";
+import Title from "../../../Components/Title";
+import MyDatePicker from "../../../Components/MyDatePicker";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import Table from "@mui/material/Table";
@@ -9,7 +9,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import MyModal from "../../../Components/MyComponents/MyModal";
+import MyModal from "../../../Components/MyModal";
 
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import { SessionDetailsModal } from "../../../Components/SessionDetailsModal";
@@ -38,7 +38,6 @@ const columns = [
 ];
 
 function SessionHistory() {
-
   //state management using useState hook
   const [date, setDate] = useState("");
   const [clinic, setClinic] = useState("");
@@ -144,7 +143,6 @@ function SessionHistory() {
 }
 
 export default SessionHistory;
-
 
 //dummy data for sessions
 const sessions = [

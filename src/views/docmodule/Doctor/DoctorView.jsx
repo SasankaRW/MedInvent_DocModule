@@ -1,4 +1,4 @@
-import SideNavNew from "../../../Components/MyComponents/SideNavNew";
+import SideNavNew from "../../../Components/SideNavNew.jsx";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import { useContext, useState } from "react";
 import NavigationContex from "../../admin/context/navigation";
@@ -9,7 +9,7 @@ import SessionHistory from "../../docmodule/Doctor/SessionHistory.jsx";
 import UpcomingSessions from "../../docmodule/Doctor/UpcomingSessions.jsx";
 import Profile from "../../docmodule/Doctor/Profile.jsx";
 
-import Route from "../../../Components/MyComponents/Routes";
+import Route from "../../../Components/Routes.js";
 
 const menuItems = [
   {

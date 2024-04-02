@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { styled, css } from "@mui/system";
 import { Modal as BaseModal } from "@mui/base/Modal";
 import Fade from "@mui/material/Fade";
-import Button from "./MyComponents/Button/Button";
+import Button from "./Button/Button";
 
 import { useState } from "react";
 import { ClinicSearch } from "./ClinicSearch";

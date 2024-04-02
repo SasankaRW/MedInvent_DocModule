@@ -2,7 +2,7 @@ import "./App.css";
 import AdminView from "./views/admin/pages/AdminView";
 import DoctorView from "./views/docmodule/Doctor/DoctorView";
 import ClinicView from "./views/docmodule/Clinic/ClinicView";
-import Login from "./views/Login";
+import Login from "./views/Login/Login";
 import ProtectedRoute from "./Components/ProtectedRoute";
 
 import { AuthProvider } from "./Contexts/AuthContext";

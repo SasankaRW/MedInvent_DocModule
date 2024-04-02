@@ -1,4 +1,4 @@
-import Title from "../../../Components/MyComponents/Title";
+import Title from "../../../Components/Title";
 import React, { useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
