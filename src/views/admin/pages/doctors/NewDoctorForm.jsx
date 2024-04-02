@@ -4,7 +4,6 @@ import Paper from "@mui/material/Paper";
 import {
   Button,
   FormControlLabel,
-  Grid,
   MenuItem,
   Radio,
   RadioGroup,
@@ -16,52 +15,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import TextArea from "../../../../Components/TextArea/TextArea";
-
-const doctorSpecializations = [
-  "Allergy and Immunology",
-  "Anesthesiology",
-  "Dermatology",
-  "Diagnostic Radiology",
-  "Emergency Medicine",
-  "Family Medicine",
-  "Internal Medicine",
-  "Medical Genetics",
-  "Neurology",
-  "Nuclear Medicine",
-  "Obstetrics and Gynecology",
-  "Ophthalmology",
-  "Pathology",
-  "Pediatrics",
-  "Physical Medicine and Rehabilitation",
-  "Preventive Medicine",
-  "Psychiatry",
-  "Radiation Oncology",
-  "Surgery",
-  "Urology",
-  "Cardiology",
-  "Gastroenterology",
-  "Endocrinology",
-  "Infectious Disease",
-  "Nephrology",
-  "Oncology",
-  "Pulmonology",
-  "Rheumatology",
-  "Sports Medicine",
-  "Geriatrics",
-  "Palliative Care",
-  "Occupational Medicine",
-  "Pain Management",
-  "Sleep Medicine",
-  "Plastic Surgery",
-  "Orthopedic Surgery",
-  "Neurosurgery",
-  "Cardiothoracic Surgery",
-  "Vascular Surgery",
-  "Pediatric Surgery",
-  "Transplant Surgery",
-  "Otolaryngology (ENT)",
-  "Ophthalmic Surgery",
-];
+import { doctorSpecializations } from "./data/doctorSpecializations";
+import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -86,7 +41,7 @@ const initialState = {
   password: "",
   dob: null,
   MLNo: "",
-  speciality: null,
+  speciality: "",
   note: "",
 };
 
@@ -127,6 +82,10 @@ function reducer(state, action) {
 
     case "note":
       return { ...state, note: action.payload };
+
+    case "resetState":
+      return { ...initialState };
+
     default:
       throw Error("Invalid");
   }
@@ -151,9 +110,21 @@ export default function NewDoctorForm() {
     dispatch,
   ] = useReducer(reducer, initialState);
 
+  const [state, setState] = React.useState({
+    open: false,
+    vertical: "top",
+    horizontal: "center",
+  });
+  const { vertical, horizontal, open } = state;
+
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
+
   function onSubmit(e) {
     e.preventDefault();
-    alert("doctor added");
+    dispatch({ type: "resetState" });
+    setState({ vertical: "top", horizontal: "center", open: true });
   }
 
   return (
@@ -273,7 +244,9 @@ export default function NewDoctorForm() {
                 <DatePicker
                   className="w-75"
                   value={dob}
-                  onChange={(d) => dispatch({ type: "dob", payload: d })}
+                  onChange={(d) =>
+                    dispatch({ type: "dob", payload: new Date(d) })
+                  }
                 />
               </LocalizationProvider>
             </div>
@@ -346,6 +319,13 @@ export default function NewDoctorForm() {
           </div>
         </form>
       </Container>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleClose}
+        message="Doctor added"
+        key={vertical + horizontal}
+      />
     </Paper>
   );
 }
