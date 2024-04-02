@@ -46,7 +46,7 @@ function Login() {
         }
       }
     },
-    [isAuthenticated, navigate]
+    [isAuthenticated, navigate, user]
   );
 
   return (
