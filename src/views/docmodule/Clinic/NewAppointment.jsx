@@ -69,6 +69,9 @@ function reducer(state, action) {
     case "isRefundable":
       return { ...state, isRefundable: !state.isRefundable };
 
+    case "resetState":
+      return { ...initialState };
+
     default:
       throw Error("Invalid");
   }
@@ -131,6 +134,7 @@ function NewAppointment() {
 
   function onSubmit(e) {
     e.preventDefault();
+    dispatch({ type: "resetState" });
   }
 
   return (
@@ -325,8 +329,6 @@ const SearchComponent = ({ dispatch, doctors }) => {
     item.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  console.log(filteredData);
-
   const handleSelectItem = (item) => {
     dispatch({ type: "doctor", payload: item });
     setSearchTerm(item);
@@ -353,15 +355,19 @@ const SearchComponent = ({ dispatch, doctors }) => {
       />
       {searchTerm && showResults && (
         <div className={styles.results}>
-          {filteredData.map((item, index) => (
-            <div
-              key={index}
-              onClick={() => handleSelectItem(item)}
-              style={{ cursor: "pointer", padding: "0 10px" }}
-            >
-              {item}
-            </div>
-          ))}
+          {filteredData.length !== 0 ? (
+            filteredData.map((item, index) => (
+              <div
+                key={index}
+                onClick={() => handleSelectItem(item)}
+                style={{ cursor: "pointer", padding: "0 10px" }}
+              >
+                {item}
+              </div>
+            ))
+          ) : (
+            <div>No result found</div>
+          )}
         </div>
       )}
     </div>
