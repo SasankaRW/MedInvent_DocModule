@@ -5,7 +5,7 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 
 import cities from "../cities.json";
-import { Button, MenuItem, Select } from "@mui/material";
+import { Alert, Button, MenuItem, Select, Snackbar } from "@mui/material";
 import Day from "../../../../Components/Day/Day";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
@@ -74,6 +74,9 @@ function reducer(state, action) {
     case "isURLcorrect":
       return { ...state, isURLcorrect: !state.isURLcorrect };
 
+    case "initState":
+      return { ...initialState };
+
     default:
       throw Error("invalid");
   }
@@ -100,6 +103,63 @@ export default function NewPharmacyForm() {
   ] = useReducer(reducer, initialState);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [successOpen, setSuccessOpen] = React.useState(false);
+  const [emailErrorOpen, setEmailErrorOpen] = useState(false);
+  const [locationError, setLocationError] = useState(false);
+  const [emptyError, setEmptyError] = useState(false);
+
+  const handleSuccessClick = () => {
+    setSuccessOpen(true);
+  };
+
+  const handleSuccessClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSuccessOpen(false);
+  };
+
+  const handleEmailErrorClick = () => {
+    setEmailErrorOpen(true);
+  };
+
+  const handleEmailErrorClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setEmailErrorOpen(false);
+  };
+
+  const handleEmptyErrorClick = () => {
+    setEmptyError(true);
+  };
+
+  const handleEmptyErrorClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setEmptyError(false);
+  };
+
+  const handleLocationError = () => {
+    setLocationError(true);
+  };
+
+  const handleLocationErrorClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setLocationError(false);
+  };
+
+  function validateEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(String(email).toLowerCase());
+  }
 
   function extractLatLongFromGoogleMapsURL(url) {
     var regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
@@ -145,6 +205,29 @@ export default function NewPharmacyForm() {
 
   function onSubmit(e) {
     e.preventDefault();
+    if (
+      pharmacyName === "" ||
+      contactNumber === "" ||
+      openHoursFrom === null ||
+      openHoursTo === null ||
+      openDays.length === 0 ||
+      addressLine1 === "" ||
+      city === ""
+    ) {
+      handleEmptyErrorClick();
+      return;
+    }
+
+    if (email !== "" && !validateEmail(email)) {
+      handleEmailErrorClick();
+      return;
+    }
+
+    if (position === null) {
+      handleLocationError();
+      return;
+    }
+
     setIsLoading(true);
     const pharmacyData = {
       name: pharmacyName,
@@ -167,7 +250,10 @@ export default function NewPharmacyForm() {
 
     axios
       .post("http://localhost:8080/insert", pharmacyData)
-      .then((response) => {})
+      .then((response) => {
+        handleSuccessClick();
+        dispatch({ type: "initState" });
+      })
       .catch((error) => {
         console.error("Error adding pharmacy:", error);
         alert("Error adding pharmacy");
@@ -183,6 +269,42 @@ export default function NewPharmacyForm() {
         <Loader />
       ) : (
         <Container title="New Pharmacy">
+          <Snackbar
+            open={successOpen}
+            autoHideDuration={6000}
+            onClose={handleSuccessClose}
+          >
+            <Alert variant="filled" severity="success">
+              Pharmacy added successfully.
+            </Alert>
+          </Snackbar>
+          <Snackbar
+            open={emailErrorOpen}
+            autoHideDuration={6000}
+            onClose={handleEmailErrorClose}
+          >
+            <Alert variant="filled" severity="error">
+              Enter a valid email address.
+            </Alert>
+          </Snackbar>
+          <Snackbar
+            open={emptyError}
+            autoHideDuration={6000}
+            onClose={handleEmptyErrorClose}
+          >
+            <Alert variant="filled" severity="error">
+              Fields cannot be empty.
+            </Alert>
+          </Snackbar>
+          <Snackbar
+            open={locationError}
+            autoHideDuration={6000}
+            onClose={handleLocationErrorClose}
+          >
+            <Alert variant="filled" severity="error">
+              Please verify the google map URL or select the location on map.
+            </Alert>
+          </Snackbar>
           <form style={{ margin: "50px 0px" }} onSubmit={onSubmit}>
             <div className="row mb-4">
               <div className="col-md-6">
@@ -324,6 +446,12 @@ export default function NewPharmacyForm() {
                   value={email}
                   onChange={(e) =>
                     dispatch({ type: "email", payload: e.target.value })
+                  }
+                  error={!validateEmail(email) && email !== ""}
+                  helperText={
+                    !validateEmail(email) &&
+                    email !== "" &&
+                    "Enter a valid email"
                   }
                 />
               </div>
