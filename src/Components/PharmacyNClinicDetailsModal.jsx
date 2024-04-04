@@ -1,6 +1,16 @@
 import * as React from "react";
 
 export function PharmacyNClinicDetailsModal({ row, type }) {
+  function formatTime(timeString) {
+    const [hours, minutes] = timeString.split(":").map(Number);
+    const period = hours >= 12 ? "PM" : "AM";
+    const hours12 = hours % 12 || 12;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedTime = `${hours12}.${formattedMinutes} ${period}`;
+
+    return formattedTime;
+  }
+
   return (
     <div style={{ width: "500px" }}>
       <div className="row">
@@ -20,7 +30,7 @@ export function PharmacyNClinicDetailsModal({ row, type }) {
             <small className="text-secondary">Contact Number</small>
           </div>
           <div>
-            <strong>{row.mobileNo}</strong>
+            <strong>{row.contactNo}</strong>
           </div>
         </div>
       </div>
@@ -30,7 +40,15 @@ export function PharmacyNClinicDetailsModal({ row, type }) {
           <small className="text-secondary">Address</small>
         </div>
         <div>
-          <strong>{row.location}</strong>
+          <strong>
+            {row.PharmacyTempAddress.lineOne +
+              ", " +
+              row.PharmacyTempAddress.lineTwo +
+              ", " +
+              row.PharmacyTempAddress.city +
+              ", " +
+              row.PharmacyTempAddress.district}
+          </strong>
         </div>
       </div>
       <hr className="my-2" />
@@ -40,7 +58,7 @@ export function PharmacyNClinicDetailsModal({ row, type }) {
             <small className="text-secondary">Open days</small>
           </div>
           <div>
-            <strong>{row.openDays}</strong>
+            <strong>{row.openDays.join(", ")}</strong>
           </div>
         </div>
         <div className="col-6">
@@ -49,7 +67,7 @@ export function PharmacyNClinicDetailsModal({ row, type }) {
           </div>
           <div>
             <strong>
-              {row.openHoursFrom} to {row.openHoursTo}
+              {formatTime(row.openHoursFrom)} to {formatTime(row.openHoursTo)}
             </strong>
           </div>
         </div>

@@ -36,60 +36,11 @@ const columns = [
   },
 ];
 
-const rows = [
-  {
-    name: "Wallace, Garza and Hayes Pharmacy",
-    location: "82938 Amber Isle\nRobinsonfurt, KS 88454",
-    mobileNo: "801-037-6065x61887",
-  },
-  {
-    name: "Henderson, Oneill and Martin Pharmacy",
-    location: "PSC 2350, Box 5990\nAPO AP 73895",
-    mobileNo: "560-280-5153x23846",
-  },
-  {
-    name: "Ellison PLC Pharmacy",
-    location: "93921 Lara Turnpike Suite 931\nMillerland, HI 20447",
-    mobileNo: "878.907.6675x0636",
-  },
-  {
-    name: "Burton, Ward and Campbell Pharmacy",
-    location: "7684 Carpenter Hill\nJanetberg, NY 65506",
-    mobileNo: "+1-636-538-1289x42820",
-  },
-  {
-    name: "Mccormick and Sons Pharmacy",
-    location: "667 Caleb Locks Apt. 165\nKennethfurt, TN 32698",
-    mobileNo: "693.504.6403x946",
-  },
-  {
-    name: "Ibarra-Fry Pharmacy",
-    location: "6710 Richards Mountain Suite 609\nHallville, RI 51710",
-    mobileNo: "(363)862-1570",
-  },
-  {
-    name: "Robinson, Morton and Sloan Pharmacy",
-    location: "38339 Gomez Point Suite 346\nSouth Jessicatown, VT 72861",
-    mobileNo: "(064)205-0982x61113",
-  },
-  {
-    name: "Hubbard, Morris and Tucker Pharmacy",
-    location: "USS Flores\nFPO AE 86386",
-    mobileNo: "(646)115-2172x429",
-  },
-  {
-    name: "Thomas PLC Pharmacy",
-    location: "07869 Timothy Lake\nJenniferbury, HI 01189",
-    mobileNo: "232-155-6509x1946",
-  },
-  {
-    name: "Giles-Jordan Pharmacy",
-    location: "PSC 2731, Box 7239\nAPO AA 84788",
-    mobileNo: "032.842.4070x9848",
-  },
-];
-
-export default function PharmaciesTable() {
+export default function PharmaciesTable({
+  pharmacies,
+  setIsLoading,
+  setPharmacies,
+}) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -121,13 +72,19 @@ export default function PharmaciesTable() {
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : rows
+              ? pharmacies.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
+              : pharmacies
             ).map((row) => (
               <TableRow key={row.name} hover>
                 <TableCell align="left">{row.name}</TableCell>
-                <TableCell align="left">{row.location}</TableCell>
-                <TableCell align="left">{row.mobileNo}</TableCell>
+                <TableCell align="left">
+                  {row.PharmacyTempAddress.city},{" "}
+                  {row.PharmacyTempAddress.district}
+                </TableCell>
+                <TableCell align="left">{row.contactNo}</TableCell>
                 <TableCell align="left">
                   <div className="d-flex justify-content-end">
                     <MyModal
@@ -136,7 +93,12 @@ export default function PharmaciesTable() {
                       <PharmacyNClinicDetailsModal row={row} type="pharmacy" />
                     </MyModal>
                     <MyModal icon={<DeleteOutlineIcon fontSize="small" />}>
-                      <DeleteItemModal item={row} />
+                      <DeleteItemModal
+                        item={row}
+                        setIsLoading={setIsLoading}
+                        setPharmacies={setPharmacies}
+                        pharmacies={pharmacies}
+                      />
                     </MyModal>
                     <IconButton style={{ padding: "0px 5px" }}>
                       <BorderColorOutlinedIcon fontSize="small" />
@@ -151,7 +113,7 @@ export default function PharmaciesTable() {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={pharmacies.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
