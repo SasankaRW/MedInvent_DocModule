@@ -36,7 +36,7 @@ const columns = [
   },
 ];
 
-export default function ClinicsTable() {
+export default function ClinicsTable({ clinics, setIsLoading, setClinics }) {
   //state management using useState hook
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -71,8 +71,11 @@ export default function ClinicsTable() {
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : rows
+              ? clinics.slice(
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
+              : clinics
             ).map((row) => (
               <TableRow key={row.name} hover>
                 <TableCell component="th" scope="row" style={{ width: 200 }}>
@@ -88,7 +91,13 @@ export default function ClinicsTable() {
                       <PharmacyNClinicDetailsModal row={row} type="clinic" />
                     </MyModal>
                     <MyModal icon={<DeleteOutlineIcon fontSize="small" />}>
-                      <DeleteItemModal item={row} />
+                      <DeleteItemModal
+                        item={row}
+                        setIsLoading={setIsLoading}
+                        setItems={setClinics}
+                        items={clinics}
+                        itemType="clinic"
+                      />
                     </MyModal>
                     <IconButton style={{ padding: "0px 5px" }}>
                       <BorderColorOutlinedIcon fontSize="small" />
@@ -103,7 +112,7 @@ export default function ClinicsTable() {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={clinics.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
@@ -112,42 +121,3 @@ export default function ClinicsTable() {
     </>
   );
 }
-
-//dummy data to display clinics
-const rows = [
-  { name: "Medicare Clinic", location: "Katubedda", mobileNo: "0771234567" },
-  { name: "XYZ Clinic", location: "Kandy", mobileNo: "0812345678" },
-  { name: "City Medical Center", location: "Galle", mobileNo: "0912345678" },
-  { name: "Sunrise Hospital", location: "Negombo", mobileNo: "0312345678" },
-  {
-    name: "Greenview Clinic",
-    location: "Anuradhapura",
-    mobileNo: "0256789012",
-  },
-  { name: "Golden Gate Hospital", location: "Matara", mobileNo: "0412345678" },
-  { name: "Pristine Healthcare", location: "Jaffna", mobileNo: "0212345678" },
-  {
-    name: "Sunset Medical Center",
-    location: "Trincomalee",
-    mobileNo: "0267890123",
-  },
-  { name: "Wellness Hospital", location: "Batticaloa", mobileNo: "0356789012" },
-  { name: "Lakeview Clinic", location: "Ratnapura", mobileNo: "0456789012" },
-  {
-    name: "Oceanview Hospital",
-    location: "Hambantota",
-    mobileNo: "0556789012",
-  },
-  {
-    name: "Hilltop Medical Center",
-    location: "Badulla",
-    mobileNo: "0656789012",
-  },
-  { name: "Central Hospital", location: "Kegalle", mobileNo: "0712345678" },
-  { name: "Northern Clinic", location: "Mannar", mobileNo: "0812345678" },
-  {
-    name: "Southern Medical Center",
-    location: "Mullaitivu",
-    mobileNo: "0956789012",
-  },
-];

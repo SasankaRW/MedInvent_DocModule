@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import Container from "../../../../Components/Container/Container";
 import Paper from "@mui/material/Paper";
 import {
@@ -10,13 +10,20 @@ import {
   Select,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import TextArea from "../../../../Components/TextArea/TextArea";
 import { doctorSpecializations } from "./data/doctorSpecializations";
-import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
+import { useAlert } from "../../../../Contexts/AlertContext";
+import Loader from "../../../../Components/Loader/Loader";
+import axios from "axios";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -83,7 +90,7 @@ function reducer(state, action) {
     case "note":
       return { ...state, note: action.payload };
 
-    case "resetState":
+    case "initState":
       return { ...initialState };
 
     default:
@@ -110,21 +117,84 @@ export default function NewDoctorForm() {
     dispatch,
   ] = useReducer(reducer, initialState);
 
-  const [state, setState] = React.useState({
-    open: false,
-    vertical: "top",
-    horizontal: "center",
-  });
-  const { vertical, horizontal, open } = state;
+  const { showAlert } = useAlert();
 
-  const handleClose = () => {
-    setState({ ...state, open: false });
-  };
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  function validateEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(String(email).toLowerCase());
+  }
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const day = ("0" + date.getDate()).slice(-2);
+    const dateOnly = `${year}-${month}-${day}`;
+
+    return dateOnly;
+  }
 
   function onSubmit(e) {
     e.preventDefault();
-    dispatch({ type: "resetState" });
-    setState({ vertical: "top", horizontal: "center", open: true });
+    if (
+      firstName === "" ||
+      lastName === "" ||
+      contactNo === "" ||
+      gender === null ||
+      nicNo === "" ||
+      email === "" ||
+      password === "" ||
+      dob === null ||
+      speciality === "" ||
+      MLNo === ""
+    ) {
+      showAlert("error", "Fields cannot be empty.");
+      return;
+    }
+
+    if (email !== "" && !validateEmail(email)) {
+      showAlert("error", "Please enter a valid email address");
+      return;
+    }
+
+    setIsLoading(true);
+    const doctorData = {
+      firstName,
+      middleName,
+      lastName,
+      contactNo,
+      gender,
+      nicNo,
+      email,
+      password,
+      dob: formatDate(dob),
+      MLNo,
+      speciality,
+      note,
+    };
+
+    axios
+      .post("http://localhost:8080/insert", doctorData)
+      .then((response) => {
+        showAlert("success", "Doctor added successfully.");
+        dispatch({ type: "initState" });
+      })
+      .catch((error) => {
+        console.error("Error adding doctor:", error);
+        showAlert("error", "Error adding doctor.");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  if (isLoading) {
+    return <Loader />;
   }
 
   return (
@@ -146,7 +216,7 @@ export default function NewDoctorForm() {
                 </div>
                 <div className="col-md-5">
                   <TextField
-                    placeholder="Middle name"
+                    placeholder="Middle name (Optional)"
                     value={middleName}
                     onChange={(e) =>
                       dispatch({ type: "middleName", payload: e.target.value })
@@ -177,12 +247,24 @@ export default function NewDoctorForm() {
                   dispatch({ type: "email", payload: e.target.value })
                 }
               />
-              <TextField
-                placeholder="Enter a password"
+              <OutlinedInput
                 className="w-75 mt-3"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter a Password"
                 value={password}
                 onChange={(e) =>
                   dispatch({ type: "password", payload: e.target.value })
+                }
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
                 }
               />
             </div>
@@ -244,9 +326,7 @@ export default function NewDoctorForm() {
                 <DatePicker
                   className="w-75"
                   value={dob}
-                  onChange={(d) =>
-                    dispatch({ type: "dob", payload: new Date(d) })
-                  }
+                  onChange={(d) => dispatch({ type: "dob", payload: d })}
                 />
               </LocalizationProvider>
             </div>
@@ -319,13 +399,6 @@ export default function NewDoctorForm() {
           </div>
         </form>
       </Container>
-      <Snackbar
-        anchorOrigin={{ vertical, horizontal }}
-        open={open}
-        onClose={handleClose}
-        message="Doctor added"
-        key={vertical + horizontal}
-      />
     </Paper>
   );
 }

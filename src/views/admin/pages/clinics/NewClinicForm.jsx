@@ -1,18 +1,25 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import Container from "../../../../Components/Container/Container";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
-
 import cities from "../cities.json";
-import { Button, MenuItem, Select } from "@mui/material";
+import { Alert, Button, MenuItem, Select, Snackbar } from "@mui/material";
 import Day from "../../../../Components/Day/Day";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import axios from "axios";
+import Loader from "../../../../Components/Loader/Loader";
+import { useAlert } from "../../../../Contexts/AlertContext";
 
 // Initial state for the form
 const initialState = {
-  pharmacyName: "",
+  clinicName: "",
   contactNumber: "",
   openHoursFrom: null,
   openHoursTo: null,
@@ -31,8 +38,8 @@ const initialState = {
 // Reducer function to handle state updates
 function reducer(state, action) {
   switch (action.type) {
-    case "pharmacyName":
-      return { ...state, pharmacyName: action.payload };
+    case "clinicName":
+      return { ...state, clinicName: action.payload };
 
     case "contactNumber":
       return { ...state, contactNumber: action.payload };
@@ -77,16 +84,22 @@ function reducer(state, action) {
     case "isURLcorrect":
       return { ...state, isURLcorrect: !state.isURLcorrect };
 
+    case "invalidURL":
+      return { ...state, isURLcorrect: false, position: null };
+
+    case "initState":
+      return { ...initialState };
+
     default:
       throw Error("invalid");
   }
 }
 
-export default function NewPharmacyForm() {
+export default function NewClinicForm() {
   // State management using useReducer hook
   const [
     {
-      pharmacyName,
+      clinicName,
       contactNumber,
       openHoursFrom,
       openHoursTo,
@@ -104,6 +117,17 @@ export default function NewPharmacyForm() {
     dispatch,
   ] = useReducer(reducer, initialState);
 
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { showAlert } = useAlert();
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  function validateEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(String(email).toLowerCase());
+  }
+
   // Function to extract latitude and longitude from Google Maps URL
   function extractLatLongFromGoogleMapsURL(url) {
     var regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
@@ -116,7 +140,8 @@ export default function NewPharmacyForm() {
       dispatch({ type: "isURLcorrect" });
       return { lat: latitude, long: longitude };
     } else {
-      alert("Invalid URL");
+      dispatch({ type: "invalidURL" });
+      showAlert("error", "Please enter a valid URL");
       return null;
     }
   }
@@ -127,6 +152,16 @@ export default function NewPharmacyForm() {
       type: "latLong",
       payload: extractLatLongFromGoogleMapsURL(locationURL),
     });
+  }
+
+  function getTime(dateString) {
+    const date = new Date(dateString);
+
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const seconds = date.getSeconds().toString().padStart(2, "0");
+
+    return `${hours}:${minutes}:${seconds}`;
   }
 
   // Function to toggle selected days for clinic open hours
@@ -142,7 +177,67 @@ export default function NewPharmacyForm() {
   // Function to handle form submission
   function onSubmit(e) {
     e.preventDefault();
-    alert("clinic added");
+    if (
+      clinicName === "" ||
+      contactNumber === "" ||
+      openHoursFrom === null ||
+      openHoursTo === null ||
+      openDays.length === 0 ||
+      addressLine1 === "" ||
+      city === "" ||
+      password === ""
+    ) {
+      showAlert("error", "Fields cannot be empty.");
+      return;
+    }
+
+    if (email !== "" && !validateEmail(email)) {
+      showAlert("error", "Please enter a valid email address");
+      return;
+    }
+
+    if (position === null) {
+      showAlert("error", "Please verify the location.");
+      return;
+    }
+
+    setIsLoading(true);
+    const clinicData = {
+      name: clinicName,
+      contactNo: contactNumber,
+      openHoursFrom: getTime(openHoursFrom),
+      openHoursTo: getTime(openHoursTo),
+      openDays: openDays,
+      email: email,
+      address: {
+        lineOne: addressLine1,
+        lineTwo: addressLine2,
+        city: city,
+        district: district,
+      },
+      location: {
+        lat: position.lat,
+        long: position.long,
+      },
+    };
+
+    axios
+      .post("http://localhost:8080/insert", clinicData)
+      .then((response) => {
+        showAlert("success", "Pharmacy added successfully.");
+        dispatch({ type: "initState" });
+      })
+      .catch((error) => {
+        console.error("Error adding pharmacy:", error);
+        showAlert("error", "Error adding pharmacy.");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  if (isLoading) {
+    return <Loader />;
   }
 
   return (
@@ -156,9 +251,9 @@ export default function NewPharmacyForm() {
               <TextField
                 placeholder="Enter Clinic name"
                 className="w-75"
-                value={pharmacyName}
+                value={clinicName}
                 onChange={(e) =>
-                  dispatch({ type: "pharmacyName", payload: e.target.value })
+                  dispatch({ type: "clinicName", payload: e.target.value })
                 }
               />
             </div>
@@ -293,12 +388,24 @@ export default function NewPharmacyForm() {
                   dispatch({ type: "email", payload: e.target.value })
                 }
               />
-              <TextField
+              <OutlinedInput
                 className="w-75 mt-3"
-                placeholder="Enter a password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter a Password"
                 value={password}
                 onChange={(e) =>
                   dispatch({ type: "password", payload: e.target.value })
+                }
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
                 }
               />
             </div>

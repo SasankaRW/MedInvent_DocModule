@@ -6,41 +6,44 @@ import Login from "./views/Login/Login";
 import ProtectedRoute from "./Components/ProtectedRoute";
 
 import { AuthProvider } from "./Contexts/AuthContext";
+import { AlertProvider } from "./Contexts/AlertContext";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <AdminView />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/doctor"
-            element={
-              <ProtectedRoute>
-                <DoctorView />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/clinic"
-            element={
-              <ProtectedRoute>
-                <ClinicView />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </Router>
+      <AlertProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminView />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/doctor"
+              element={
+                <ProtectedRoute>
+                  <DoctorView />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/clinic"
+              element={
+                <ProtectedRoute>
+                  <ClinicView />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Router>
+      </AlertProvider>
     </AuthProvider>
   );
 }

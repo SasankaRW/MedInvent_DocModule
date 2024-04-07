@@ -3,15 +3,13 @@ import Container from "../../../../Components/Container/Container";
 import Loader from "../../../../Components/Loader/Loader";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
-
 import cities from "../cities.json";
-import { Alert, Button, MenuItem, Select, Snackbar } from "@mui/material";
+import { Button, MenuItem, Select } from "@mui/material";
 import Day from "../../../../Components/Day/Day";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
 import axios from "axios";
+import { useAlert } from "../../../../Contexts/AlertContext";
 
 const initialState = {
   pharmacyName: "",
@@ -74,6 +72,9 @@ function reducer(state, action) {
     case "isURLcorrect":
       return { ...state, isURLcorrect: !state.isURLcorrect };
 
+    case "invalidURL":
+      return { ...state, isURLcorrect: false, position: null };
+
     case "initState":
       return { ...initialState };
 
@@ -102,59 +103,9 @@ export default function NewPharmacyForm() {
     dispatch,
   ] = useReducer(reducer, initialState);
 
+  const { showAlert } = useAlert();
+
   const [isLoading, setIsLoading] = useState(false);
-  const [successOpen, setSuccessOpen] = React.useState(false);
-  const [emailErrorOpen, setEmailErrorOpen] = useState(false);
-  const [locationError, setLocationError] = useState(false);
-  const [emptyError, setEmptyError] = useState(false);
-
-  const handleSuccessClick = () => {
-    setSuccessOpen(true);
-  };
-
-  const handleSuccessClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setSuccessOpen(false);
-  };
-
-  const handleEmailErrorClick = () => {
-    setEmailErrorOpen(true);
-  };
-
-  const handleEmailErrorClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setEmailErrorOpen(false);
-  };
-
-  const handleEmptyErrorClick = () => {
-    setEmptyError(true);
-  };
-
-  const handleEmptyErrorClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setEmptyError(false);
-  };
-
-  const handleLocationError = () => {
-    setLocationError(true);
-  };
-
-  const handleLocationErrorClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setLocationError(false);
-  };
 
   function validateEmail(email) {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -172,7 +123,8 @@ export default function NewPharmacyForm() {
       dispatch({ type: "isURLcorrect" });
       return { lat: latitude, long: longitude };
     } else {
-      alert("Invalid URL");
+      dispatch({ type: "invalidURL" });
+      showAlert("error", "Please enter a valid URL");
       return null;
     }
   }
@@ -214,17 +166,17 @@ export default function NewPharmacyForm() {
       addressLine1 === "" ||
       city === ""
     ) {
-      handleEmptyErrorClick();
+      showAlert("error", "Fields cannot be empty.");
       return;
     }
 
     if (email !== "" && !validateEmail(email)) {
-      handleEmailErrorClick();
+      showAlert("error", "Please enter a valid email address");
       return;
     }
 
     if (position === null) {
-      handleLocationError();
+      showAlert("error", "Please verify the location.");
       return;
     }
 
@@ -251,257 +203,219 @@ export default function NewPharmacyForm() {
     axios
       .post("http://localhost:8080/insert", pharmacyData)
       .then((response) => {
-        handleSuccessClick();
+        showAlert("success", "Pharmacy added successfully.");
         dispatch({ type: "initState" });
       })
       .catch((error) => {
         console.error("Error adding pharmacy:", error);
-        alert("Error adding pharmacy");
+        showAlert("error", "Error adding pharmacy.");
       })
       .finally(() => {
         setIsLoading(false);
       });
   }
 
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <Paper elevation={5} sx={{ borderRadius: "10px" }}>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <Container title="New Pharmacy">
-          <Snackbar
-            open={successOpen}
-            autoHideDuration={6000}
-            onClose={handleSuccessClose}
-          >
-            <Alert variant="filled" severity="success">
-              Pharmacy added successfully.
-            </Alert>
-          </Snackbar>
-          <Snackbar
-            open={emailErrorOpen}
-            autoHideDuration={6000}
-            onClose={handleEmailErrorClose}
-          >
-            <Alert variant="filled" severity="error">
-              Enter a valid email address.
-            </Alert>
-          </Snackbar>
-          <Snackbar
-            open={emptyError}
-            autoHideDuration={6000}
-            onClose={handleEmptyErrorClose}
-          >
-            <Alert variant="filled" severity="error">
-              Fields cannot be empty.
-            </Alert>
-          </Snackbar>
-          <Snackbar
-            open={locationError}
-            autoHideDuration={6000}
-            onClose={handleLocationErrorClose}
-          >
-            <Alert variant="filled" severity="error">
-              Please verify the google map URL or select the location on map.
-            </Alert>
-          </Snackbar>
-          <form style={{ margin: "50px 0px" }} onSubmit={onSubmit}>
-            <div className="row mb-4">
-              <div className="col-md-6">
-                <div className="lead mb-2">Pharmacy Name</div>
-                <TextField
-                  placeholder="Enter pharmacy name"
-                  className="w-75"
-                  value={pharmacyName}
-                  onChange={(e) =>
-                    dispatch({ type: "pharmacyName", payload: e.target.value })
-                  }
-                />
-              </div>
-              <div className="col-md-6">
-                <div className="lead mb-2">Contact Number</div>
-                <TextField
-                  placeholder="Enter contact number"
-                  className="w-75"
-                  value={contactNumber}
-                  onChange={(e) => {
-                    const contactNo = e.target.value.replace(/[^0-9]/g, "");
-                    dispatch({
-                      type: "contactNumber",
-                      payload: contactNo,
-                    });
-                  }}
-                />
-              </div>
+      <Container title="New Pharmacy">
+        <form style={{ margin: "50px 0px" }} onSubmit={onSubmit}>
+          <div className="row mb-4">
+            <div className="col-md-6">
+              <div className="lead mb-2">Pharmacy Name</div>
+              <TextField
+                placeholder="Enter pharmacy name"
+                className="w-75"
+                value={pharmacyName}
+                onChange={(e) =>
+                  dispatch({ type: "pharmacyName", payload: e.target.value })
+                }
+              />
             </div>
-
-            <div className="row mb-4">
-              <div className="col-md-6">
-                <div className="lead mb-2">Open Hours</div>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <div className="justify-content-between d-flex col-8">
-                    <TimePicker
-                      label="From"
-                      value={openHoursFrom}
-                      onChange={(time) =>
-                        dispatch({
-                          type: "openHoursFrom",
-                          payload: time,
-                        })
-                      }
-                      className="col-5"
-                    />
-
-                    <TimePicker
-                      label="To"
-                      value={openHoursTo}
-                      onChange={(time) =>
-                        dispatch({ type: "openHoursTo", payload: time })
-                      }
-                      className="col-5"
-                    />
-                  </div>
-                </LocalizationProvider>
-              </div>
-              <div className="col-md-6">
-                <div className="lead mb-2">Open days</div>
-                <div className="d-flex flex-wrap">
-                  {["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"].map(
-                    (day) => (
-                      <Day
-                        key={day}
-                        day={day}
-                        isSelected={openDays.includes(day)}
-                        toggleDay={toggleDay}
-                      />
-                    )
-                  )}
-                </div>
-              </div>
+            <div className="col-md-6">
+              <div className="lead mb-2">Contact Number</div>
+              <TextField
+                placeholder="Enter contact number"
+                className="w-75"
+                value={contactNumber}
+                onChange={(e) => {
+                  const contactNo = e.target.value.replace(/[^0-9]/g, "");
+                  dispatch({
+                    type: "contactNumber",
+                    payload: contactNo,
+                  });
+                }}
+              />
             </div>
+          </div>
 
-            <div className="row mb-4">
-              <div className="col-md-6">
-                <div className="lead mb-2">Address</div>
-                <div className="row">
-                  <div className="col-sm-5">
-                    <TextField
-                      placeholder="Line 1"
-                      value={addressLine1}
-                      onChange={(e) =>
-                        dispatch({
-                          type: "addressLine1",
-                          payload: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="col-md-5">
-                    <TextField
-                      placeholder="Line 2"
-                      value={addressLine2}
-                      onChange={(e) =>
-                        dispatch({
-                          type: "addressLine2",
-                          payload: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
+          <div className="row mb-4">
+            <div className="col-md-6">
+              <div className="lead mb-2">Open Hours</div>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <div className="justify-content-between d-flex col-8">
+                  <TimePicker
+                    label="From"
+                    value={openHoursFrom}
+                    onChange={(time) =>
+                      dispatch({
+                        type: "openHoursFrom",
+                        payload: time,
+                      })
+                    }
+                    className="col-5"
+                  />
+
+                  <TimePicker
+                    label="To"
+                    value={openHoursTo}
+                    onChange={(time) =>
+                      dispatch({ type: "openHoursTo", payload: time })
+                    }
+                    className="col-5"
+                  />
                 </div>
-                <div className="row mt-3">
-                  <div className="col-sm-5">
-                    <Select
-                      value={district}
-                      fullWidth
-                      onChange={(e) =>
-                        dispatch({ type: "district", payload: e.target.value })
-                      }
-                    >
-                      {Object.keys(cities).map((k) => (
-                        <MenuItem value={k}>{k}</MenuItem>
-                      ))}
-                    </Select>
-                  </div>
-                  <div className="col-md-5">
-                    <Select
-                      value={city}
-                      fullWidth
-                      onChange={(e) =>
-                        dispatch({ type: "city", payload: e.target.value })
-                      }
-                    >
-                      {cities[district].cities.map((k) => (
-                        <MenuItem value={k}>{k}</MenuItem>
-                      ))}
-                    </Select>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6">
-                <div className="lead mb-2">Email Address</div>
-                <TextField
-                  className="w-75"
-                  placeholder="Enter email address"
-                  value={email}
-                  onChange={(e) =>
-                    dispatch({ type: "email", payload: e.target.value })
-                  }
-                  error={!validateEmail(email) && email !== ""}
-                  helperText={
-                    !validateEmail(email) &&
-                    email !== "" &&
-                    "Enter a valid email"
-                  }
-                />
-              </div>
+              </LocalizationProvider>
             </div>
-            <div>
-              <div className="lead mb-3">Location</div>
-              <div className="d-flex align-items-center">
-                <Button variant="contained">Select on map</Button>{" "}
-                <span className="mx-5">or</span>
-                <TextField
-                  value={locationURL}
-                  onChange={(e) => {
-                    dispatch({ type: "locationURL", payload: e.target.value });
-                  }}
-                  placeholder="Enter the google map URL"
-                  className="col-6"
-                />
-                {!isURLcorrect ? (
-                  <Button
-                    className="mx-4"
-                    variant="outlined"
-                    onClick={handleURLVerification}
-                  >
-                    verify
-                  </Button>
-                ) : (
-                  <span
-                    className="mx-4"
-                    style={{
-                      backgroundColor: "#28a745",
-                      color: "white",
-                      padding: "10px",
-                      borderRadius: "10px",
-                    }}
-                  >
-                    Verfied
-                  </span>
+            <div className="col-md-6">
+              <div className="lead mb-2">Open days</div>
+              <div className="d-flex flex-wrap">
+                {["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"].map(
+                  (day) => (
+                    <Day
+                      key={day}
+                      day={day}
+                      isSelected={openDays.includes(day)}
+                      toggleDay={toggleDay}
+                    />
+                  )
                 )}
               </div>
             </div>
-            <div className="d-flex justify-content-end col-11 my-5">
-              <input
-                type="submit"
-                className="btn btn-primary"
-                value="Add Pharmacy"
+          </div>
+
+          <div className="row mb-4">
+            <div className="col-md-6">
+              <div className="lead mb-2">Address</div>
+              <div className="row">
+                <div className="col-sm-5">
+                  <TextField
+                    placeholder="Line 1"
+                    value={addressLine1}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "addressLine1",
+                        payload: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="col-md-5">
+                  <TextField
+                    placeholder="Line 2"
+                    value={addressLine2}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "addressLine2",
+                        payload: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="row mt-3">
+                <div className="col-sm-5">
+                  <Select
+                    value={district}
+                    fullWidth
+                    onChange={(e) =>
+                      dispatch({ type: "district", payload: e.target.value })
+                    }
+                  >
+                    {Object.keys(cities).map((k) => (
+                      <MenuItem value={k}>{k}</MenuItem>
+                    ))}
+                  </Select>
+                </div>
+                <div className="col-md-5">
+                  <Select
+                    value={city}
+                    fullWidth
+                    onChange={(e) =>
+                      dispatch({ type: "city", payload: e.target.value })
+                    }
+                  >
+                    {cities[district].cities.map((k) => (
+                      <MenuItem value={k}>{k}</MenuItem>
+                    ))}
+                  </Select>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="lead mb-2">Email Address</div>
+              <TextField
+                className="w-75"
+                placeholder="Enter email address (Optional)"
+                value={email}
+                onChange={(e) =>
+                  dispatch({ type: "email", payload: e.target.value })
+                }
+                error={!validateEmail(email) && email !== ""}
+                helperText={
+                  !validateEmail(email) && email !== "" && "Enter a valid email"
+                }
               />
             </div>
-          </form>
-        </Container>
-      )}
+          </div>
+          <div>
+            <div className="lead mb-3">Location</div>
+            <div className="d-flex align-items-center">
+              <Button variant="contained">Select on map</Button>{" "}
+              <span className="mx-5">or</span>
+              <TextField
+                value={locationURL}
+                onChange={(e) => {
+                  dispatch({ type: "locationURL", payload: e.target.value });
+                }}
+                placeholder="Enter the google map URL"
+                className="col-6"
+              />
+              {!isURLcorrect ? (
+                <Button
+                  className="mx-4"
+                  variant="outlined"
+                  onClick={handleURLVerification}
+                >
+                  verify
+                </Button>
+              ) : (
+                <span
+                  className="mx-4"
+                  style={{
+                    backgroundColor: "#28a745",
+                    color: "white",
+                    padding: "10px",
+                    borderRadius: "10px",
+                  }}
+                >
+                  Verfied
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="d-flex justify-content-end col-11 my-5">
+            <input
+              type="submit"
+              className="btn btn-primary"
+              value="Add Pharmacy"
+            />
+          </div>
+        </form>
+      </Container>
     </Paper>
   );
 }

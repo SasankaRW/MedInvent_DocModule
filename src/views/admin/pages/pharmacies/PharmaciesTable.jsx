@@ -96,8 +96,9 @@ export default function PharmaciesTable({
                       <DeleteItemModal
                         item={row}
                         setIsLoading={setIsLoading}
-                        setPharmacies={setPharmacies}
-                        pharmacies={pharmacies}
+                        setItems={setPharmacies}
+                        items={pharmacies}
+                        itemType="pharmacy"
                       />
                     </MyModal>
                     <IconButton style={{ padding: "0px 5px" }}>

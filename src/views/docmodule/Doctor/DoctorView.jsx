@@ -1,7 +1,7 @@
 import SideNavNew from "../../../Components/SideNavNew.jsx";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import { useContext, useState } from "react";
-import NavigationContex from "../../admin/context/navigation";
+import NavigationContex from "../../admin/context/navigation.js";
 
 import Calendar from "../../docmodule/Doctor/Calendar.jsx";
 import NewSession from "../../docmodule/Doctor/NewSession.jsx";

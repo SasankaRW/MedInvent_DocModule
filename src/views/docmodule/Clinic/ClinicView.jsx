@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { useState } from "react";
 
 import Route from "../../../Components/Routes.js";
-import NavigationContex from "../../admin/context/navigation";
+import NavigationContex from "../../admin/context/navigation.js";
 
 import NewAppointment from "../../docmodule/Clinic/NewAppointment.jsx";
 import UpcomingAppointments from "../../docmodule/Clinic/UpcomingAppointments.jsx";

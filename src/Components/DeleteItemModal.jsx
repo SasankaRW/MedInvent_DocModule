@@ -1,34 +1,40 @@
 import { Button } from "@mui/material";
 import axios from "axios";
+import { useAlert } from "../Contexts/AlertContext";
 
 export function DeleteItemModal({
   item,
   closeModal,
   setIsLoading,
-  setPharmacies,
-  pharmacies,
+  setItems,
+  items,
+  itemType,
 }) {
+  const { showAlert } = useAlert();
+
   const onYesClick = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.delete("http://localhost:8080/delete", {
+      let url = `http://localhost:8080/${itemType}/delete`;
+      let headerName = `${itemType}-id`;
+      let headerValue = item[`${itemType}_id`];
+
+      const response = await axios.delete(url, {
         headers: {
-          "pharmacy-id": item.pharmacy_id,
+          [headerName]: headerValue,
         },
       });
 
       if (response.status === 200) {
-        setPharmacies(
-          pharmacies.filter(
-            (pharmacy) => pharmacy.pharmacy_id !== item.pharmacy_id
-          )
+        setItems(
+          items.filter((i) => i[`${itemType}_id`] !== item[`${itemType}_id`])
         );
-        console.log("Item deleted successfully");
+        showAlert("success", `${itemType} deleted successfully`);
       } else {
-        console.log("Failed to delete item");
+        showAlert("error", `Failed to delete the ${itemType}`);
       }
     } catch (error) {
-      console.error("Error deleting item:", error);
+      showAlert("error", `Failed to delete the ${itemType}`);
     } finally {
       setIsLoading(false);
     }

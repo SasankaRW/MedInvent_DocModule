@@ -5,10 +5,12 @@ import Loader from "../../../../Components/Loader/Loader";
 import Paper from "@mui/material/Paper";
 import PharmaciesTable from "./PharmaciesTable";
 import axios from "axios";
+import { useAlert } from "../../../../Contexts/AlertContext";
 
 export default function AllPharmacies() {
   const [pharmacies, setPharmacies] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(false);
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     setIsLoading(true);
@@ -16,10 +18,10 @@ export default function AllPharmacies() {
       .get("http://localhost:8080/select")
       .then((res) => {
         setPharmacies(res.data);
-        console.log(res.data);
         setIsLoading(false);
       })
       .catch((err) => {
+        showAlert("error", "Error loading pharmacies");
         console.log("Error getting pharmacy data" + " Error:" + err);
       })
       .finally(() => {
@@ -27,19 +29,19 @@ export default function AllPharmacies() {
       });
   }, []);
 
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <Paper elevation={5} sx={{ borderRadius: "10px" }}>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <Container title="All Pharmacies">
-          <PharmaciesTable
-            pharmacies={pharmacies}
-            setIsLoading={setIsLoading}
-            setPharmacies={setPharmacies}
-          />
-        </Container>
-      )}
+      <Container title="All Pharmacies">
+        <PharmaciesTable
+          pharmacies={pharmacies}
+          setIsLoading={setIsLoading}
+          setPharmacies={setPharmacies}
+        />
+      </Container>
     </Paper>
   );
 }
