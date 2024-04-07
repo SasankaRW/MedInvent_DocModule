@@ -1,7 +1,14 @@
 import Title from "../../../Components/Title";
 import ClinicSearchModal from "../../../Components/AddClinicModal";
 import { useState } from "react";
-import { VisitingClinicElement } from "../../../Components/VisitingClinicElement";
+import { VisitingElement } from "../../../Components/VisitingElement";
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import { Pending } from "../../../Components/Pending";
+import { Requested } from "../../../Components/Requested";
 
 const doctorInfo = {
   name: "Dr. John Doe",
@@ -16,21 +23,59 @@ const doctorInfo = {
 
 const clinics = [
   {
-    clinicName: "Green Valley Healthcare",
+    name: "Green Valley Healthcare",
     doctorFee: 2000,
   },
   {
-    clinicName: "City Medical Center",
+    name: "City Medical Center",
     doctorFee: 1800,
   },
   {
-    clinicName: "Sunrise Wellness Clinic",
+    name: "Sunrise Wellness Clinic",
     doctorFee: 2200,
   },
 ];
 
+function CustomTabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
+
 function Profile() {
   const [visitingClinics, setVisitingClinics] = useState(clinics);
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   return (
     <div>
@@ -86,15 +131,37 @@ function Profile() {
               <ClinicSearchModal />
             </div>
           </div>
-          <hr className="my-0 mx-4" />
-          <div
-            className="container p-4 overflow-y-auto"
-            style={{ maxHeight: "60vh", scrollbarWidth: "thin" }}
+          <Box
+            sx={{ borderBottom: 1, borderColor: "divider" }}
+            className="my-0 mx-4"
           >
+            <Tabs value={value} onChange={handleChange} variant="fullWidth">
+              <Tab label="Added" {...a11yProps(0)} />
+              <Tab label="Pending" {...a11yProps(1)} />
+              <Tab label="Requests" {...a11yProps(2)} />
+            </Tabs>
+          </Box>
+          <CustomTabPanel value={value} index={0}>
+            <div style={{ maxHeight: "60vh", scrollbarWidth: "thin" }}>
+              {visitingClinics.map((clinic) => (
+                <VisitingElement
+                  item={clinic}
+                  key={clinic.name}
+                  type="doctor"
+                />
+              ))}
+            </div>
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={1}>
             {visitingClinics.map((clinic) => (
-              <VisitingClinicElement clinic={clinic} key={clinic.clinicName} />
+              <Pending item={clinic} key={clinic.name} />
             ))}
-          </div>
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={2}>
+            {visitingClinics.map((clinic) => (
+              <Requested item={clinic} key={clinic.name} />
+            ))}
+          </CustomTabPanel>
         </div>
       </div>
     </div>

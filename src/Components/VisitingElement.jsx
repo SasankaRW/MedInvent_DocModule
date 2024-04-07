@@ -4,7 +4,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import MyModal from "./MyModal";
 import Button from "./Button/Button";
 
-export function VisitingClinicElement({ clinic }) {
+export function VisitingElement({ item, type }) {
   const handleClose = () => {};
   return (
     <div
@@ -14,23 +14,25 @@ export function VisitingClinicElement({ clinic }) {
       }}
     >
       <div>
-        <div style={{ fontSize: "18px" }}>{clinic.clinicName}</div>
+        <div style={{ fontSize: "18px" }}>{item.name}</div>
         <div className="mt-1 d-flex align-items-center">
           Doctor fee : Rs.{" "}
           <span>
-            <b>{clinic.doctorFee}</b>
+            <b>{item.doctorFee}</b>
           </span>
-          <MyModal
-            icon={
-              <BorderColorIcon
-                fontSize="small"
-                className="mx-3"
-                style={{ color: "gray" }}
-              />
-            }
-          >
-            <UpdateDocFee closeModal={handleClose} />
-          </MyModal>
+          {type === "doctor" && (
+            <MyModal
+              icon={
+                <BorderColorIcon
+                  fontSize="small"
+                  className="mx-3"
+                  style={{ color: "gray" }}
+                />
+              }
+            >
+              <UpdateDocFee closeModal={handleClose} />
+            </MyModal>
+          )}
         </div>
       </div>
       <div>

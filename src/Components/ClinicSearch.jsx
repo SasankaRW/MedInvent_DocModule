@@ -17,7 +17,11 @@ export function ClinicSearch({ handleSelectedItem }) {
         padding: 20,
       }}
     >
-      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <SearchBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        type="clinic"
+      />
       <div className="p-2 mt-3">
         {dataFiltered.map((d) => (
           <div onClick={() => handleSelectedItem(d)} key={d}>
