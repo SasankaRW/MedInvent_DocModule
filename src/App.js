@@ -12,8 +12,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <AuthProvider>
-      <AlertProvider>
+    <AlertProvider>
+      <AuthProvider>
         <Router>
           <Routes>
             <Route path="/" element={<Login />} />
@@ -43,8 +43,8 @@ function App() {
             />
           </Routes>
         </Router>
-      </AlertProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </AlertProvider>
   );
 }
 

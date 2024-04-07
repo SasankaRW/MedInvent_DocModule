@@ -89,6 +89,11 @@ function Login() {
               <OutlinedInput
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleLogin();
+                  }
+                }}
                 sx={{ borderRadius: "30px" }}
                 size="small"
                 id="outlined-adornment-password"
@@ -109,18 +114,6 @@ function Login() {
               />
             </FormControl>
           </div>
-
-          {/* <div>
-            <div className="d-flex align-items-center">
-              <Checkbox
-                checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
-                inputProps={{ "aria-label": "controlled" }}
-                size="small"
-              />
-              <small>Remember me</small>
-            </div>
-          </div> */}
           <div className="mt-5">
             <Button onClick={handleLogin} text="Log in" width="100%" />
           </div>

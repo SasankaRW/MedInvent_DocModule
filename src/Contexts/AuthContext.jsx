@@ -1,4 +1,5 @@
 import { createContext, useContext, useReducer } from "react";
+import { useAlert } from "./AlertContext";
 
 const AuthContext = createContext();
 
@@ -46,6 +47,7 @@ function AuthProvider({ children }) {
     reducer,
     initialState
   );
+  const { showAlert } = useAlert();
 
   function login(email, password) {
     const userFound = users.find(
@@ -53,6 +55,8 @@ function AuthProvider({ children }) {
     );
     if (userFound) {
       dispatch({ type: "login", payload: userFound });
+    } else {
+      showAlert("error", "Invalid credentials entered");
     }
   }
 
