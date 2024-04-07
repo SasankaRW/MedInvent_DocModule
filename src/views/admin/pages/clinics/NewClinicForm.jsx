@@ -3,7 +3,7 @@ import Container from "../../../../Components/Container/Container";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import cities from "../cities.json";
-import { Alert, Button, MenuItem, Select, Snackbar } from "@mui/material";
+import { Button, MenuItem, Select } from "@mui/material";
 import Day from "../../../../Components/Day/Day";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";

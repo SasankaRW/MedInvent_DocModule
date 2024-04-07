@@ -1,9 +1,12 @@
-import { Input, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import Title from "../../../Components/Title";
 import styles from "./NewAppointment.module.css";
 import MyDatePicker from "../../../Components/MyDatePicker";
 import { useReducer, useState } from "react";
 import Button from "../../../Components/Button/Button";
+import axios from "axios";
+import Loader from "../../.././Components/Loader/Loader";
+import { useAlert } from "../../../Contexts/AlertContext";
 
 const doctors = [
   "Dr. Emily Watson",
@@ -28,10 +31,9 @@ const initialState = {
   title: "Mr.",
   patientName: "",
   mobileNumber: "",
-  emailAddress: "",
-  area: "",
+  emailAddress: null,
+  area: null,
   nic: "",
-  isRefundable: false,
 };
 
 function reducer(state, action) {
@@ -90,10 +92,14 @@ function NewAppointment() {
       emailAddress,
       area,
       nic,
-      isRefundable,
     },
     dispatch,
   ] = useReducer(reducer, initialState);
+
+  const { showAlert } = useAlert();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const session_id = "aaefaefa";
 
   function handleDate(e) {
     dispatch({ type: "date", payload: e.target.value });
@@ -124,17 +130,64 @@ function NewAppointment() {
     dispatch({ type: "nic", payload: e.target.value });
   }
 
-  function handleIsRefundable() {
-    dispatch({ type: "isRefundable" });
-  }
-
   function handleTime(e) {
     dispatch({ type: "time", payload: e.target.value });
   }
 
+  function validateEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(String(email).toLowerCase());
+  }
+
   function onSubmit(e) {
     e.preventDefault();
-    dispatch({ type: "resetState" });
+    if (
+      doctor === "" ||
+      date === null ||
+      time === "" ||
+      patientName === "" ||
+      mobileNumber === "" ||
+      nic === ""
+    ) {
+      showAlert("error", "Please fill all required fields");
+      return;
+    }
+
+    if (emailAddress !== null && !validateEmail(emailAddress)) {
+      showAlert("error", "Please enter a valid email address");
+      return;
+    }
+
+    setIsLoading(true);
+
+    const appointmentDetails = {
+      apppointmentNo,
+      patientTitle: title,
+      patientName,
+      contactNo: mobileNumber,
+      email: emailAddress,
+      area,
+      nic,
+      session_id,
+    };
+
+    axios
+      .post("http://localhost:8080/insert", appointmentDetails)
+      .then((response) => {
+        showAlert("success", "Appointment booked successfully.");
+        dispatch({ type: "resetState" });
+      })
+      .catch((error) => {
+        console.error("Error booking appointment", error);
+        showAlert("error", "Error booking appointment.");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  if (isLoading) {
+    return <Loader />;
   }
 
   return (
@@ -149,7 +202,11 @@ function NewAppointment() {
             </div>
             <div className="col-md-6 col-sm-12 mb-4">
               <InputLabel className="mb-2">Date</InputLabel>
-              <MyDatePicker selectedDate={date} handleDateChange={handleDate} />
+              <MyDatePicker
+                isStart={true}
+                selectedDate={date}
+                handleDateChange={handleDate}
+              />
             </div>
           </div>
 
@@ -295,22 +352,7 @@ function NewAppointment() {
               </div>
             </div>
           </div>
-          <div
-            className="mt-4"
-            onClick={handleIsRefundable}
-            style={{ cursor: "pointer" }}
-          >
-            <input
-              type="checkbox"
-              style={{ marginRight: "10px" }}
-              checked={isRefundable}
-            />
-            <span>
-              Refundable appointment (Rs. 250 will be extra charged for
-              refundable appointments
-            </span>
-          </div>
-          <div className="text-end col-11 mt-2">
+          <div className="text-end col-11 mt-5">
             <Button text="Submit" />
           </div>
         </form>

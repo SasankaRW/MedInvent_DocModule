@@ -6,6 +6,7 @@ const MyDatePicker = ({
   label,
   minDate,
   maxDate,
+  isStart,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -16,6 +17,17 @@ const MyDatePicker = ({
   const handleBlur = () => {
     setIsFocused(false);
   };
+
+  function convertDate() {
+    const date = new Date();
+
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  }
 
   return (
     <div>
@@ -28,7 +40,7 @@ const MyDatePicker = ({
         onChange={(e) => handleDateChange(e)}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        min={minDate}
+        min={isStart ? convertDate() : minDate}
         max={maxDate}
         style={{
           outline: isFocused ? "2px solid #1565c0" : "1px solid #ccc",

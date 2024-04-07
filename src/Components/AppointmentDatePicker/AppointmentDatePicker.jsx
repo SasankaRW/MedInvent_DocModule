@@ -1,10 +1,14 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-
 import styles from "./AppointmentDatePicker.module.css";
 
-const AppointmentDatePicker = ({ startDate, endDate }) => {
+const AppointmentDatePicker = ({
+  startDate,
+  endDate,
+  sessionDates,
+  setSessionDates,
+}) => {
   const [weekDates, setWeekDates] = useState([]);
 
   const oneDay = 24 * 60 * 60 * 1000;
@@ -16,12 +20,13 @@ const AppointmentDatePicker = ({ startDate, endDate }) => {
     )
   );
 
-  function getWeekDates(start) {
-    let current = moment(start);
+  const getWeekDates = useCallback(() => {
+    let current = moment(startDate);
     let week = [];
 
     for (let i = 0; i < days; i++) {
       week.push({
+        fullDate: current.format("YYYY-MM-DD"),
         date: current.format("D"),
         day: current.format("ddd"),
       });
@@ -29,11 +34,28 @@ const AppointmentDatePicker = ({ startDate, endDate }) => {
     }
 
     return week;
-  }
+  }, [startDate, days]);
 
   useEffect(() => {
-    setWeekDates(getWeekDates(startDate));
-  }, [getWeekDates, startDate]);
+    setWeekDates(getWeekDates());
+  }, [getWeekDates]);
+
+  useEffect(() => {
+    setSessionDates([]);
+  }, [startDate, endDate, setSessionDates]);
+
+  const handleSessionDateChange = useCallback(
+    (fullDate, isSelected) => {
+      setSessionDates((currentDates) => {
+        if (isSelected) {
+          return [...currentDates, fullDate];
+        } else {
+          return currentDates.filter((date) => date !== fullDate);
+        }
+      });
+    },
+    [setSessionDates]
+  );
 
   if (startDate === "" || endDate === "")
     return (
@@ -41,10 +63,16 @@ const AppointmentDatePicker = ({ startDate, endDate }) => {
         Select a date range
       </div>
     );
+
   return (
     <div className={styles.dates}>
-      {weekDates.map((day) => (
-        <DayCheckbox day={day} />
+      {weekDates.map((day, index) => (
+        <DayCheckbox
+          key={index}
+          day={day}
+          onDateChange={handleSessionDateChange}
+          isSelected={sessionDates.includes(day.fullDate)}
+        />
       ))}
     </div>
   );
@@ -55,18 +83,21 @@ AppointmentDatePicker.propTypes = {
   endDate: PropTypes.string.isRequired,
 };
 
-export default AppointmentDatePicker;
+const DayCheckbox = ({ day, onDateChange, isSelected }) => {
+  const [isChecked, setIsChecked] = useState(isSelected);
 
-const DayCheckbox = ({ day }) => {
-  const [isChecked, setIsChecked] = useState(false);
+  useEffect(() => {
+    setIsChecked(isSelected);
+  }, [isSelected]);
 
   const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
+    const newState = !isChecked;
+    setIsChecked(newState);
+    onDateChange(day.fullDate, newState);
   };
 
   return (
     <div
-      key={day.date}
       className={!isChecked ? styles.day : styles.daySelected}
       onClick={handleCheckboxChange}
     >
@@ -75,3 +106,5 @@ const DayCheckbox = ({ day }) => {
     </div>
   );
 };
+
+export default AppointmentDatePicker;

@@ -1,33 +1,35 @@
 import { MenuItem, Select } from "@mui/material";
 import Title from "../../../Components/Title";
 import styles from "../Doctor/NewSession.module.css";
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 import MyDatePicker from "../../../Components/MyDatePicker";
 import Button from "../../../Components/Button/Button";
-
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import NumberSelect from "../../../Components/NumberSelect/NumberSelect";
 import AppointmentDatePicker from "../../../Components/AppointmentDatePicker/AppointmentDatePicker";
 import TimePicker from "../../../Components/TimePicker/TimePicker";
+import axios from "axios";
+import Loader from "../../.././Components/Loader/Loader";
+import { useAlert } from "../../../Contexts/AlertContext";
 
 const doctors = [
-  "Dr. Emily Watson",
-  "Dr. Michael Brown",
-  "Dr. Sophia Johnson",
-  "Dr. Ethan Smith",
-  "Dr. Olivia Jones",
-  "Dr. Daniel Lee",
-  "Dr. Ava Taylor",
-  "Dr. Matthew Martinez",
-  "Dr. Isabella Davis",
-  "Dr. Lucas Garcia",
+  { name: "Dr. Emily Watson", doctor_id: 1 },
+  { name: "Dr. Michael Brown", doctor_id: 2 },
+  { name: "Dr. Sophia Johnson", doctor_id: 3 },
+  { name: "Dr. Ethan Smith", doctor_id: 4 },
+  { name: "Dr. Olivia Jones", doctor_id: 5 },
+  { name: "Dr. Daniel Lee", doctor_id: 6 },
+  { name: "Dr. Ava Taylor", doctor_id: 7 },
+  { name: "Dr. Matthew Martinez", doctor_id: 8 },
+  { name: "Dr. Isabella Davis", doctor_id: 9 },
+  { name: "Dr. Lucas Garcia", doctor_id: 10 },
 ];
 
 const initialState = {
   startDate: "",
   endDate: "",
-  selectedDoctor: "--Select doctor--",
-  noOfPatients: 1,
+  selectedDoctor: "",
+  noOfPatients: 0,
   isRefundable: false,
   startTime: "",
   endTime: "",
@@ -68,6 +70,7 @@ function NewSession() {
   const clinicName = "First Street Clinic";
   const clinicFee = 800;
   const doctorFee = 2200;
+  const clinic_id = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
 
   const [
     {
@@ -82,12 +85,19 @@ function NewSession() {
     dispatch,
   ] = useReducer(reducer, initialState);
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [sessionDates, setSessionDates] = useState([]);
+
+  const { showAlert } = useAlert();
+
   function handleSelectedDoctor(e) {
-    dispatch({ type: "selectedClinic", payload: e.target.value });
+    dispatch({ type: "selectedDoctor", payload: e.target.value });
   }
 
   function handleNoOfPatients(e) {
-    dispatch({ type: "noOfPatients", payload: e.target.value });
+    if (e.target.value >= 0) {
+      dispatch({ type: "noOfPatients", payload: e.target.value });
+    }
   }
 
   function handleIsRefundable() {
@@ -109,20 +119,52 @@ function NewSession() {
   function handleEndDate(e) {
     dispatch({ type: "endDate", payload: e.target.value });
   }
+
   function handleSubmit(e) {
     e.preventDefault();
     if (
-      startDate !== null &&
-      endDate !== null &&
-      selectedDoctor !== "--Select doctor--" &&
-      startTime !== "" &&
-      endTime !== ""
+      selectedDoctor === "" ||
+      startTime === "" ||
+      endTime === "" ||
+      noOfPatients === 0
     ) {
-      alert("New schedule added");
-      dispatch({ type: "initial" });
-    } else {
-      alert("please enter details");
+      showAlert("error", "Please fill all fields");
+      return;
     }
+
+    if (sessionDates.length === 0) {
+      showAlert("error", "Please select dates");
+      return;
+    }
+
+    const sessionDetails = {
+      timeFrom: startTime + ":00",
+      timeTo: endTime + ":00",
+      sessionDates: sessionDates.sort(),
+      noOfPatients: noOfPatients,
+      isRefundable: isRefundable,
+      clinic_id: clinic_id,
+      doctor_id: selectedDoctor,
+    };
+    setIsLoading(true);
+
+    axios
+      .post("http://localhost:8080/clinic/newsession", sessionDetails)
+      .then((response) => {
+        showAlert("success", "New sesssion scheduled successfully.");
+        dispatch({ type: "initState" });
+      })
+      .catch((error) => {
+        console.error("Error adding pharmacy:", error);
+        showAlert("error", "Error scheduling the session.");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  if (isLoading) {
+    return <Loader />;
   }
 
   return (
@@ -141,8 +183,6 @@ function NewSession() {
               <div className="col-sm-7">
                 <div className={`${styles.gridItem} d-flex`}>
                   <Select
-                    displayEmpty
-                    inputProps={{ "aria-label": "Without label" }}
                     sx={{
                       borderRadius: "20px",
                       height: "40px",
@@ -151,15 +191,24 @@ function NewSession() {
                     fullWidth
                     value={selectedDoctor}
                     onChange={handleSelectedDoctor}
+                    displayEmpty
                   >
-                    {["--Select doctor--", ...doctors].map((c) => (
-                      <MenuItem value={c} key={c}>
-                        {c}
+                    <MenuItem value="" disabled>
+                      Select a doctor
+                    </MenuItem>
+                    {doctors.map((doctor) => (
+                      <MenuItem value={doctor.doctor_id} key={doctor.doctor_id}>
+                        {doctor.name}
                       </MenuItem>
                     ))}
                   </Select>
                   <div style={{ margin: "0 30px" }}>
-                    <Button text={"Add"} />
+                    <Button
+                      text={"Add"}
+                      onClick={(e) => {
+                        e.preventDefault();
+                      }}
+                    />
                   </div>
                 </div>
               </div>
@@ -172,10 +221,10 @@ function NewSession() {
                 <div className={styles.gridItem}>
                   <div style={{ display: "flex" }}>
                     <MyDatePicker
+                      isStart={true}
                       selectedDate={startDate}
                       handleDateChange={handleStartDate}
                       label={"Start date"}
-                      minDate={new Date().toISOString().split("T")[0]}
                     />
                     <MyDatePicker
                       selectedDate={endDate}
@@ -185,6 +234,8 @@ function NewSession() {
                     />
                   </div>
                   <AppointmentDatePicker
+                    sessionDates={sessionDates}
+                    setSessionDates={setSessionDates}
                     startDate={startDate}
                     endDate={endDate}
                   />
@@ -194,7 +245,7 @@ function NewSession() {
             <div className="row">
               <div className="col-sm-5">
                 <div className={`${styles.gridItem} text-secondary`}>
-                  Doctor's Name
+                  Clinic Name
                 </div>
               </div>
               <div className="col-sm-7">
@@ -256,7 +307,12 @@ function NewSession() {
                     }}
                     onClick={() => {}}
                   >
-                    <BorderColorIcon fontSize="small" />
+                    <BorderColorIcon
+                      fontSize="small"
+                      onClick={(e) => {
+                        e.preventDefault();
+                      }}
+                    />
                   </button>
                 </div>
               </div>
