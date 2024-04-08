@@ -1,5 +1,4 @@
 import Title from "../../../Components/Title";
-import ClinicSearchModal from "../../../Components/AddClinicModal";
 import { useState } from "react";
 import { VisitingElement } from "../../../Components/VisitingElement";
 import PropTypes from "prop-types";
@@ -10,6 +9,7 @@ import Box from "@mui/material/Box";
 import { Pending } from "../../../Components/Pending";
 import { Requested } from "../../../Components/Requested";
 import AddDoctorModal from "../../../Components/AddDoctorModal";
+import UpdateClinicFeeModal from "../../../Components/UpdateClinicFeeModal";
 
 let clinicInfo = {
   name: "Example Clinic",
@@ -20,7 +20,7 @@ let clinicInfo = {
     from: "9:00 AM",
     to: "5:00 PM",
   },
-  clinicFees: "$50",
+  clinicFees: "50",
   location: {
     lat: 6.794668,
     long: 79.901444,
@@ -78,6 +78,7 @@ function a11yProps(index) {
 function Profile() {
   const [visitingDoctors, setVisitingDoctors] = useState(doctors);
   const [value, setValue] = useState(0);
+  const [clinicFee, setClinicFee] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -123,7 +124,12 @@ function Profile() {
 
             <div className="row mb-3">
               <div className="col-4 text-muted">Clinic Fees</div>
-              <div className="col-8">{clinicInfo.clinicFees}</div>
+              <div className="col-8 d-flex">
+                <span>Rs. {clinicFee}</span>
+                <span>
+                  <UpdateClinicFeeModal setClinicFee={setClinicFee} />
+                </span>
+              </div>
             </div>
 
             <div className="row mb-3">

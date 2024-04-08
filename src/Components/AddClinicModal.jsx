@@ -4,29 +4,13 @@ import { styled, css } from "@mui/system";
 import { Modal as BaseModal } from "@mui/base/Modal";
 import Fade from "@mui/material/Fade";
 import Button from "./Button/Button";
-
 import { useState } from "react";
 import { ClinicSearch } from "./ClinicSearch";
-import { SetDocFee } from "./SetDocFee";
 
-export default function ClinicSearchModal({}) {
+export default function AddClinicModal({}) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [docFee, setDocFee] = useState("");
-
-  const handleSelectedItem = (item) => {
-    setSelectedItem(item);
-  };
-
-  function handleAddClinic() {
-    console.log(docFee, selectedItem);
-    setDocFee("");
-    setSelectedItem(null);
-    handleClose();
-  }
 
   return (
     <div>
@@ -41,17 +25,7 @@ export default function ClinicSearchModal({}) {
       >
         <Fade in={open}>
           <ModalContent sx={style}>
-            {selectedItem === null && (
-              <ClinicSearch handleSelectedItem={handleSelectedItem} />
-            )}
-            {selectedItem && (
-              <SetDocFee
-                selectedItem={selectedItem}
-                docFee={docFee}
-                setDocFee={setDocFee}
-                handleAddClinic={handleAddClinic}
-              />
-            )}
+            <ClinicSearch />
           </ModalContent>
         </Fade>
       </Modal>
@@ -111,24 +85,3 @@ const ModalContent = styled("div")(
     color: black;
   `
 );
-
-export const clinics = [
-  "Bright Horizon Clinics",
-  "PrimeCare Health Solutions",
-  "Vista Health Clinic",
-  "Serenity Wellness Center",
-  "Peak Health Medical Group",
-  "Riverbend Family Practice",
-  "UrbanWell Clinics",
-  "Summit Health Services",
-  "Harmony Wellness Clinic",
-  "Beacon Medical Associates",
-];
-
-export const filterData = (query, data) => {
-  if (!query) {
-    return [];
-  } else {
-    return data.filter((d) => d.toLowerCase().includes(query));
-  }
-};

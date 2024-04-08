@@ -1,5 +1,5 @@
 import Title from "../../../Components/Title";
-import ClinicSearchModal from "../../../Components/AddClinicModal";
+import AddClinicModal from "../../../Components/AddClinicModal";
 import { useState } from "react";
 import { VisitingElement } from "../../../Components/VisitingElement";
 import PropTypes from "prop-types";
@@ -128,7 +128,7 @@ function Profile() {
           <div className="container p-4 d-flex align-items-center justify-content-between">
             <div className="lead">Visiting Clinics</div>
             <div>
-              <ClinicSearchModal />
+              <AddClinicModal />
             </div>
           </div>
           <Box

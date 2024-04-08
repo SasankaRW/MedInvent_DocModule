@@ -52,7 +52,7 @@ function UpdateDocFee({ closeModal }) {
   return (
     <div className="text-center">
       <div className="lead">
-        Change doctor fee for medicare clinic appointments{" "}
+        Change doctor fee for medicare clinic appointments
       </div>
       <div>
         <OutlinedInput

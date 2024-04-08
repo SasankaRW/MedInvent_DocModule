@@ -6,8 +6,6 @@ import Fade from "@mui/material/Fade";
 import Button from "./Button/Button";
 
 import { useState } from "react";
-import { ClinicSearch } from "./ClinicSearch";
-import { SetDocFee } from "./SetDocFee";
 import { SearchBar } from "./SearchBar";
 import { ResultItem } from "./ResultItem/ResultItem";
 
@@ -18,23 +16,7 @@ export default function AddDoctorModal({}) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [selectedItem, setSelectedItem] = useState(null);
-
   let dataFiltered = filterData(searchQuery, doctors);
-
-  const handleSelectedItem = (item) => {
-    setSelectedItem(item);
-  };
-
-  function handleAddClinic() {
-    setSelectedItem(null);
-    handleClose();
-  }
-
-  function onClick(d) {
-    console.log(d);
-    handleClose();
-  }
 
   return (
     <div>
@@ -63,8 +45,8 @@ export default function AddDoctorModal({}) {
               }}
             >
               {dataFiltered.map((d) => (
-                <div onClick={() => onClick(d.name)}>
-                  <ResultItem item={d.name} subHeading={d.specialty} />
+                <div>
+                  <ResultItem item={d} type="doctor" />
                 </div>
               ))}
             </div>

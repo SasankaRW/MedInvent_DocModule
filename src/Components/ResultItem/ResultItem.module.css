@@ -1,10 +1,27 @@
 .item {
     border: 1px solid #2980b9;
-    cursor: pointer;
     transition: 300ms;
 }
 
-.item:hover {
+.btn {
+    font-size: 14px;
     background-color: #2980b9;
     color: white;
+    padding: 5px 20px;
+    border: 1px solid #2980b9;
+    border-radius: 20px;
+    transition: 300ms;
+}
+
+.btn:hover {
+    background-color: white;
+    color: #2980b9;
+}
+
+.req {
+    font-size: 13px;
+    background-color: green;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 10px;
 }
