@@ -1,12 +1,14 @@
-import { IconButton, OutlinedInput } from "@mui/material";
+import { OutlinedInput } from "@mui/material";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import MyModal from "./MyModal";
 import Button from "./Button/Button";
 import { useState } from "react";
 import Loader2 from "./Loader2/Loader2";
+import axios from "axios";
+import config from "../config";
+import { useAlert } from "../Contexts/AlertContext";
 
-export default function UpdateClinicFeeModal({ setClinicFee }) {
+export default function UpdateClinicFeeModal({ setClinicFee, id }) {
   const handleClose = () => {};
   return (
     <MyModal
@@ -18,17 +20,37 @@ export default function UpdateClinicFeeModal({ setClinicFee }) {
         />
       }
     >
-      <UpdateClinicFee closeModal={handleClose} setClinicFee={setClinicFee} />
+      <UpdateClinicFee
+        closeModal={handleClose}
+        setClinicFee={setClinicFee}
+        id={id}
+      />
     </MyModal>
   );
 }
 
-function UpdateClinicFee({ closeModal, setClinicFee }) {
+function UpdateClinicFee({ closeModal, setClinicFee, id }) {
   const [fee, setFee] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { showAlert } = useAlert();
 
   function onUpdate() {
-    setClinicFee(parseFloat(fee));
+    setIsLoading(true);
+    axios
+      .put(`${config.baseURL}/clinic/update/${id}`, {
+        clinicFees: parseFloat(fee),
+      })
+      .then((res) => {
+        setClinicFee(parseFloat(fee));
+        showAlert("success", "Clinic fees updated successfully");
+      })
+      .catch((err) => {
+        showAlert("error", "Error updating clinic fees");
+        console.log("Error updating clinic fees" + " Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
     closeModal();
   }
 

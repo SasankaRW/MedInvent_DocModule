@@ -222,7 +222,7 @@ export default function NewClinicForm() {
           long: position.long,
         },
       },
-      cedentials: {
+      credentials: {
         email,
         password,
       },

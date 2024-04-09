@@ -14,13 +14,11 @@ export default function AllClinics() {
   const { showAlert } = useAlert();
 
   useEffect(() => {
-    console.log(config.baseURL);
     setIsLoading(true);
     axios
       .get(`${config.baseURL}/clinic/get/allclinics`)
       .then((res) => {
         setClinics(res.data.data);
-        setIsLoading(false);
       })
       .catch((err) => {
         showAlert("error", "Error loading clinics");

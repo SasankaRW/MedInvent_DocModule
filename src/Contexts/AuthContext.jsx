@@ -5,18 +5,21 @@ const AuthContext = createContext();
 
 const users = [
   {
+    id: "",
     name: "admin",
     email: "admin",
     password: "admin",
     role: "admin",
   },
   {
+    id: "02bb93de-3093-4821-b3e3-5a8a86455a0a",
     name: "doctor",
     email: "doctor",
     password: "doctor",
     role: "doctor",
   },
   {
+    id: "a9b8c8ae-623d-4564-bd36-cba694a3d83b",
     name: "clinic",
     email: "clinic",
     password: "clinic",

@@ -188,7 +188,7 @@ export default function NewPharmacyForm() {
       openHoursFrom: getTime(openHoursFrom),
       openHoursTo: getTime(openHoursTo),
       openDays: openDays,
-      email: email,
+      email: email === "" ? null : email,
       pharmacyAddress: {
         lineOne: addressLine1,
         lineTwo: addressLine2,
@@ -200,7 +200,6 @@ export default function NewPharmacyForm() {
         long: position.long,
       },
     };
-
     axios
       .post(`${config.baseURL}/pharmacy/newpharmacy`, pharmacyData)
       .then((response) => {

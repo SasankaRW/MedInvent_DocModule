@@ -1,14 +1,21 @@
-import Title from "../../../Components/Title";
-import AddClinicModal from "../../../Components/AddClinicModal";
-import { useState } from "react";
-import { VisitingElement } from "../../../Components/VisitingElement";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import axios from "axios";
+
+import Title from "../../../Components/Title";
+import { VisitingElement } from "../../../Components/VisitingElement";
 import { Pending } from "../../../Components/Pending";
 import { Requested } from "../../../Components/Requested";
+import AddClinicModal from "../../../Components/AddClinicModal";
+import UpdateClinicFeeModal from "../../../Components/UpdateClinicFeeModal";
+import Loader from "../../../Components/Loader/Loader";
+import { useAuth } from "../../../Contexts/AuthContext";
+import { useAlert } from "../../../Contexts/AlertContext";
+import config from "../../../config";
 
 const doctorInfo = {
   name: "Dr. John Doe",
@@ -36,22 +43,15 @@ const clinics = [
   },
 ];
 
-function CustomTabPanel(props) {
-  const { children, value, index, ...other } = props;
-
+function CustomTabPanel({ children, value, index }) {
   return (
     <div
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
-      {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
 }
@@ -73,9 +73,37 @@ function Profile() {
   const [visitingClinics, setVisitingClinics] = useState(clinics);
   const [value, setValue] = useState(0);
 
+  const [doctor, setDoctor] = useState({});
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { user } = useAuth();
+  const { showAlert } = useAlert();
+
+  useEffect(() => {
+    setIsLoading(true);
+    axios
+      .get(`${config.baseURL}/doctor/get/${user.id}`)
+      .then((res) => {
+        setDoctor(res.data.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        showAlert("error", "Error loading profile data");
+        console.log("Error getting profile data" + " Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [showAlert, user.id]);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div>
@@ -86,8 +114,10 @@ function Profile() {
             <div className="d-flex align-items-center">
               <img src={"/images/dp.png"} alt="" height={80} />
               <div className="mx-4">
-                <h3 className="my-0">{doctorInfo.name}</h3>
-                <div>{doctorInfo.specialty}</div>
+                <h3 className="my-0">
+                  Dr. {doctor.fname} {doctor.mname} {doctor.lname}
+                </h3>
+                <div>{doctor.specialization}</div>
               </div>
             </div>
           </div>
@@ -95,32 +125,32 @@ function Profile() {
           <div className="container p-4">
             <div className="row mb-3">
               <div className="col-4 text-muted">NIC</div>
-              <div className="col-8">{doctorInfo.nic}</div>
+              <div className="col-8">{doctor.nic}</div>
             </div>
 
             <div className="row mb-3">
               <div className="col-4 text-muted">Medical license No.</div>
-              <div className="col-8">{doctorInfo.medicalLicenseNo}</div>
+              <div className="col-8">{doctor.medical_license_no}</div>
             </div>
 
             <div className="row mb-3">
               <div className="col-4 text-muted">Email address</div>
-              <div className="col-8">d{doctorInfo.email}</div>
+              <div className="col-8">{doctor.email}</div>
             </div>
 
             <div className="row mb-3">
               <div className="col-4 text-muted">Contact number</div>
-              <div className="col-8">{doctorInfo.contactNo}</div>
+              <div className="col-8">{doctor.contactNo}</div>
             </div>
 
             <div className="row mb-3">
               <div className="col-4 text-muted">Gender</div>
-              <div className="col-8">{doctorInfo.gender}</div>
+              <div className="col-8">{doctor.gender}</div>
             </div>
 
             <div className="row mb-3">
               <div className="col-4 text-muted">Date of Birth</div>
-              <div className="col-8">{doctorInfo.dob}</div>
+              <div className="col-8">{doctor.dob}</div>
             </div>
           </div>
         </div>
