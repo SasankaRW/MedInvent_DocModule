@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import axios from "axios";
 import { useAlert } from "../Contexts/AlertContext";
+import config from "../config";
 
 export function DeleteItemModal({
   item,
@@ -15,15 +16,17 @@ export function DeleteItemModal({
   const onYesClick = async () => {
     setIsLoading(true);
     try {
-      let url = `http://localhost:8080/${itemType}/delete`;
-      let headerName = `${itemType}-id`;
-      let headerValue = item[`${itemType}_id`];
+      let itemId;
+      if (itemType === "clinic") {
+        itemId = item.clinic_id;
+      } else if (itemType === "doctor") {
+        itemId = item.doctor_id;
+      } else if (itemType === "pharmacy") {
+        itemId = item.pharmacy_id;
+      }
+      let url = `${config.baseURL}/${itemType}/delete/${itemId}`;
 
-      const response = await axios.delete(url, {
-        headers: {
-          [headerName]: headerValue,
-        },
-      });
+      const response = await axios.delete(url);
 
       if (response.status === 200) {
         setItems(

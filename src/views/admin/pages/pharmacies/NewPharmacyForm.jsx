@@ -10,6 +10,7 @@ import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "axios";
 import { useAlert } from "../../../../Contexts/AlertContext";
+import config from "../../../../config";
 
 const initialState = {
   pharmacyName: "",
@@ -188,20 +189,20 @@ export default function NewPharmacyForm() {
       openHoursTo: getTime(openHoursTo),
       openDays: openDays,
       email: email,
-      address: {
+      pharmacyAddress: {
         lineOne: addressLine1,
         lineTwo: addressLine2,
         city: city,
         district: district,
       },
-      location: {
+      pharmacyLocation: {
         lat: position.lat,
         long: position.long,
       },
     };
 
     axios
-      .post("http://localhost:8080/insert", pharmacyData)
+      .post(`${config.baseURL}/pharmacy/newpharmacy`, pharmacyData)
       .then((response) => {
         showAlert("success", "Pharmacy added successfully.");
         dispatch({ type: "initState" });

@@ -16,6 +16,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import axios from "axios";
 import Loader from "../../../../Components/Loader/Loader";
 import { useAlert } from "../../../../Contexts/AlertContext";
+import config from "../../../../config";
 
 // Initial state for the form
 const initialState = {
@@ -209,27 +210,27 @@ export default function NewClinicForm() {
       openHoursTo: getTime(openHoursTo),
       openDays: openDays,
       email: email,
-      address: {
+      clinicAddress: {
         lineOne: addressLine1,
         lineTwo: addressLine2,
         city: city,
         district: district,
       },
-      location: {
+      clinicLocation: {
         lat: position.lat,
         long: position.long,
       },
     };
 
     axios
-      .post("http://localhost:8080/insert", clinicData)
+      .post(`${config.baseURL}/clinic/newclinic`, clinicData)
       .then((response) => {
-        showAlert("success", "Pharmacy added successfully.");
+        showAlert("success", "Clinic added successfully.");
         dispatch({ type: "initState" });
       })
       .catch((error) => {
-        console.error("Error adding pharmacy:", error);
-        showAlert("error", "Error adding pharmacy.");
+        console.error("Error adding clinic:", error);
+        showAlert("error", "Error adding clinic.");
       })
       .finally(() => {
         setIsLoading(false);

@@ -40,15 +40,28 @@ export function PharmacyNClinicDetailsModal({ row, type }) {
           <small className="text-secondary">Address</small>
         </div>
         <div>
-          <strong>
-            {row.PharmacyTempAddress.lineOne +
-              ", " +
-              row.PharmacyTempAddress.lineTwo +
-              ", " +
-              row.PharmacyTempAddress.city +
-              ", " +
-              row.PharmacyTempAddress.district}
-          </strong>
+          {type === "pharmacy" && (
+            <strong>
+              {row.pharmacyAddress.lineOne +
+                ", " +
+                row.pharmacyAddress.lineTwo +
+                ", " +
+                row.pharmacyAddress.city +
+                ", " +
+                row.pharmacyAddress.district}
+            </strong>
+          )}
+          {type === "clinic" && (
+            <strong>
+              {row.clinicAddress.lineOne +
+                ", " +
+                row.clinicAddress.lineTwo +
+                ", " +
+                row.clinicAddress.city +
+                ", " +
+                row.clinicAddress.district}
+            </strong>
+          )}
         </div>
       </div>
       <hr className="my-2" />

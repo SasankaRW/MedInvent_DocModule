@@ -6,6 +6,7 @@ import ClinicsTable from "./ClinicsTable";
 import axios from "axios";
 import Loader from "../../../../Components/Loader/Loader";
 import { useAlert } from "../../../../Contexts/AlertContext";
+import config from "../../../../config";
 
 export default function AllClinics() {
   const [clinics, setClinics] = React.useState([]);
@@ -13,11 +14,12 @@ export default function AllClinics() {
   const { showAlert } = useAlert();
 
   useEffect(() => {
+    console.log(config.baseURL);
     setIsLoading(true);
     axios
-      .get("http://localhost:8080/select")
+      .get(`${config.baseURL}/clinic/get/allclinics`)
       .then((res) => {
-        setClinics(res.data);
+        setClinics(res.data.data);
         setIsLoading(false);
       })
       .catch((err) => {

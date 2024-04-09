@@ -6,6 +6,7 @@ import DoctorsTable from "./DoctorsTable";
 import axios from "axios";
 import Loader from "../../../../Components/Loader/Loader";
 import { useAlert } from "../../../../Contexts/AlertContext";
+import config from "../../../../config";
 
 export default function AllDoctors() {
   const [doctors, setDoctors] = React.useState([]);
@@ -15,7 +16,7 @@ export default function AllDoctors() {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get("http://localhost:8080/select")
+      .get(`${config.baseURL}/doctor/get/alldoctors`)
       .then((res) => {
         setDoctors(res.data);
         setIsLoading(false);

@@ -24,6 +24,7 @@ import { doctorSpecializations } from "./data/doctorSpecializations";
 import { useAlert } from "../../../../Contexts/AlertContext";
 import Loader from "../../../../Components/Loader/Loader";
 import axios from "axios";
+import config from "../../../../config";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -179,7 +180,7 @@ export default function NewDoctorForm() {
     };
 
     axios
-      .post("http://localhost:8080/insert", doctorData)
+      .post(`${config.baseURL}/doctor/newdoctor`, doctorData)
       .then((response) => {
         showAlert("success", "Doctor added successfully.");
         dispatch({ type: "initState" });

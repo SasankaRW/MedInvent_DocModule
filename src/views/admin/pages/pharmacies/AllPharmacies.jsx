@@ -6,6 +6,7 @@ import Paper from "@mui/material/Paper";
 import PharmaciesTable from "./PharmaciesTable";
 import axios from "axios";
 import { useAlert } from "../../../../Contexts/AlertContext";
+import config from "../../../../config";
 
 export default function AllPharmacies() {
   const [pharmacies, setPharmacies] = React.useState([]);
@@ -15,9 +16,9 @@ export default function AllPharmacies() {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get("http://localhost:8080/select")
+      .get(`${config.baseURL}/pharmacy/get/allpharmacies`)
       .then((res) => {
-        setPharmacies(res.data);
+        setPharmacies(res.data.data);
         setIsLoading(false);
       })
       .catch((err) => {

@@ -81,8 +81,7 @@ export default function PharmaciesTable({
               <TableRow key={row.name} hover>
                 <TableCell align="left">{row.name}</TableCell>
                 <TableCell align="left">
-                  {row.PharmacyTempAddress.city},{" "}
-                  {row.PharmacyTempAddress.district}
+                  {row.pharmacyAddress.city}, {row.pharmacyAddress.district}
                 </TableCell>
                 <TableCell align="left">{row.contactNo}</TableCell>
                 <TableCell align="left">
