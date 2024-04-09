@@ -204,21 +204,27 @@ export default function NewClinicForm() {
 
     setIsLoading(true);
     const clinicData = {
-      name: clinicName,
-      contactNo: contactNumber,
-      openHoursFrom: getTime(openHoursFrom),
-      openHoursTo: getTime(openHoursTo),
-      openDays: openDays,
-      email: email,
-      clinicAddress: {
-        lineOne: addressLine1,
-        lineTwo: addressLine2,
-        city: city,
-        district: district,
+      data: {
+        name: clinicName,
+        contactNo: contactNumber,
+        openHoursFrom: getTime(openHoursFrom),
+        openHoursTo: getTime(openHoursTo),
+        openDays: openDays,
+        email: email,
+        clinicAddress: {
+          lineOne: addressLine1,
+          lineTwo: addressLine2,
+          city: city,
+          district: district,
+        },
+        clinicLocation: {
+          lat: position.lat,
+          long: position.long,
+        },
       },
-      clinicLocation: {
-        lat: position.lat,
-        long: position.long,
+      cedentials: {
+        email,
+        password,
       },
     };
 

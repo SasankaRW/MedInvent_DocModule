@@ -76,13 +76,13 @@ export default function DoctorsTable({ doctors, setIsLoading, setDoctors }) {
             ).map((row) => (
               <TableRow key={row.name} hover>
                 <TableCell component="th" scope="row" style={{ width: 200 }}>
-                  {row.name}
+                  {row.fname} {row.lname}
                 </TableCell>
                 <TableCell style={{ width: 200 }} align="left">
-                  {row.specialty}
+                  {row.specialization}
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="left">
-                  {row.mobileNo}
+                  {row.contactNo}
                 </TableCell>
                 <TableCell style={{ width: 50 }} align="right">
                   <div className="d-flex justify-content-end">

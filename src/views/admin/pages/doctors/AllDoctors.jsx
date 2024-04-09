@@ -18,7 +18,7 @@ export default function AllDoctors() {
     axios
       .get(`${config.baseURL}/doctor/get/alldoctors`)
       .then((res) => {
-        setDoctors(res.data);
+        setDoctors(res.data.data);
         setIsLoading(false);
       })
       .catch((err) => {

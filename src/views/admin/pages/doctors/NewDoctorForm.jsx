@@ -165,20 +165,24 @@ export default function NewDoctorForm() {
 
     setIsLoading(true);
     const doctorData = {
-      firstName,
-      middleName,
-      lastName,
-      contactNo,
-      gender,
-      nicNo,
-      email,
-      password,
-      dob: formatDate(dob),
-      MLNo,
-      speciality,
-      note,
+      data: {
+        fname: firstName,
+        mname: middleName,
+        lname: lastName,
+        email,
+        gender,
+        nic: nicNo,
+        contactNo,
+        dob: formatDate(dob),
+        medical_license_no: MLNo,
+        specialization: speciality,
+        note,
+      },
+      credentials: {
+        email,
+        password,
+      },
     };
-
     axios
       .post(`${config.baseURL}/doctor/newdoctor`, doctorData)
       .then((response) => {
@@ -187,7 +191,7 @@ export default function NewDoctorForm() {
       })
       .catch((error) => {
         console.error("Error adding doctor:", error);
-        showAlert("error", "Error adding doctor.");
+        showAlert("error", "Error adding doctor");
       })
       .finally(() => {
         setIsLoading(false);
@@ -369,6 +373,7 @@ export default function NewDoctorForm() {
             <div className="col-md-6">
               <div className="lead mb-2">Note</div>
               <TextArea
+                id="note"
                 value={note}
                 handleChange={function (e) {
                   dispatch({ type: "note", payload: e.target.value });
@@ -392,8 +397,6 @@ export default function NewDoctorForm() {
           <div className="col-10 text-end">
             <input
               type="submit"
-              name=""
-              id=""
               className="btn btn-primary"
               value="Add Doctor"
             />
