@@ -23,12 +23,12 @@ export default function AllDoctors() {
       })
       .catch((err) => {
         showAlert("error", "Error loading doctors");
-        console.log("Error getting clinic data" + " Error:" + err);
+        console.log("Error getting clinic data. Error:" + err);
       })
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [showAlert]);
 
   if (isLoading) {
     return <Loader />;

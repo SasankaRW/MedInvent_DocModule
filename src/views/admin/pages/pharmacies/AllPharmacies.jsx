@@ -28,7 +28,7 @@ export default function AllPharmacies() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [showAlert]);
 
   if (isLoading) {
     return <Loader />;

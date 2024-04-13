@@ -22,12 +22,12 @@ export default function AllClinics() {
       })
       .catch((err) => {
         showAlert("error", "Error loading clinics");
-        console.log("Error getting clinic data" + " Error:" + err);
+        console.log("Error getting clinic data. Error:" + err);
       })
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [showAlert]);
 
   if (isLoading) {
     return <Loader />;

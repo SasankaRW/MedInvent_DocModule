@@ -81,8 +81,10 @@ export default function ClinicsTable({ clinics, setIsLoading, setClinics }) {
                 <TableCell component="th" scope="row" style={{ width: 200 }}>
                   {row.name}
                 </TableCell>
-                <TableCell align="left">{row.location}</TableCell>
-                <TableCell align="left">{row.mobileNo}</TableCell>
+                <TableCell align="left">
+                  {row.clinicAddress.city}, {row.clinicAddress.district}
+                </TableCell>
+                <TableCell align="left">{row.contactNo}</TableCell>
                 <TableCell align="left">
                   <div className="d-flex justify-content-end">
                     <MyModal

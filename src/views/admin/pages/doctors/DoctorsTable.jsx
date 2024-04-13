@@ -40,7 +40,7 @@ export default function DoctorsTable({ doctors, setIsLoading, setDoctors }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (newPage) => {
     setPage(newPage);
   };
 

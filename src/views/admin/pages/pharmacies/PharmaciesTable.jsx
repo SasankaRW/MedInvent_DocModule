@@ -79,7 +79,9 @@ export default function PharmaciesTable({
               : pharmacies
             ).map((row) => (
               <TableRow key={row.name} hover>
-                <TableCell align="left">{row.name}</TableCell>
+                <TableCell component="th" scope="row" style={{ width: 200 }}>
+                  {row.name}
+                </TableCell>
                 <TableCell align="left">
                   {row.pharmacyAddress.city}, {row.pharmacyAddress.district}
                 </TableCell>
