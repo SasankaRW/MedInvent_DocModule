@@ -7,9 +7,9 @@ import config from "../config";
 import { useAlert } from "../Contexts/AlertContext";
 import Loader2 from "./Loader2/Loader2";
 
-export default function ClinicSearch() {
+export default function DoctorSearch() {
   const [searchQuery, setSearchQuery] = useState(null);
-  const [clinics, setClinics] = useState([]);
+  const [doctors, setDoctors] = useState([]);
   const { showAlert } = useAlert();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -21,13 +21,13 @@ export default function ClinicSearch() {
     }
     setIsLoading(true);
     axios
-      .get(`${config.baseURL}/clinic/get/getByName/${searchQuery}`)
+      .get(`${config.baseURL}/doctor/get/getByName/${searchQuery}`)
       .then((res) => {
-        setClinics(res.data.data);
+        setDoctors(res.data.data);
       })
       .catch((err) => {
-        showAlert("error", "Error loading clinics");
-        console.log("Error getting clinic data. Error:" + err);
+        showAlert("error", "Error loading doctors");
+        console.log("Error getting doctor data. Error:" + err);
       })
       .finally(() => {
         setIsLoading(false);
@@ -47,22 +47,22 @@ export default function ClinicSearch() {
       <SearchBar
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        type="clinic"
+        type="doctor"
       />
       {isLoading && (
         <div className="mt-4">
           <Loader2 />
         </div>
       )}
-      {!isLoading && clinics.length === 0 && (
+      {!isLoading && doctors.length === 0 && (
         <div className="mt-4 text-muted d-flex justify-content-center">
-          No clinics found
+          No doctors found
         </div>
       )}
-      {!isLoading && clinics.length > 0 && (
+      {!isLoading && doctors.length > 0 && (
         <div className="p-2 mt-3">
-          {clinics.map((d) => (
-            <ResultItem item={d} type="clinic" />
+          {doctors.map((d) => (
+            <ResultItem item={d} type="doctor" />
           ))}
         </div>
       )}

@@ -4,19 +4,13 @@ import { styled, css } from "@mui/system";
 import { Modal as BaseModal } from "@mui/base/Modal";
 import Fade from "@mui/material/Fade";
 import Button from "./Button/Button";
-
 import { useState } from "react";
-import { SearchBar } from "./SearchBar";
-import { ResultItem } from "./ResultItem/ResultItem";
+import DoctorSearch from "./DoctorSearch";
 
 export default function AddDoctorModal({}) {
   const [open, setOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  let dataFiltered = filterData(searchQuery, doctors);
 
   return (
     <div>
@@ -31,25 +25,7 @@ export default function AddDoctorModal({}) {
       >
         <Fade in={open}>
           <ModalContent sx={style}>
-            <SearchBar
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              type="doctor"
-            />
-            <div
-              className="mt-3"
-              style={{
-                maxHeight: "60vh",
-                overflowY: "auto",
-                scrollbarWidth: "thin",
-              }}
-            >
-              {dataFiltered.map((d) => (
-                <div>
-                  <ResultItem item={d} type="doctor" />
-                </div>
-              ))}
-            </div>
+            <DoctorSearch />
           </ModalContent>
         </Fade>
       </Modal>
@@ -109,24 +85,3 @@ const ModalContent = styled("div")(
     color: black;
   `
 );
-
-const doctors = [
-  { name: "Dr. Emily Watson", specialty: "Cardiology" },
-  { name: "Dr. John Carter", specialty: "Emergency Medicine" },
-  { name: "Dr. Sarah Lin", specialty: "Pediatrics" },
-  { name: "Dr. Alex Johnson", specialty: "General Surgery" },
-  { name: "Dr. Maria Gonzalez", specialty: "Family Medicine" },
-  { name: "Dr. James Lee", specialty: "Neurology" },
-  { name: "Dr. Lauren Smith", specialty: "Dermatology" },
-  { name: "Dr. Michael Brown", specialty: "Orthopedics" },
-  { name: "Dr. Jessica Patel", specialty: "Obstetrics & Gynecology" },
-  { name: "Dr. William Davis", specialty: "Psychiatry" },
-];
-
-export const filterData = (query, data) => {
-  if (!query) {
-    return [];
-  } else {
-    return data.filter((d) => d.name.toLowerCase().includes(query));
-  }
-};

@@ -15,6 +15,7 @@ import Loader from "../../../Components/Loader/Loader";
 import { useAuth } from "../../../Contexts/AuthContext";
 import { useAlert } from "../../../Contexts/AlertContext";
 import config from "../../../config";
+import Loader2 from "../../../Components/Loader2/Loader2";
 
 const doctors = [
   {
@@ -78,13 +79,13 @@ function Profile() {
       .then((res) => {
         setClinic(res.data.data);
         setClinicAddress(res.data.data.clinicAddress);
-        setClinicLocation(res.data.data.clinicLocation);
+        setClinicLocation(res.data.data.location);
         setClinicFee(res.data.data.clinicFees);
         setIsLoading(false);
       })
       .catch((err) => {
         showAlert("error", "Error loading profile data");
-        console.log("Error getting profile data" + " Error:" + err);
+        console.log("Error getting profile data. Error:" + err);
       })
       .finally(() => {
         setIsLoading(false);
@@ -95,7 +96,7 @@ function Profile() {
     setValue(newValue);
   };
 
-  const mapURL = `https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3961.3885038149997!2d${clinicLocation.long}!3d${clinicLocation.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNsKwNTAnMzguMiJOIDc5wrA1NycyMi45IkU!5e0!3m2!1sen!2slk!4v1709995715108!5m2!1sen!2slk`;
+  const mapURL = `https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3961.3885038149997!2d${clinicLocation[0]}!3d${clinicLocation[1]}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNsKwNTAnMzguMiJOIDc5wrA1NycyMi45IkU!5e0!3m2!1sen!2slk!4v1709995715108!5m2!1sen!2slk`;
 
   if (isLoading) {
     return <Loader />;
@@ -190,29 +191,132 @@ function Profile() {
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            <div style={{ maxHeight: "60vh", scrollbarWidth: "thin" }}>
-              {visitingDoctors.map((clinic) => (
-                <VisitingElement
-                  item={clinic}
-                  key={clinic.name}
-                  type="clinic"
-                />
-              ))}
-            </div>
+            <AddedTab userId={user.id} />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            {visitingDoctors.map((doctor) => (
-              <Pending item={doctor} key={doctor.doctorName} />
-            ))}
+            <PendingTab userId={user.id} />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
-            {visitingDoctors.map((doctor) => (
-              <Requested item={doctor} key={doctor.doctorName} />
-            ))}
+            <RequestsTab userId={user.id} />
           </CustomTabPanel>
         </div>
       </div>
     </div>
+  );
+}
+
+function AddedTab({ userId }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [addedDoctors, setAddedDoctors] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${config.baseURL}/visiting/clinic/get/allvisitings/${userId}`)
+      .then((res) => {
+        setAddedDoctors(res.data.data);
+      })
+      .catch((err) => {
+        console.log("Error getting pending doctors. Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [userId]);
+
+  if (isLoading) {
+    return (
+      <div className="mt-5">
+        <Loader2 />
+      </div>
+    );
+  }
+  return (
+    <div style={{ maxHeight: "60vh", scrollbarWidth: "thin" }}>
+      {addedDoctors.map((doctor) => (
+        <VisitingElement
+          item={doctor}
+          key={doctor.doctor_id}
+          setAddedClinics={setAddedDoctors}
+          type="doctor"
+        />
+      ))}
+    </div>
+  );
+}
+
+function PendingTab({ userId }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [pendingDoctors, setPendingDoctors] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${config.baseURL}/visiting/clinic/get/pendingvisitings/${userId}`)
+      .then((res) => {
+        setPendingDoctors(res.data.data);
+      })
+      .catch((err) => {
+        console.log("Error getting pending doctors. Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [userId]);
+
+  if (isLoading) {
+    return (
+      <div className="mt-5">
+        <Loader2 />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {pendingDoctors.map((doctor) => (
+        <Pending item={doctor} type="doctor" key={doctor.doctor_id} />
+      ))}
+    </>
+  );
+}
+
+function RequestsTab({ userId }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [requestedDoctors, setRequestedDoctors] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${config.baseURL}/visiting/clinic/get/requests/${userId}`)
+      .then((res) => {
+        setRequestedDoctors(res.data.data);
+      })
+      .catch((err) => {
+        console.log("Error getting pending doctors. Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [userId]);
+
+  if (isLoading) {
+    return (
+      <div className="mt-5">
+        <Loader2 />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {requestedDoctors.map((doctor) => (
+        <Requested
+          item={doctor}
+          type="doctor"
+          key={doctor.doctor_id}
+          setRequestedClinics={setRequestedDoctors}
+          userId={userId}
+        />
+      ))}
+    </>
   );
 }
 

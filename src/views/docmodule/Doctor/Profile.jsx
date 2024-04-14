@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import axios from "axios";
 
@@ -11,37 +10,11 @@ import { VisitingElement } from "../../../Components/VisitingElement";
 import { Pending } from "../../../Components/Pending";
 import { Requested } from "../../../Components/Requested";
 import AddClinicModal from "../../../Components/AddClinicModal";
-import UpdateClinicFeeModal from "../../../Components/UpdateClinicFeeModal";
 import Loader from "../../../Components/Loader/Loader";
+import Loader2 from "../../../Components/Loader2/Loader2";
 import { useAuth } from "../../../Contexts/AuthContext";
 import { useAlert } from "../../../Contexts/AlertContext";
 import config from "../../../config";
-
-const doctorInfo = {
-  name: "Dr. John Doe",
-  specialty: "Cardiologist",
-  nic: "123456789V",
-  medicalLicenseNo: "MED123456",
-  email: "dr.johndoe@example.com",
-  contactNo: "+1234567890",
-  gender: "Male",
-  dob: "1970-01-01",
-};
-
-const clinics = [
-  {
-    name: "Green Valley Healthcare",
-    doctorFee: 2000,
-  },
-  {
-    name: "City Medical Center",
-    doctorFee: 1800,
-  },
-  {
-    name: "Sunrise Wellness Clinic",
-    doctorFee: 2200,
-  },
-];
 
 function CustomTabPanel({ children, value, index }) {
   return (
@@ -70,7 +43,6 @@ function a11yProps(index) {
 }
 
 function Profile() {
-  const [visitingClinics, setVisitingClinics] = useState(clinics);
   const [value, setValue] = useState(0);
 
   const [doctor, setDoctor] = useState({});
@@ -90,7 +62,7 @@ function Profile() {
       })
       .catch((err) => {
         showAlert("error", "Error loading profile data");
-        console.log("Error getting profile data" + " Error:" + err);
+        console.log("Error getting profile data. Error:" + err);
       })
       .finally(() => {
         setIsLoading(false);
@@ -172,29 +144,132 @@ function Profile() {
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            <div style={{ maxHeight: "60vh", scrollbarWidth: "thin" }}>
-              {visitingClinics.map((clinic) => (
-                <VisitingElement
-                  item={clinic}
-                  key={clinic.name}
-                  type="doctor"
-                />
-              ))}
-            </div>
+            <AddedTab userId={user.id} />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            {visitingClinics.map((clinic) => (
-              <Pending item={clinic} key={clinic.name} />
-            ))}
+            <PendingTab userId={user.id} />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
-            {visitingClinics.map((clinic) => (
-              <Requested item={clinic} key={clinic.name} />
-            ))}
+            <RequestsTab userId={user.id} />
           </CustomTabPanel>
         </div>
       </div>
     </div>
+  );
+}
+
+function AddedTab({ userId }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [addedClinics, setAddedClinics] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${config.baseURL}/visiting/doctor/get/allvisitings/${userId}`)
+      .then((res) => {
+        setAddedClinics(res.data.data);
+      })
+      .catch((err) => {
+        console.log("Error getting pending clinics. Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [userId]);
+
+  if (isLoading) {
+    return (
+      <div className="mt-5">
+        <Loader2 />
+      </div>
+    );
+  }
+  return (
+    <div style={{ maxHeight: "60vh", scrollbarWidth: "thin" }}>
+      {addedClinics.map((clinic) => (
+        <VisitingElement
+          item={clinic}
+          key={clinic.clinic_id}
+          setAddedClinics={setAddedClinics}
+          type="clinic"
+        />
+      ))}
+    </div>
+  );
+}
+
+function PendingTab({ userId }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [pendingClinics, setPendingClinics] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${config.baseURL}/visiting/doctor/get/pendingvisitings/${userId}`)
+      .then((res) => {
+        setPendingClinics(res.data.data);
+      })
+      .catch((err) => {
+        console.log("Error getting pending clinics. Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [userId]);
+
+  if (isLoading) {
+    return (
+      <div className="mt-5">
+        <Loader2 />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {pendingClinics.map((clinic) => (
+        <Pending item={clinic} type="clinic" key={clinic.clinic_id} />
+      ))}
+    </>
+  );
+}
+
+function RequestsTab({ userId }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [requestedClinics, setRequestedClinics] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${config.baseURL}/visiting/doctor/get/requests/${userId}`)
+      .then((res) => {
+        setRequestedClinics(res.data.data);
+      })
+      .catch((err) => {
+        console.log("Error getting pending clinics. Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [userId]);
+
+  if (isLoading) {
+    return (
+      <div className="mt-5">
+        <Loader2 />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {requestedClinics.map((clinic) => (
+        <Requested
+          item={clinic}
+          type="clinic"
+          key={clinic.clinic_id}
+          setRequestedClinics={setRequestedClinics}
+          userId={userId}
+        />
+      ))}
+    </>
   );
 }
 

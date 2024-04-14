@@ -5,7 +5,7 @@ import { Modal as BaseModal } from "@mui/base/Modal";
 import Fade from "@mui/material/Fade";
 import Button from "./Button/Button";
 import { useState } from "react";
-import { ClinicSearch } from "./ClinicSearch";
+import ClinicSearch from "./ClinicSearch";
 
 export default function AddClinicModal({}) {
   const [open, setOpen] = useState(false);

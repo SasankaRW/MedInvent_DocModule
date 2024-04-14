@@ -2,10 +2,15 @@ import * as React from "react";
 import styles from "./ResultItem.module.css";
 import Loader2 from "../Loader2/Loader2";
 import axios from "axios";
+import { useAuth } from "../../Contexts/AuthContext";
+import { useAlert } from "../../Contexts/AlertContext";
+import config from "../../config";
 
 export function ResultItem({ item, type }) {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isRequested, setIsRequested] = React.useState(false);
+  const { user } = useAuth();
+  const { showAlert } = useAlert();
 
   const renderAction = () => {
     if (isLoading) {
@@ -23,14 +28,18 @@ export function ResultItem({ item, type }) {
 
   function onAddClick() {
     setIsLoading(true);
-    console.log(item);
     axios
-      .post("http://localhost:8080/add", {})
+      .post(`${config.baseURL}/visiting/newvisiting`, {
+        doctor_id: type === "doctor" ? item.doctor_id : user.id,
+        clinic_id: type === "doctor" ? user.id : item.clinic_id,
+        reqSentBy: type === "doctor" ? "clinic" : "doctor",
+      })
       .then((response) => {
         setIsRequested(true);
       })
       .catch((error) => {
-        console.error("Error booking appointment", error);
+        showAlert("error", "Error sending the request");
+        console.error("Error sending the request", error);
       })
       .finally(() => {
         setIsLoading(false);
@@ -43,7 +52,9 @@ export function ResultItem({ item, type }) {
       key={item.name}
     >
       <div>
-        <div>{item.name}</div>
+        <div>
+          {type === "clinic" ? item.name : item.fname + " " + item.lname}
+        </div>
         {type === "clinic" && <small>{item.address}</small>}
         {type === "doctor" && <small>{item.specialty}</small>}
       </div>
