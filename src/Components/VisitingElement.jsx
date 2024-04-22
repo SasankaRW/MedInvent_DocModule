@@ -88,12 +88,8 @@ export function VisitingElement({ item, type, setAddedClinics }) {
         {isLoading ? (
           <Loader2 />
         ) : (
-          <IconButton>
-            <DeleteOutlineIcon
-              fontSize="medium"
-              style={{ color: "gray" }}
-              onClick={onDelete}
-            />
+          <IconButton onClick={onDelete}>
+            <DeleteOutlineIcon fontSize="medium" style={{ color: "gray" }} />
           </IconButton>
         )}
       </div>

@@ -73,7 +73,6 @@ function Login() {
               </InputLabel>
               <OutlinedInput
                 size="small"
-                labelId="username"
                 id="username"
                 label="Username"
                 variant="outlined"

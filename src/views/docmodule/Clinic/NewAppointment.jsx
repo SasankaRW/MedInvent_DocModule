@@ -25,14 +25,14 @@ const timeSlots = ["5.00 PM", "9.30 PM"];
 
 const initialState = {
   doctor: "",
-  date: null,
+  date: "",
   time: "",
   apppointmentNo: 0,
   title: "Mr.",
   patientName: "",
   mobileNumber: "",
-  emailAddress: null,
-  area: null,
+  emailAddress: "",
+  area: "",
   nic: "",
 };
 

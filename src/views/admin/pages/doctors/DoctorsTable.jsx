@@ -13,6 +13,7 @@ import { useState } from "react";
 import MyModal from "../../../../Components/MyModal";
 import { DeleteItemModal } from "../../../../Components/DeleteItemModal";
 import { DoctorDetailsModal } from "../../../../Components/DoctorDetailsModal";
+import { TableFooter } from "@mui/material";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 200 },
@@ -40,7 +41,7 @@ export default function DoctorsTable({ doctors, setIsLoading, setDoctors }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const handleChangePage = (newPage) => {
+  const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
@@ -74,7 +75,7 @@ export default function DoctorsTable({ doctors, setIsLoading, setDoctors }) {
                 )
               : doctors
             ).map((row) => (
-              <TableRow key={row.name} hover>
+              <TableRow key={row.doctor_id} hover>
                 <TableCell component="th" scope="row" style={{ width: 200 }}>
                   {row.fname} {row.lname}
                 </TableCell>
@@ -108,17 +109,20 @@ export default function DoctorsTable({ doctors, setIsLoading, setDoctors }) {
               </TableRow>
             ))}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 50]}
+                count={doctors.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={doctors.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
     </>
   );
 }

@@ -335,8 +335,8 @@ function NewSession() {
                 onChange={handleIsRefundable}
               />
               <span>
-                Refundable appointment (Rs. 250 will be extra charged for
-                refundable appointments
+                Accept refundable appointments (Rs. 250 will be extra charged
+                for refundable appointments
               </span>
             </div>
             <div

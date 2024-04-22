@@ -13,6 +13,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import MyModal from "../../../../Components/MyModal";
 import { DeleteItemModal } from "../../../../Components/DeleteItemModal";
 import { PharmacyNClinicDetailsModal } from "../../../../Components/PharmacyNClinicDetailsModal";
+import { TableFooter } from "@mui/material";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 300 },
@@ -110,17 +111,20 @@ export default function PharmaciesTable({
               </TableRow>
             ))}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 50]}
+                count={pharmacies.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={pharmacies.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
     </>
   );
 }

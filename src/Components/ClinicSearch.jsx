@@ -8,7 +8,7 @@ import { useAlert } from "../Contexts/AlertContext";
 import Loader2 from "./Loader2/Loader2";
 
 export default function ClinicSearch() {
-  const [searchQuery, setSearchQuery] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [clinics, setClinics] = useState([]);
   const { showAlert } = useAlert();
   const [isLoading, setIsLoading] = useState(false);
@@ -62,7 +62,7 @@ export default function ClinicSearch() {
       {!isLoading && clinics.length > 0 && (
         <div className="p-2 mt-3">
           {clinics.map((d) => (
-            <ResultItem item={d} type="clinic" />
+            <ResultItem item={d} type="clinic" key={d.clinic_id} />
           ))}
         </div>
       )}

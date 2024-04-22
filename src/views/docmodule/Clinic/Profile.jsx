@@ -96,6 +96,13 @@ function Profile() {
     setValue(newValue);
   };
 
+  const convertTime = (time) =>
+    new Date(`1970-01-01T${time}`).toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+
   const mapURL = `https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3961.3885038149997!2d${clinicLocation[0]}!3d${clinicLocation[1]}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNsKwNTAnMzguMiJOIDc5wrA1NycyMi45IkU!5e0!3m2!1sen!2slk!4v1709995715108!5m2!1sen!2slk`;
 
   if (isLoading) {
@@ -138,7 +145,8 @@ function Profile() {
             <div className="row mb-3">
               <div className="col-4 text-muted">Open Hours</div>
               <div className="col-8">
-                {clinic.openHoursFrom} to {clinic.openHoursTo}
+                {convertTime(clinic.openHoursFrom)} to{" "}
+                {convertTime(clinic.openHoursTo)}
               </div>
             </div>
 
@@ -167,7 +175,6 @@ function Profile() {
                   width="100%"
                   height="200"
                   loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade"
                 />
               </div>
             </div>

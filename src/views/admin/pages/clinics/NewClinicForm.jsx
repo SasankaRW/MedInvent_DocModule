@@ -366,7 +366,9 @@ export default function NewClinicForm() {
                     }
                   >
                     {Object.keys(cities).map((k) => (
-                      <MenuItem value={k}>{k}</MenuItem>
+                      <MenuItem value={k} key={k}>
+                        {k}
+                      </MenuItem>
                     ))}
                   </Select>
                 </div>
@@ -379,7 +381,9 @@ export default function NewClinicForm() {
                     }
                   >
                     {cities[district].cities.map((k) => (
-                      <MenuItem value={k}>{k}</MenuItem>
+                      <MenuItem value={k} key={k}>
+                        {k}
+                      </MenuItem>
                     ))}
                   </Select>
                 </div>
