@@ -1,6 +1,8 @@
 .textarea {
     width: 75%;
     border: 1px solid #aaaaaacc;
+    border-radius: 5px;
+    padding: 10px;
 }
 
 .textarea:focus {

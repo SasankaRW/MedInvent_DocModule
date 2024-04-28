@@ -14,6 +14,7 @@ import MyModal from "../../../../Components/MyModal";
 import { DeleteItemModal } from "../../../../Components/DeleteItemModal";
 import { PharmacyNClinicDetailsModal } from "../../../../Components/PharmacyNClinicDetailsModal";
 import { TableFooter } from "@mui/material";
+import PharmacyClinicUpdateModal from "../../../../Components/PharmacyClinicUpdateModal";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 300 },
@@ -102,9 +103,15 @@ export default function ClinicsTable({ clinics, setIsLoading, setClinics }) {
                         itemType="clinic"
                       />
                     </MyModal>
-                    <IconButton style={{ padding: "0px 5px" }}>
-                      <BorderColorOutlinedIcon fontSize="small" />
-                    </IconButton>
+                    <MyModal
+                      icon={<BorderColorOutlinedIcon fontSize="small" />}
+                    >
+                      <PharmacyClinicUpdateModal
+                        item={row}
+                        type="clinic"
+                        id={row.clinic_id}
+                      />
+                    </MyModal>
                   </div>
                 </TableCell>
               </TableRow>

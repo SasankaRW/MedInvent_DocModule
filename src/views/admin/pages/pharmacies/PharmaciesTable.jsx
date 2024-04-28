@@ -6,13 +6,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import IconButton from "@mui/material/IconButton";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import MyModal from "../../../../Components/MyModal";
 import { DeleteItemModal } from "../../../../Components/DeleteItemModal";
 import { PharmacyNClinicDetailsModal } from "../../../../Components/PharmacyNClinicDetailsModal";
+import PharmacyClinicUpdateModal from "../../../../Components/PharmacyClinicUpdateModal";
 import { TableFooter } from "@mui/material";
 
 const columns = [
@@ -103,9 +103,15 @@ export default function PharmaciesTable({
                         itemType="pharmacy"
                       />
                     </MyModal>
-                    <IconButton style={{ padding: "0px 5px" }}>
-                      <BorderColorOutlinedIcon fontSize="small" />
-                    </IconButton>
+                    <MyModal
+                      icon={<BorderColorOutlinedIcon fontSize="small" />}
+                    >
+                      <PharmacyClinicUpdateModal
+                        item={row}
+                        type="pharmacy"
+                        id={row.pharmacy_id}
+                      />
+                    </MyModal>
                   </div>
                 </TableCell>
               </TableRow>

@@ -20,8 +20,9 @@ import MyModal from "../../../Components/MyModal";
 
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { SessionDetailsModal } from "../../../Components/SessionDetailsModal";
+import CancelSessionModal from "../../../Components/CancelSessionModal";
 
 const clinics = [
   "HealthyCare Clinic",
@@ -138,9 +139,9 @@ function UpcomingSessions() {
                             />
                           </MyModal>
                           <MyModal
-                            icon={<DeleteOutlineIcon fontSize="small" />}
+                            icon={<CancelOutlinedIcon fontSize="small" />}
                           >
-                            <div>waqfw</div>
+                            <CancelSessionModal session={row} />
                           </MyModal>
                           <IconButton style={{ padding: "0px 5px" }}>
                             <BorderColorOutlinedIcon fontSize="small" />

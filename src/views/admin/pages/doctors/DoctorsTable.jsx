@@ -14,6 +14,7 @@ import MyModal from "../../../../Components/MyModal";
 import { DeleteItemModal } from "../../../../Components/DeleteItemModal";
 import { DoctorDetailsModal } from "../../../../Components/DoctorDetailsModal";
 import { TableFooter } from "@mui/material";
+import DoctorUpdateModal from "../../../../Components/DoctorUpdateModal";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 200 },
@@ -101,9 +102,11 @@ export default function DoctorsTable({ doctors, setIsLoading, setDoctors }) {
                         itemType="doctor"
                       />
                     </MyModal>
-                    <IconButton style={{ padding: "0px 5px" }}>
-                      <BorderColorOutlinedIcon fontSize="small" />
-                    </IconButton>
+                    <MyModal
+                      icon={<BorderColorOutlinedIcon fontSize="small" />}
+                    >
+                      <DoctorUpdateModal doctor={row} />
+                    </MyModal>
                   </div>
                 </TableCell>
               </TableRow>
