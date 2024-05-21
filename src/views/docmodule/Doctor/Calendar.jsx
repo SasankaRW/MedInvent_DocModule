@@ -7,6 +7,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 //import CalendarCss from '../../../CssModules/calendar.module.css';
 import "../../../CssModules/CalendarOverride.css";
 import { color } from "@mui/system";
+import { motion } from "framer-motion";
 
 const sessions = [
   {
@@ -128,10 +129,15 @@ function Calendar() {
 
   return (
     <div>
-      <div>
-        <Title>Calender</Title>
-      </div>
-      <div className="bg-white shadow p-5 rounded-5" style={{ width: "90%" }}>
+      <Title>Calender</Title>
+
+      <motion.div
+        className="bg-white shadow p-5 rounded-5"
+        style={{ width: "90%" }}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="CalendarDesign">
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -177,7 +183,7 @@ function Calendar() {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

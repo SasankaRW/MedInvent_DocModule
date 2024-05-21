@@ -7,6 +7,7 @@ import Button from "../../../Components/Button/Button";
 import axios from "axios";
 import Loader from "../../.././Components/Loader/Loader";
 import { useAlert } from "../../../Contexts/AlertContext";
+import { motion } from "framer-motion";
 
 const doctors = [
   "Dr. Emily Watson",
@@ -193,7 +194,12 @@ function NewAppointment() {
   return (
     <div className={styles.main}>
       <Title>New Appointment</Title>
-      <div className="shadow bg-white rounded-5 p-5">
+      <motion.div
+        className="shadow bg-white rounded-5 p-5"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <form action="" onSubmit={onSubmit}>
           <div className="row">
             <div className="col-md-6 col-sm-12 mb-4">
@@ -356,7 +362,7 @@ function NewAppointment() {
             <Button text="Submit" />
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 }

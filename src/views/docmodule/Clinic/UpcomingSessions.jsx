@@ -23,6 +23,7 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { SessionDetailsModal } from "../../../Components/SessionDetailsModal";
 import CancelSessionModal from "../../../Components/CancelSessionModal";
+import { motion } from "framer-motion";
 
 const doctors = [
   "Dr. Emily Watson",
@@ -70,7 +71,12 @@ function UpcomingSessions() {
   return (
     <div>
       <Title>Upcoming sessions</Title>
-      <div className="shadow bg-white rounded-5 p-4">
+      <motion.div
+        className="shadow bg-white rounded-5 p-4"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="d-flex">
           <MyDatePicker
             selectedDate={date}
@@ -162,7 +168,7 @@ function UpcomingSessions() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </div>
+      </motion.div>
     </div>
   );
 }

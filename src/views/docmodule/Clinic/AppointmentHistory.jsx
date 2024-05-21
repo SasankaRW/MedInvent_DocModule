@@ -13,6 +13,7 @@ import TableRow from "@mui/material/TableRow";
 import MyModal from "../../../Components/MyModal";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import { AppointmentDetailsModal } from "../../../Components/AppointmentDetailsModal";
+import { motion } from "framer-motion";
 
 const doctors = [
   "Dr. Emily Watson",
@@ -59,7 +60,12 @@ function AppointmentHistory() {
   return (
     <div>
       <Title>Appointments history</Title>
-      <div className="shadow bg-white rounded-5 p-4">
+      <motion.div
+        className="shadow bg-white rounded-5 p-4"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="d-flex align-items-center">
           <MyDatePicker
             selectedDate={date}
@@ -158,7 +164,7 @@ function AppointmentHistory() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </div>
+      </motion.div>
     </div>
   );
 }

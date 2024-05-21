@@ -11,6 +11,7 @@ import TimePicker from "../../../Components/TimePicker/TimePicker";
 import axios from "axios";
 import Loader from "../../.././Components/Loader/Loader";
 import { useAlert } from "../../../Contexts/AlertContext";
+import { motion } from "framer-motion";
 
 const doctors = [
   { name: "Dr. Emily Watson", doctor_id: 1 },
@@ -171,7 +172,12 @@ function NewSession() {
     <div className={styles.main}>
       <Title>New Session</Title>
 
-      <div className="d-flex bg-white shadow p-1 justify-content-between rounded-5">
+      <motion.div
+        className="d-flex bg-white shadow p-1 justify-content-between rounded-5"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <form action="" onSubmit={handleSubmit} className="w-100">
           <div className="p-5">
             <div className="row">
@@ -353,7 +359,7 @@ function NewSession() {
         <div className={`${styles.image} d-none d-lg-flex align-items-end`}>
           <img src="../../images/newsession.png" alt="img" height={300} />
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

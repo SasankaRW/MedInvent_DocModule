@@ -16,6 +16,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
+import { motion } from "framer-motion";
 import MyModal from "../../../Components/MyModal";
 
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
@@ -71,7 +72,12 @@ function UpcomingSessions() {
   return (
     <div>
       <Title>Upcoming sessions</Title>
-      <div className="shadow bg-white rounded-5 p-4">
+      <motion.div
+        className="shadow bg-white rounded-5 p-4"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="d-flex align-items-center">
           <MyDatePicker
             selectedDate={date}
@@ -163,7 +169,7 @@ function UpcomingSessions() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -16,6 +16,7 @@ import { useAuth } from "../../../Contexts/AuthContext";
 import { useAlert } from "../../../Contexts/AlertContext";
 import config from "../../../config";
 import Loader2 from "../../../Components/Loader2/Loader2";
+import { motion } from "framer-motion";
 
 const doctors = [
   {
@@ -112,7 +113,12 @@ function Profile() {
   return (
     <div>
       <Title>Profile</Title>
-      <div className="row container">
+      <motion.div
+        className="row container"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="col-lg-6 col-md-6 col-12 bg-white shadow rounded-5 p-2">
           <div className="container p-4">
             <div className="d-flex align-items-center">
@@ -207,7 +213,7 @@ function Profile() {
             <RequestsTab userId={user.id} />
           </CustomTabPanel>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

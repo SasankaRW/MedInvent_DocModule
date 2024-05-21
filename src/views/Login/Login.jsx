@@ -9,7 +9,7 @@ import styles from "./Login.module.css";
 import { useEffect, useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Button from "../../Components/Button/Button";
-
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Contexts/AuthContext";
 
@@ -57,7 +57,12 @@ function Login() {
       <div className="h1 text-center pt-3 position-absolute top-0">
         MedInvent
       </div>
-      <div className="d-flex bg-white shadow p-1 justify-content-between rounded-5">
+      <motion.div
+        className="d-flex bg-white shadow p-1 justify-content-between rounded-5"
+        initial={{ opacity: 0, y: 100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="text-center p-5">
           <div className="d-inline-block  text-start">
             <div className="h5 m-0">
@@ -124,7 +129,7 @@ function Login() {
           <div className="h4 text-light my-4 py-4">MedInvent</div>
           <img src="../../images/login.png" alt="img" height={270} />
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

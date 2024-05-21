@@ -10,6 +10,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import MyModal from "../../../Components/MyModal";
+import { motion } from "framer-motion";
 
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import { SessionDetailsModal } from "../../../Components/SessionDetailsModal";
@@ -58,7 +59,12 @@ function SessionHistory() {
   return (
     <div>
       <Title>Session history</Title>
-      <div className="shadow bg-white rounded-5 p-4">
+      <motion.div
+        className="shadow bg-white rounded-5 p-4"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="d-flex align-items-center">
           <MyDatePicker
             selectedDate={date}
@@ -137,7 +143,7 @@ function SessionHistory() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </div>
+      </motion.div>
     </div>
   );
 }

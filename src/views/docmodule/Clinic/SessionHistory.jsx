@@ -13,6 +13,7 @@ import MyModal from "../../../Components/MyModal";
 
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import { SessionDetailsModal } from "../../../Components/SessionDetailsModal";
+import { motion } from "framer-motion";
 
 import { useState } from "react";
 
@@ -61,7 +62,12 @@ function SessionHistory() {
   return (
     <div>
       <Title>Session history</Title>
-      <div className="shadow bg-white rounded-5 p-4">
+      <motion.div
+        className="shadow bg-white rounded-5 p-4"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="d-flex">
           <MyDatePicker
             selectedDate={date}
@@ -140,7 +146,7 @@ function SessionHistory() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </div>
+      </motion.div>
     </div>
   );
 }
