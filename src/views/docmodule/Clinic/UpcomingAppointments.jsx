@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Title from "../../../Components/Title";
 import MyDatePicker from "../../../Components/MyDatePicker";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
@@ -36,17 +36,28 @@ function UpcomingAppointments() {
   const [date, setDate] = useState("");
   const [doctor, setDoctor] = useState("");
   const [time, setTime] = useState("");
-
+  const [filteredAppointments, setFilteredAppointments] =
+    useState(appointments);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const filteredAppointments = appointments.filter((appointment) => {
-    return (
-      (doctor === "" || appointment.doctor === doctor) &&
-      (date === "" || appointment.date === date) &&
-      (time === "" || appointment.time === time)
-    );
-  });
+  useEffect(() => {
+    let filtered = appointments;
+
+    if (date) {
+      filtered = filtered.filter((appointment) => appointment.date === date);
+    }
+    if (doctor) {
+      filtered = filtered.filter(
+        (appointment) => appointment.doctor === doctor
+      );
+    }
+    if (time) {
+      filtered = filtered.filter((appointment) => appointment.time === time);
+    }
+
+    setFilteredAppointments(filtered);
+  }, [date, doctor, time]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -147,7 +158,11 @@ function UpcomingAppointments() {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
-                    <TableRow key={row.doctor} hover>
+                    //change this to appointment id
+                    <TableRow
+                      key={`${row.patient}-${row.date}-${row.time}`}
+                      hover
+                    >
                       <TableCell>{row.patient}</TableCell>
                       <TableCell>{row.doctor}</TableCell>
                       <TableCell>{row.date}</TableCell>
