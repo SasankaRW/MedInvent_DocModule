@@ -14,15 +14,7 @@ import MyModal from "../../../Components/MyModal";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import { AppointmentDetailsModal } from "../../../Components/AppointmentDetailsModal";
 import { motion } from "framer-motion";
-
-const doctors = [
-  "Dr. Emily Watson",
-  "Dr. Michael Brown",
-  "Dr. Sophia Johnson",
-  "Dr. Ethan Smith",
-];
-
-const times = ["3.00 PM", "8.00 PM"];
+import Button from "../../../Components/Button/Button";
 
 const columns = [
   { id: "patient", label: "Patient", minWidth: 170 },
@@ -48,6 +40,14 @@ function AppointmentHistory() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const filteredAppointments = appointments.filter((appointment) => {
+    return (
+      (doctor === "" || appointment.doctor === doctor) &&
+      (date === "" || appointment.date === date) &&
+      (time === "" || appointment.time === time)
+    );
+  });
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -55,6 +55,12 @@ function AppointmentHistory() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const onClearClick = () => {
+    setDate("");
+    setDoctor("");
+    setTime("");
   };
 
   return (
@@ -70,9 +76,9 @@ function AppointmentHistory() {
           <MyDatePicker
             selectedDate={date}
             handleDateChange={(e) => setDate(e.target.value)}
-            maxDate={new Date().toISOString().split("T")[0]}
+            minDate={new Date().toISOString().split("T")[0]}
           />
-          <FormControl className="w-25 ">
+          <FormControl style={{ width: "20%", marginRight: "20px" }}>
             <InputLabel id="doctor" size="small">
               Select doctor
             </InputLabel>
@@ -87,14 +93,16 @@ function AppointmentHistory() {
                 borderRadius: "20px",
               }}
             >
-              {doctors.map((x) => (
-                <MenuItem key={x} value={x}>
-                  {x}
-                </MenuItem>
-              ))}
+              {Array.from(new Set(appointments.map((x) => x.doctor)))
+                .sort()
+                .map((doctor) => (
+                  <MenuItem key={doctor} value={doctor}>
+                    {doctor}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
-          <FormControl className="w-25 mx-3">
+          <FormControl style={{ width: "20%", marginRight: "20px" }}>
             <InputLabel id="doctor" size="small">
               Select Session time
             </InputLabel>
@@ -109,13 +117,17 @@ function AppointmentHistory() {
                 borderRadius: "20px",
               }}
             >
-              {times.map((x) => (
-                <MenuItem key={x} value={x}>
-                  {x}
-                </MenuItem>
-              ))}
+              {Array.from(new Set(appointments.map((x) => x.time)))
+                .sort()
+                .map((time) => (
+                  <MenuItem key={time} value={time}>
+                    {time}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
+
+          <Button text="Clear" onClick={onClearClick} />
         </div>
         <hr className="my-4" />
 
@@ -131,7 +143,7 @@ function AppointmentHistory() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {appointments
+              {filteredAppointments
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (

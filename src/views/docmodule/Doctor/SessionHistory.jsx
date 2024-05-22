@@ -15,7 +15,8 @@ import { motion } from "framer-motion";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import { SessionDetailsModal } from "../../../Components/SessionDetailsModal";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Button from "../../../Components/Button/Button";
 
 //colums of the table
 const columns = [
@@ -42,9 +43,21 @@ function SessionHistory() {
   //state management using useState hook
   const [date, setDate] = useState("");
   const [clinic, setClinic] = useState("");
-
+  const [filteredSessions, setFilteredSessions] = useState(sessions);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  useEffect(() => {
+    const filtered = sessions.filter((session) => {
+      const sessionDate = new Date(session.date).toISOString().split("T")[0];
+      return (
+        (date === "" || sessionDate === date) &&
+        (clinic === "" || session.clinic === clinic)
+      );
+    });
+    setFilteredSessions(filtered);
+    setPage(0);
+  }, [date, clinic]);
 
   //function to handle page change
   const handleChangePage = (event, newPage) => {
@@ -56,6 +69,12 @@ function SessionHistory() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  const onClearClick = () => {
+    setDate("");
+    setClinic("");
+  };
+
   return (
     <div>
       <Title>Session history</Title>
@@ -71,30 +90,32 @@ function SessionHistory() {
             handleDateChange={(e) => setDate(e.target.value)}
             maxDate={new Date().toISOString().split("T")[0]}
           />
-          <FormControl fullWidth>
+          <FormControl style={{ width: "20%", marginRight: "20px" }}>
             <InputLabel id="clinic" size="small">
               Select Clinic
             </InputLabel>
             <Select
-              fullWidth
               size="small"
               labelId="clinic"
               id="demo-simple-select"
               value={clinic}
               onChange={(e) => setClinic(e.target.value)}
               label="Select clinic"
-              className="w-25"
               sx={{
                 borderRadius: "20px",
               }}
             >
-              {clinics.map((x) => (
-                <MenuItem key={x} value={x}>
-                  {x}
-                </MenuItem>
-              ))}
+              {Array.from(new Set(sessions.map((x) => x.clinic)))
+                .sort()
+                .map((clinic) => (
+                  <MenuItem key={clinic} value={clinic}>
+                    {clinic}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
+
+          <Button text="Clear" onClick={onClearClick} />
         </div>
         <hr className="my-4" />
 
@@ -110,7 +131,7 @@ function SessionHistory() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {sessions
+              {filteredSessions
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
@@ -163,6 +184,16 @@ const sessions = [
     docFee: 2000,
   },
   {
+    doctor: "Dr Stephen Strange",
+    clinic: "Medicare Clinic",
+    activePatients: 12,
+    maxPatients: 20,
+    date: "2024/03/22",
+    time: "8.00 PM",
+    isRefundableAppointments: true,
+    docFee: 2000,
+  },
+  {
     doctor: "Dr John Doe",
     clinic: "Healthy Life Clinic",
     activePatients: 15,
@@ -184,7 +215,7 @@ const sessions = [
   },
   {
     doctor: "Dr Michael Johnson",
-    clinic: "Sunset Healthcare",
+    clinic: "Central Family Practice",
     activePatients: 10,
     maxPatients: 20,
     date: "2024/03/25",
@@ -192,13 +223,4 @@ const sessions = [
     isRefundableAppointments: false,
     docFee: 1900,
   },
-];
-
-//dummy data for clinics
-const clinics = [
-  "HealthyCare Clinic",
-  "City General Hospital",
-  "Sunrise Medical Center",
-  "Metro Health Clinic",
-  "Central Family Practice",
 ];

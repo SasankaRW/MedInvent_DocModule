@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Title from "../../../Components/Title";
 import MyDatePicker from "../../../Components/MyDatePicker";
 import {
@@ -24,14 +24,7 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { SessionDetailsModal } from "../../../Components/SessionDetailsModal";
 import CancelSessionModal from "../../../Components/CancelSessionModal";
-
-const clinics = [
-  "HealthyCare Clinic",
-  "City General Hospital",
-  "Sunrise Medical Center",
-  "Metro Health Clinic",
-  "Central Family Practice",
-];
+import Button from "../../../Components/Button/Button";
 
 const columns = [
   { id: "clinic", label: "Clinic", minWidth: 170 },
@@ -56,9 +49,21 @@ const columns = [
 function UpcomingSessions() {
   const [date, setDate] = useState("");
   const [clinic, setClinic] = useState("");
-
+  const [filteredSessions, setFilteredSessions] = useState(sessions);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  useEffect(() => {
+    const filtered = sessions.filter((session) => {
+      const sessionDate = new Date(session.date).toISOString().split("T")[0];
+      return (
+        (date === "" || sessionDate === date) &&
+        (clinic === "" || session.clinic === clinic)
+      );
+    });
+    setFilteredSessions(filtered);
+    setPage(0);
+  }, [date, clinic]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -67,6 +72,11 @@ function UpcomingSessions() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const onClearClick = () => {
+    setDate("");
+    setClinic("");
   };
 
   return (
@@ -84,30 +94,32 @@ function UpcomingSessions() {
             handleDateChange={(e) => setDate(e.target.value)}
             minDate={new Date().toISOString().split("T")[0]}
           />
-          <FormControl fullWidth>
+          <FormControl style={{ width: "20%", marginRight: "20px" }}>
             <InputLabel id="clinic" size="small">
               Select Clinic
             </InputLabel>
             <Select
-              fullWidth
               size="small"
               labelId="clinic"
               id="demo-simple-select"
               value={clinic}
               onChange={(e) => setClinic(e.target.value)}
               label="Select clinic"
-              className="w-25"
               sx={{
                 borderRadius: "20px",
               }}
             >
-              {clinics.map((x) => (
-                <MenuItem key={x} value={x}>
-                  {x}
-                </MenuItem>
-              ))}
+              {Array.from(new Set(sessions.map((x) => x.clinic)))
+                .sort()
+                .map((clinic) => (
+                  <MenuItem key={clinic} value={clinic}>
+                    {clinic}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
+
+          <Button text="Clear" onClick={onClearClick} />
         </div>
         <hr className="my-4" />
 
@@ -123,7 +135,7 @@ function UpcomingSessions() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {sessions
+              {filteredSessions
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
@@ -182,7 +194,17 @@ const sessions = [
     clinic: "Medicare Clinic",
     activePatients: 12,
     maxPatients: 20,
-    date: "2024/03/21",
+    date: "2024-06-21",
+    time: "7.30 PM",
+    isRefundableAppointments: true,
+    docFee: 2000,
+  },
+  {
+    doctor: "Dr Stephen Strange",
+    clinic: "Medicare Clinic",
+    activePatients: 12,
+    maxPatients: 20,
+    date: "2024-06-22",
     time: "7.30 PM",
     isRefundableAppointments: true,
     docFee: 2000,
@@ -192,7 +214,7 @@ const sessions = [
     clinic: "Healthy Life Clinic",
     activePatients: 15,
     maxPatients: 25,
-    date: "2024/03/22",
+    date: "2024-06-21",
     time: "10.00 AM",
     isRefundableAppointments: false,
     docFee: 1800,
@@ -202,7 +224,7 @@ const sessions = [
     clinic: "Family Wellness Center",
     activePatients: 18,
     maxPatients: 30,
-    date: "2024/03/23",
+    date: "2024-06-21",
     time: "2.00 PM",
     isRefundableAppointments: true,
     docFee: 2200,
@@ -212,7 +234,7 @@ const sessions = [
     clinic: "Sunset Healthcare",
     activePatients: 10,
     maxPatients: 20,
-    date: "2024/03/25",
+    date: "2024-06-21",
     time: "11.30 AM",
     isRefundableAppointments: false,
     docFee: 1900,
@@ -222,7 +244,7 @@ const sessions = [
     clinic: "Elder Care Clinic",
     activePatients: 22,
     maxPatients: 25,
-    date: "2024/03/26",
+    date: "2024-03-26",
     time: "3.30 PM",
     isRefundableAppointments: true,
     docFee: 2100,
@@ -232,7 +254,7 @@ const sessions = [
     clinic: "Hope Hospital",
     activePatients: 17,
     maxPatients: 20,
-    date: "2024/03/27",
+    date: "2024-03-27",
     time: "9.00 AM",
     isRefundableAppointments: true,
     docFee: 2300,
@@ -242,7 +264,7 @@ const sessions = [
     clinic: "Green Meadows Clinic",
     activePatients: 20,
     maxPatients: 30,
-    date: "2024/03/28",
+    date: "2024-03-28",
     time: "4.00 PM",
     isRefundableAppointments: false,
     docFee: 2000,
@@ -252,7 +274,7 @@ const sessions = [
     clinic: "First Aid Clinic",
     activePatients: 13,
     maxPatients: 15,
-    date: "2024/03/29",
+    date: "2024-03-29",
     time: "1.30 PM",
     isRefundableAppointments: true,
     docFee: 2400,
@@ -262,7 +284,7 @@ const sessions = [
     clinic: "Bright Health Clinic",
     activePatients: 19,
     maxPatients: 25,
-    date: "2024/03/30",
+    date: "2024-03-30",
     time: "10.30 AM",
     isRefundableAppointments: false,
     docFee: 1950,
@@ -272,7 +294,7 @@ const sessions = [
     clinic: "Sunrise Wellness Center",
     activePatients: 16,
     maxPatients: 20,
-    date: "2024/03/31",
+    date: "2024-03-31",
     time: "3.00 PM",
     isRefundableAppointments: true,
     docFee: 2250,
@@ -282,7 +304,7 @@ const sessions = [
     clinic: "Silver Health Clinic",
     activePatients: 14,
     maxPatients: 18,
-    date: "2024/04/01",
+    date: "2024-04-01",
     time: "11.00 AM",
     isRefundableAppointments: true,
     docFee: 2150,

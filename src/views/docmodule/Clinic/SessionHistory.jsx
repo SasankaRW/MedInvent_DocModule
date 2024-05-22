@@ -15,14 +15,8 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import { SessionDetailsModal } from "../../../Components/SessionDetailsModal";
 import { motion } from "framer-motion";
 
-import { useState } from "react";
-
-const doctors = [
-  "Dr. Emily Watson",
-  "Dr. Michael Brown",
-  "Dr. Sophia Johnson",
-  "Dr. Ethan Smith",
-];
+import { useEffect, useState } from "react";
+import Button from "../../../Components/Button/Button";
 
 const columns = [
   { id: "doctor", label: "Doctor", minWidth: 170 },
@@ -47,9 +41,21 @@ const columns = [
 function SessionHistory() {
   const [date, setDate] = useState("");
   const [doctor, setDoctor] = useState("");
-
+  const [filteredSessions, setFilteredSessions] = useState(sessions);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  useEffect(() => {
+    const filtered = sessions.filter((session) => {
+      const sessionDate = new Date(session.date).toISOString().split("T")[0];
+      return (
+        (date === "" || sessionDate === date) &&
+        (doctor === "" || session.doctor === doctor)
+      );
+    });
+    setFilteredSessions(filtered);
+    setPage(0);
+  }, [date, doctor]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -59,6 +65,12 @@ function SessionHistory() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  const onClearClick = () => {
+    setDate("");
+    setDoctor("");
+  };
+
   return (
     <div>
       <Title>Session history</Title>
@@ -74,30 +86,32 @@ function SessionHistory() {
             handleDateChange={(e) => setDate(e.target.value)}
             maxDate={new Date().toISOString().split("T")[0]}
           />
-          <FormControl fullWidth>
+          <FormControl style={{ width: "20%", marginRight: "20px" }}>
             <InputLabel id="doctor" size="small">
               Select doctor
             </InputLabel>
             <Select
-              fullWidth
               size="small"
               labelId="doctor"
               id="demo-simple-select"
               value={doctor}
               onChange={(e) => setDoctor(e.target.value)}
               label="Select doctor"
-              className="w-25"
               sx={{
                 borderRadius: "20px",
               }}
             >
-              {doctors.map((x) => (
-                <MenuItem key={x} value={x}>
-                  {x}
-                </MenuItem>
-              ))}
+              {Array.from(new Set(sessions.map((x) => x.doctor)))
+                .sort()
+                .map((doctor) => (
+                  <MenuItem key={doctor} value={doctor}>
+                    {doctor}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
+
+          <Button text="Clear" onClick={onClearClick} />
         </div>
         <hr className="my-4" />
 
@@ -113,7 +127,7 @@ function SessionHistory() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {sessions
+              {filteredSessions
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
