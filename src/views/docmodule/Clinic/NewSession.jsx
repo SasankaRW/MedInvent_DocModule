@@ -1,7 +1,7 @@
 import { MenuItem, Select } from "@mui/material";
 import Title from "../../../Components/Title";
 import styles from "../Doctor/NewSession.module.css";
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import MyDatePicker from "../../../Components/MyDatePicker";
 import Button from "../../../Components/Button/Button";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
@@ -12,34 +12,29 @@ import axios from "axios";
 import Loader from "../../.././Components/Loader/Loader";
 import { useAlert } from "../../../Contexts/AlertContext";
 import { motion } from "framer-motion";
-
-const doctors = [
-  { name: "Dr. Emily Watson", doctor_id: 1 },
-  { name: "Dr. Michael Brown", doctor_id: 2 },
-  { name: "Dr. Sophia Johnson", doctor_id: 3 },
-  { name: "Dr. Ethan Smith", doctor_id: 4 },
-  { name: "Dr. Olivia Jones", doctor_id: 5 },
-  { name: "Dr. Daniel Lee", doctor_id: 6 },
-  { name: "Dr. Ava Taylor", doctor_id: 7 },
-  { name: "Dr. Matthew Martinez", doctor_id: 8 },
-  { name: "Dr. Isabella Davis", doctor_id: 9 },
-  { name: "Dr. Lucas Garcia", doctor_id: 10 },
-];
+import config from "../../../config";
+import { useAuth } from "../../../Contexts/AuthContext";
 
 const initialState = {
   startDate: "",
   endDate: "",
   selectedDoctor: "",
+  docFee: 0,
   noOfPatients: 0,
   isRefundable: false,
   startTime: "",
   endTime: "",
+  scheduledBy: "clinic",
 };
 
 function reducer(state, action) {
   switch (action.type) {
     case "selectedDoctor":
-      return { ...state, selectedDoctor: action.payload };
+      return {
+        ...state,
+        selectedDoctor: action.payload,
+        docFee: action.fee,
+      };
 
     case "startDate":
       return { ...state, startDate: action.payload };
@@ -68,31 +63,54 @@ function reducer(state, action) {
 }
 
 function NewSession() {
-  const clinicName = "First Street Clinic";
-  const clinicFee = 800;
-  const doctorFee = 2200;
-  const clinic_id = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
+  const { user } = useAuth();
 
   const [
     {
       startDate,
       endDate,
       selectedDoctor,
+      docFee,
       noOfPatients,
       isRefundable,
       startTime,
       endTime,
+      scheduledBy,
     },
     dispatch,
   ] = useReducer(reducer, initialState);
 
   const [isLoading, setIsLoading] = useState(false);
   const [sessionDates, setSessionDates] = useState([]);
-
+  const [visitingDoctors, setVisitingDoctors] = useState([]);
   const { showAlert } = useAlert();
 
+  useEffect(() => {
+    setIsLoading(true);
+    axios
+      .get(`${config.baseURL}/visiting/clinic/get/allvisitings/${user.id}`)
+      .then((res) => {
+        setVisitingDoctors(res.data.data);
+      })
+      .catch((err) => {
+        showAlert("error", "Error loading visiting doctors");
+        console.log("Error getting visiting doctors. Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [showAlert, user.id]);
+
   function handleSelectedDoctor(e) {
-    dispatch({ type: "selectedDoctor", payload: e.target.value });
+    const selectedDoctorId = e.target.value;
+    const doctor = visitingDoctors.find(
+      (doc) => doc.doctor_id === selectedDoctorId
+    );
+    dispatch({
+      type: "selectedDoctor",
+      payload: selectedDoctorId,
+      fee: doctor.docFee,
+    });
   }
 
   function handleNoOfPatients(e) {
@@ -138,15 +156,24 @@ function NewSession() {
       return;
     }
 
+    if (docFee === null) {
+      showAlert("error", "Doctor Fee is not set for the selected doctor");
+      return;
+    }
+
     const sessionDetails = {
       timeFrom: startTime + ":00",
       timeTo: endTime + ":00",
       sessionDates: sessionDates.sort(),
-      noOfPatients: noOfPatients,
+      noOfPatients: parseInt(noOfPatients),
       isRefundable: isRefundable,
-      clinic_id: clinic_id,
+      clinic_id: user.id,
       doctor_id: selectedDoctor,
+      docFee: parseFloat(docFee),
+      clinicFee: parseFloat(user.clinicFee),
+      scheduledBy,
     };
+
     setIsLoading(true);
 
     axios
@@ -202,9 +229,9 @@ function NewSession() {
                     <MenuItem value="" disabled>
                       Select a doctor
                     </MenuItem>
-                    {doctors.map((doctor) => (
+                    {visitingDoctors.map((doctor) => (
                       <MenuItem value={doctor.doctor_id} key={doctor.doctor_id}>
-                        {doctor.name}
+                        {doctor.doctor.fname} {doctor.doctor.lname}
                       </MenuItem>
                     ))}
                   </Select>
@@ -255,7 +282,7 @@ function NewSession() {
                 </div>
               </div>
               <div className="col-sm-7">
-                <div className={styles.gridItem}>{clinicName}</div>
+                <div className={styles.gridItem}>{user.name}</div>
               </div>
             </div>
 
@@ -304,7 +331,7 @@ function NewSession() {
               </div>
               <div className="col-sm-7">
                 <div className={styles.gridItem}>
-                  Rs. {clinicFee}
+                  Rs. {user.clinicFee}
                   <button
                     style={{
                       backgroundColor: "white",
@@ -330,7 +357,9 @@ function NewSession() {
                 </div>
               </div>
               <div className="col-sm-7">
-                <div className={styles.gridItem}>Rs. {doctorFee}</div>
+                <div className={styles.gridItem}>
+                  {docFee === null ? "Not set" : "Rs. " + docFee}
+                </div>
               </div>
             </div>
             <div>

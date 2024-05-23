@@ -1,7 +1,7 @@
 import { MenuItem, Select } from "@mui/material";
 import Title from "../../../Components/Title";
 import styles from "./NewSession.module.css";
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import MyDatePicker from "../../../Components/MyDatePicker";
 import Button from "../../../Components/Button/Button";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
@@ -12,64 +12,31 @@ import axios from "axios";
 import Loader from "../../.././Components/Loader/Loader";
 import { useAlert } from "../../../Contexts/AlertContext";
 import { motion } from "framer-motion";
-
-const clinics = [
-  {
-    name: "First Street Clinic",
-    clinic_id: "baa6193f-6423-4612-924b-7c0ebdc5c105",
-  },
-  {
-    name: "Healthy Hearts Clinic",
-    clinic_id: "f17c34f1-bbc3-48f0-b12e-19f144f9446d",
-  },
-  {
-    name: "Sunshine Clinic",
-    clinic_id: "4ea0ad33-40e9-46d8-8166-5f79ace0199d",
-  },
-  {
-    name: "Green Meadows Clinic",
-    clinic_id: "70670a79-2f0a-4c7a-8fc0-c8a097304524",
-  },
-  {
-    name: "Bright Eyes Clinic",
-    clinic_id: "b41d25bf-a62b-4b11-a6b4-0c81e43ca96b",
-  },
-  {
-    name: "Friendly Family Clinic",
-    clinic_id: "87c60e14-9b8c-4fba-ac3d-c5909e492bea",
-  },
-  {
-    name: "Careful Hands Clinic",
-    clinic_id: "4b24cbc5-9730-473d-8636-9dfb35fb2f7b",
-  },
-  {
-    name: "Sunny Smiles Clinic",
-    clinic_id: "6e269e96-13d0-4bb3-ba4f-3782cb106194",
-  },
-  {
-    name: "Hopeful Health Clinic",
-    clinic_id: "17381c99-af2a-41c3-b8c2-20c422cc851f",
-  },
-  {
-    name: "Healing Hands Clinic",
-    clinic_id: "f350b4ce-91b2-469a-b67c-4105f18316b9",
-  },
-];
+import { useAuth } from "../../../Contexts/AuthContext";
+import config from "../../../config";
 
 const initialState = {
   startDate: "",
   endDate: "",
-  selectedClinic: "",
+  selectedClinicr: "",
+  docFee: 0,
+  clinicFee: 0,
   noOfPatients: 0,
   isRefundable: false,
   startTime: "",
   endTime: "",
+  scheduledBy: "doctor",
 };
 
 function reducer(state, action) {
   switch (action.type) {
     case "selectedClinic":
-      return { ...state, selectedClinic: action.payload };
+      return {
+        ...state,
+        selectedClinic: action.payload,
+        docFee: action.docfee,
+        clinicFee: action.clinicFee,
+      };
 
     case "startDate":
       return { ...state, startDate: action.payload };
@@ -98,31 +65,56 @@ function reducer(state, action) {
 }
 
 function NewSession() {
-  const doctorName = "Dr Stephen Strange";
-  const clinicFee = 800;
-  const doctorFee = 2200;
-  const doctor_id = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
+  const { user } = useAuth();
 
   const [
     {
       startDate,
       endDate,
       selectedClinic,
+      docFee,
+      clinicFee,
       noOfPatients,
       isRefundable,
       startTime,
       endTime,
+      scheduledBy,
     },
     dispatch,
   ] = useReducer(reducer, initialState);
 
   const [isLoading, setIsLoading] = useState(false);
   const [sessionDates, setSessionDates] = useState([]);
-
+  const [visitingClinics, setVisitingClinics] = useState([]);
   const { showAlert } = useAlert();
 
+  useEffect(() => {
+    setIsLoading(true);
+    axios
+      .get(`${config.baseURL}/visiting/doctor/get/allvisitings/${user.id}`)
+      .then((res) => {
+        setVisitingClinics(res.data.data);
+      })
+      .catch((err) => {
+        showAlert("error", "Error loading visiting doctors");
+        console.log("Error getting visiting doctors. Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [showAlert, user.id]);
+
   function handleSelectedClinic(e) {
-    dispatch({ type: "selectedClinic", payload: e.target.value });
+    const selectedClinicId = e.target.value;
+    const clinic = visitingClinics.find(
+      (clinic) => clinic.clinic_id === selectedClinicId
+    );
+    dispatch({
+      type: "selectedClinic",
+      payload: selectedClinicId,
+      docfee: clinic.docFee,
+      clinicFee: parseFloat(clinic.clinic.clinicFees),
+    });
   }
 
   function handleNoOfPatients(e) {
@@ -168,15 +160,29 @@ function NewSession() {
       return;
     }
 
+    if (docFee === null) {
+      showAlert("error", "Doctor Fee is not set for the selected doctor");
+      return;
+    }
+
+    if (clinicFee === null) {
+      showAlert("error", "Clinic Fee is not set for the selected doctor");
+      return;
+    }
+
     const sessionDetails = {
       timeFrom: startTime + ":00",
       timeTo: endTime + ":00",
       sessionDates: sessionDates.sort(),
-      noOfPatients: noOfPatients,
+      noOfPatients: parseInt(noOfPatients),
       isRefundable: isRefundable,
       clinic_id: selectedClinic,
-      doctor_id: doctor_id,
+      doctor_id: user.id,
+      docFee: parseFloat(docFee),
+      clinicFee: parseFloat(clinicFee),
+      scheduledBy,
     };
+
     setIsLoading(true);
 
     axios
@@ -217,7 +223,7 @@ function NewSession() {
                 </div>
               </div>
               <div className="col-sm-7">
-                <div className={styles.gridItem}>{doctorName}</div>
+                <div className={styles.gridItem}>{user.name}</div>
               </div>
             </div>
             <div className="row">
@@ -271,9 +277,9 @@ function NewSession() {
                     <MenuItem value="" disabled>
                       Select a clinic
                     </MenuItem>
-                    {clinics.map((clinic) => (
+                    {visitingClinics.map((clinic) => (
                       <MenuItem value={clinic.clinic_id} key={clinic.clinic_id}>
-                        {clinic.name}
+                        {clinic.clinic.name}
                       </MenuItem>
                     ))}
                   </Select>
@@ -333,7 +339,7 @@ function NewSession() {
               </div>
               <div className="col-sm-7">
                 <div className={styles.gridItem}>
-                  Rs. {doctorFee}
+                  {docFee === null ? "Not set" : "Rs. " + docFee}
                   <button
                     style={{
                       backgroundColor: "white",
@@ -356,7 +362,9 @@ function NewSession() {
                 </div>
               </div>
               <div className="col-sm-7">
-                <div className={styles.gridItem}>Rs. {clinicFee}</div>
+                <div className={styles.gridItem}>
+                  {clinicFee === null ? "Not set" : "Rs. " + clinicFee}
+                </div>
               </div>
             </div>
             <div>

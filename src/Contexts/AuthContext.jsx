@@ -13,17 +13,18 @@ const users = [
   },
   {
     id: "02bb93de-3093-4821-b3e3-5a8a86455a0a",
-    name: "doctor",
+    name: "John Doe",
     email: "doctor",
     password: "doctor",
     role: "doctor",
   },
   {
     id: "49f89e71-67a4-46ed-b621-b45d914e861a",
-    name: "clinic",
+    name: "Health care clinic",
     email: "clinic",
     password: "clinic",
     role: "clinic",
+    clinicFee: 850.0,
   },
 ];
 

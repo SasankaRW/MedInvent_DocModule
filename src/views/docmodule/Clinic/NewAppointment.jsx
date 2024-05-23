@@ -311,7 +311,7 @@ function NewAppointment() {
 
           <div className="row">
             <div className="col-md-6 col-sm-12">
-              <InputLabel className="mb-2">Email Address</InputLabel>
+              <InputLabel className="mb-2">Email Address (Optional)</InputLabel>
               <TextField
                 value={emailAddress}
                 onChange={handleEmailAddress}
