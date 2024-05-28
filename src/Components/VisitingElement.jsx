@@ -63,7 +63,17 @@ export function VisitingElement({ item, type, setAddedClinics }) {
         <div className="mt-1 d-flex align-items-center">
           Doctor fee :
           <span>
-            <b>{docFee === null ? "Set doctor fee" : docFee}</b>
+            <b>
+              {type === "doctor"
+                ? docFee === null
+                  ? " Not set"
+                  : "Rs. " + docFee
+                : type === "clinic"
+                ? docFee === null
+                  ? " Set doc fee"
+                  : "Rs. " + docFee
+                : null}
+            </b>
           </span>
           {type === "clinic" && (
             <MyModal

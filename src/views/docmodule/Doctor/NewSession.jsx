@@ -102,7 +102,7 @@ function NewSession() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [showAlert, user.id]);
+  }, [user.id]);
 
   function handleSelectedClinic(e) {
     const selectedClinicId = e.target.value;

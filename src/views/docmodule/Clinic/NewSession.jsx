@@ -99,7 +99,7 @@ function NewSession() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [showAlert, user.id]);
+  }, [user.id]);
 
   function handleSelectedDoctor(e) {
     const selectedDoctorId = e.target.value;
