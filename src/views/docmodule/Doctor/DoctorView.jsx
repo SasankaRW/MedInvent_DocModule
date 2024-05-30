@@ -10,6 +10,7 @@ import UpcomingSessions from "../../docmodule/Doctor/UpcomingSessions.jsx";
 import Profile from "../../docmodule/Doctor/Profile.jsx";
 
 import Route from "../../../Components/Routes.js";
+import Prescriptions from "./Prescriptions.jsx";
 
 const menuItems = [
   {
@@ -42,6 +43,9 @@ function DoctorView() {
       case "Calendar":
         return "/calendar";
 
+      case "Prescriptions":
+        return "/prescriptions";
+
       case "Profile":
         return "/profile";
 
@@ -71,7 +75,9 @@ function DoctorView() {
         <Route path="/calendar">
           <Calendar />
         </Route>
-
+        <Route path="/prescriptions">
+          <Prescriptions />
+        </Route>
         <Route path="/profile">
           <Profile />
         </Route>
@@ -86,6 +92,7 @@ function DoctorView() {
         onSubMenuClick={handleSubMenuClick}
         activeSubMenu={activeSubMenu}
         username={"Doctor"}
+        user="doctor"
       >
         {renderSubMenu(activeSubMenu)}
       </SideNavNew>

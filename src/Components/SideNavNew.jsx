@@ -17,6 +17,7 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import MedicationLiquidIcon from "@mui/icons-material/MedicationLiquid";
 
 const drawerWidth = 270;
 
@@ -26,6 +27,7 @@ export default function SideNavNew({
   onSubMenuClick,
   menuItems,
   username,
+  user,
 }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
@@ -136,6 +138,39 @@ export default function SideNavNew({
                 </Collapse>
               </React.Fragment>
             ))}
+            {user === "doctor" && (
+              <ListItem onClick={() => onSubMenuClick("Prescriptions")}>
+                <ListItemButton
+                  sx={{
+                    backgroundColor:
+                      activeSubMenu === "Prescriptions" ? "#2980b9" : "inherit",
+                    color:
+                      activeSubMenu === "Prescriptions" ? "white" : "inherit",
+                    borderRadius: "10px",
+                    transition: "background-color 0.3s, color 0.5s",
+                    "&:hover": {
+                      backgroundColor: "#82CDFF",
+                      color: "#000",
+                      borderRadius: "10px",
+                    },
+                  }}
+                >
+                  <ListItemIcon>
+                    <MedicationLiquidIcon
+                      sx={{
+                        color:
+                          activeSubMenu === "Prescriptions"
+                            ? "white"
+                            : "inherit",
+                        borderRadius: "10px",
+                        transition: "background-color 0.3s, color 0.5s",
+                      }}
+                    />
+                  </ListItemIcon>
+                  <ListItemText primary="Prescriptions" />
+                </ListItemButton>
+              </ListItem>
+            )}
             <ListItem onClick={() => onSubMenuClick("Profile")}>
               <ListItemButton
                 sx={{
@@ -152,7 +187,13 @@ export default function SideNavNew({
                 }}
               >
                 <ListItemIcon>
-                  <AccountCircleOutlinedIcon />
+                  <AccountCircleOutlinedIcon
+                    sx={{
+                      color: activeSubMenu === "Profile" ? "white" : "inherit",
+                      borderRadius: "10px",
+                      transition: "background-color 0.3s, color 0.5s",
+                    }}
+                  />
                 </ListItemIcon>
                 <ListItemText primary="Profile" />
               </ListItemButton>
