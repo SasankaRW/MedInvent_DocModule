@@ -7,10 +7,18 @@ import config from "../../config";
 import { useAlert } from "../../Contexts/AlertContext";
 import Loader2 from "../Loader2/Loader2";
 import { useAuth } from "../../Contexts/AuthContext";
+import Loader from "../Loader/Loader";
 
-export default function PrescriptionPreview({ medicine, presName, onClose }) {
+export default function PrescriptionPreview({
+  medicine,
+  setMedicine,
+  presName,
+  setPresName,
+  onClose,
+}) {
   const [patient, setPatient] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoading2, setIsLoading2] = useState(false);
   const [patientNic, setPatientNic] = useState("");
 
   const { showAlert } = useAlert();
@@ -50,15 +58,30 @@ export default function PrescriptionPreview({ medicine, presName, onClose }) {
   }
 
   function handleSendToPatient() {
-    const presData = {
-      doctor_id: user.id,
-      patient_id: patient.userID,
-      medicine: medicine,
-      name: presName,
+    setIsLoading2(true);
+    const prescription = {
+      presData: {
+        presName,
+        createdBy: "doctor",
+        doctorName: user.name,
+        userID: patient.userID,
+      },
+      presMedicines: [...medicine],
     };
-
-    showAlert("success", "Prescription sent to patient successfully");
-    onClose();
+    axios
+      .post(`${config.baseURL}/prescription/newprescription`, prescription)
+      .then((res) => {
+        showAlert("success", "Prescription sent to patient successfully");
+        setMedicine([]);
+        setPresName("");
+        onClose();
+      })
+      .catch((err) => {
+        showAlert("error", "Error sending prescription to patient");
+      })
+      .finally(() => {
+        setIsLoading2(false);
+      });
   }
 
   return (
@@ -132,17 +155,16 @@ export default function PrescriptionPreview({ medicine, presName, onClose }) {
                 </div>
                 <div className="col-2">{med.qty} tabs</div>
                 <div className="col-2">{med.frq}</div>
-                <div className="col-2">
-                  {med.mealTiming}{" "}
-                  {(med.mealTiming === "After" ||
-                    med.mealTiming === "Before") &&
-                    "Meals"}
-                </div>
+                <div className="col-2">{med.mealTiming} Meals</div>
                 <div className="col-2">{med.duration} days</div>
               </div>
             ))}
             <div className="d-flex justify-content-end mt-4">
-              <Button text="Send to patient" onClick={handleSendToPatient} />
+              {isLoading2 ? (
+                <Loader2 />
+              ) : (
+                <Button text="Send to patient" onClick={handleSendToPatient} />
+              )}
             </div>
           </>
         )}

@@ -9,7 +9,7 @@ import PrescriptionPreview from "../../../Components/PrescriptionPreview/Prescri
 
 function Prescriptions() {
   const [presName, setPresName] = useState("");
-  const [medicine, setMedicine] = useState(drugs);
+  const [medicine, setMedicine] = useState([]);
   const [selectedMed, setSelectedMed] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -152,7 +152,9 @@ function Prescriptions() {
               <Modal open={open} onClose={handleClose}>
                 <PrescriptionPreview
                   medicine={medicine}
+                  setMedicine={setMedicine}
                   presName={presName}
+                  setPresName={setPresName}
                   onClose={handleClose}
                 />
               </Modal>
@@ -222,30 +224,6 @@ function MedicineSearch({
     </div>
   );
 }
-
-const drugs = [
-  {
-    name: "Amoxicillin",
-    qty: 30,
-    frq: "Once Daily",
-    mealTiming: "After",
-    duration: 10,
-  },
-  {
-    name: "Metformin",
-    qty: 60,
-    frq: "4 Times Daily",
-    mealTiming: "Before",
-    duration: 30,
-  },
-  {
-    name: "Ibuprofen",
-    qty: 20,
-    frq: "As Needed",
-    mealTiming: "With meal",
-    duration: 5,
-  },
-];
 
 const medicines = [
   "Ibuprofen",

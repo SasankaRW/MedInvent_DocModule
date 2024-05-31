@@ -68,7 +68,7 @@ export default function Medicine({ drug, onDelete, onUpdate }) {
             backgroundColor: "white",
           }}
         >
-          {["After", "Before", "With meal"].map((x) => (
+          {["After", "Before", "With"].map((x) => (
             <MenuItem key={x} value={x}>
               {x}
             </MenuItem>
