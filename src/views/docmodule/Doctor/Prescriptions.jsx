@@ -1,11 +1,14 @@
 import { InputLabel, Modal, TextField } from "@mui/material";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../../Components/Button/Button";
 import Medicine from "../../../Components/Medicine/Medicine";
 import styles from "../../docmodule/Clinic/NewAppointment.module.css";
 import { useAlert } from "../../../Contexts/AlertContext";
 import PrescriptionPreview from "../../../Components/PrescriptionPreview/PrescriptionPreview";
+import Loader2 from "../../../Components/Loader2/Loader2";
+import axios from "axios";
+import config from "../../../config";
 
 function Prescriptions() {
   const [presName, setPresName] = useState("");
@@ -108,7 +111,6 @@ function Prescriptions() {
               </div>
               <div className="d-flex">
                 <MedicineSearch
-                  medicines={medicines}
                   setSelectedMed={setSelectedMed}
                   searchTerm={searchTerm}
                   setSearchTerm={setSearchTerm}
@@ -168,23 +170,37 @@ function Prescriptions() {
 
 export default Prescriptions;
 
-function MedicineSearch({
-  setSelectedMed,
-  medicines,
-  searchTerm,
-  setSearchTerm,
-}) {
+function MedicineSearch({ setSelectedMed, searchTerm, setSearchTerm }) {
+  const [results, setResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
-
-  let filteredData = medicines.filter((item) =>
-    item.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleSelectItem = (item) => {
     setSelectedMed(item);
     setSearchTerm(item);
     setShowResults(false);
   };
+
+  useEffect(() => {
+    if (!searchTerm) return;
+
+    if (searchTerm.length < 2) {
+      return;
+    }
+    setIsLoading(true);
+    axios
+      .get(`${config.baseURL}/medicine/get/getByName/${searchTerm}`)
+      .then((res) => {
+        setResults(res.data.data);
+      })
+      .catch((err) => {
+        console.log("Error getting medicine data. Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [searchTerm]);
+
   return (
     <div>
       <TextField
@@ -206,14 +222,18 @@ function MedicineSearch({
       />
       {searchTerm && showResults && (
         <div className={styles.results}>
-          {filteredData.length !== 0 ? (
-            filteredData.map((item, index) => (
+          {isLoading ? (
+            <p className="my-5">
+              <Loader2 />
+            </p>
+          ) : results.length !== 0 ? (
+            results.map((item, index) => (
               <div
                 key={index}
-                onClick={() => handleSelectItem(item)}
+                onClick={() => handleSelectItem(item.name)}
                 style={{ cursor: "pointer", padding: "0 10px" }}
               >
-                {item}
+                {item.name}
               </div>
             ))
           ) : (
@@ -224,16 +244,3 @@ function MedicineSearch({
     </div>
   );
 }
-
-const medicines = [
-  "Ibuprofen",
-  "Paracetamol",
-  "Aspirin",
-  "Amoxicillin",
-  "Metformin",
-  "Lisinopril",
-  "Atorvastatin",
-  "Omeprazole",
-  "Levothyroxine",
-  "Simvastatin",
-];
