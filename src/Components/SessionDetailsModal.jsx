@@ -83,7 +83,7 @@ export function SessionDetailsModal({ session, type }) {
             <small className="text-secondary">Doctor's Fee</small>
           </div>
           <div>
-            <strong>Rs. </strong>
+            <strong>Rs. {session.docFee}</strong>
           </div>
         </div>
       </div>

@@ -175,6 +175,8 @@ function NewSession() {
       timeFrom: startTime + ":00",
       timeTo: endTime + ":00",
       noOfPatients: parseInt(noOfPatients),
+      docFee: parseFloat(docFee),
+      clinicFee: parseFloat(user.clinicFee),
       isRefundable: isRefundable,
     };
 

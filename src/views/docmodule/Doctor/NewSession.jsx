@@ -182,9 +182,10 @@ function NewSession() {
       timeFrom: startTime + ":00",
       timeTo: endTime + ":00",
       noOfPatients: parseInt(noOfPatients),
+      clinicFee: parseFloat(clinicFee),
+      docFee: parseFloat(docFee),
       isRefundable: isRefundable,
     };
-
     setIsLoading(true);
 
     axios
