@@ -1,6 +1,14 @@
 import Button from "./Button/Button";
 
 export function SessionDetailsModal({ session, type }) {
+  function convertTimeFormat(time) {
+    let [hours, minutes, seconds] = time.split(":").map(Number);
+    let period = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12;
+    minutes = minutes.toString().padStart(2, "0");
+    return `${hours}:${minutes} ${period}`;
+  }
+
   return (
     <div style={{ width: "500px" }}>
       <div>
@@ -8,7 +16,9 @@ export function SessionDetailsModal({ session, type }) {
           <small className="text-secondary">Doctor's name</small>
         </div>
         <div>
-          <strong>{session.doctor}</strong>
+          <strong>
+            {session.doctor.fname} {session.doctor.mname} {session.doctor.lname}
+          </strong>
         </div>
       </div>
       <hr className="my-2" />
@@ -17,7 +27,7 @@ export function SessionDetailsModal({ session, type }) {
           <small className="text-secondary">Clinic</small>
         </div>
         <div>
-          <strong>{session.clinic}</strong>
+          <strong>{session.clinic.name}</strong>
         </div>
       </div>
       <hr className="my-2" />
@@ -35,7 +45,7 @@ export function SessionDetailsModal({ session, type }) {
             <small className="text-secondary">Maximum patients</small>
           </div>
           <div>
-            <strong>{session.maxPatients}</strong>
+            <strong>{session.noOfPatients}</strong>
           </div>
         </div>
       </div>
@@ -54,7 +64,7 @@ export function SessionDetailsModal({ session, type }) {
             <small className="text-secondary">Time</small>
           </div>
           <div>
-            <strong>{session.time}</strong>
+            <strong>{convertTimeFormat(session.timeFrom)}</strong>
           </div>
         </div>
       </div>
@@ -65,7 +75,7 @@ export function SessionDetailsModal({ session, type }) {
             <small className="text-secondary">Redundable appointments</small>
           </div>
           <div>
-            <strong>{session.isRefundableAppointments ? "Yes" : "No"}</strong>
+            <strong>{session.isRefundable ? "Yes" : "No"}</strong>
           </div>
         </div>
         <div className="col-6">
@@ -73,7 +83,7 @@ export function SessionDetailsModal({ session, type }) {
             <small className="text-secondary">Doctor's Fee</small>
           </div>
           <div>
-            <strong>Rs. {session.docFee}</strong>
+            <strong>Rs. </strong>
           </div>
         </div>
       </div>

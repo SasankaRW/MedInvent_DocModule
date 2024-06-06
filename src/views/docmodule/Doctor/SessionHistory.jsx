@@ -18,6 +18,12 @@ import { SessionDetailsModal } from "../../../Components/SessionDetailsModal";
 import { useEffect, useState } from "react";
 import Button from "../../../Components/Button/Button";
 
+import Loader from "../../../Components/Loader/Loader";
+import axios from "axios";
+import config from "../../../config";
+import { useAlert } from "../../../Contexts/AlertContext";
+import { useAuth } from "../../../Contexts/AuthContext";
+
 //colums of the table
 const columns = [
   { id: "clinic", label: "Clinic", minWidth: 170 },
@@ -43,21 +49,44 @@ function SessionHistory() {
   //state management using useState hook
   const [date, setDate] = useState("");
   const [clinic, setClinic] = useState("");
+  const [sessions, setSessions] = useState([]);
   const [filteredSessions, setFilteredSessions] = useState(sessions);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { showAlert } = useAlert();
+
+  const { user } = useAuth();
+
+  useEffect(() => {
+    setIsLoading(true);
+    axios
+      .get(`${config.baseURL}/session/get/doctor/past/${user.id}`)
+      .then((res) => {
+        setSessions(res.data.data);
+      })
+      .catch((err) => {
+        showAlert("error", "Error loading sessions");
+        console.log("Error getting past sessions. Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [user.id]);
 
   useEffect(() => {
     const filtered = sessions.filter((session) => {
       const sessionDate = new Date(session.date).toISOString().split("T")[0];
       return (
         (date === "" || sessionDate === date) &&
-        (clinic === "" || session.clinic === clinic)
+        (clinic === "" || session.clinic.name === clinic)
       );
     });
     setFilteredSessions(filtered);
     setPage(0);
-  }, [date, clinic]);
+  }, [date, clinic, sessions]);
 
   //function to handle page change
   const handleChangePage = (event, newPage) => {
@@ -74,6 +103,18 @@ function SessionHistory() {
     setDate("");
     setClinic("");
   };
+
+  function convertTimeFormat(time) {
+    let [hours, minutes, seconds] = time.split(":").map(Number);
+    let period = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12;
+    minutes = minutes.toString().padStart(2, "0");
+    return `${hours}:${minutes} ${period}`;
+  }
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div>
@@ -105,7 +146,7 @@ function SessionHistory() {
                 borderRadius: "20px",
               }}
             >
-              {Array.from(new Set(sessions.map((x) => x.clinic)))
+              {Array.from(new Set(sessions.map((x) => x.clinic.name)))
                 .sort()
                 .map((clinic) => (
                   <MenuItem key={clinic} value={clinic}>
@@ -135,12 +176,12 @@ function SessionHistory() {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
-                    <TableRow key={row.doctor} hover>
-                      <TableCell>{row.clinic}</TableCell>
+                    <TableRow key={row.session_id} hover>
+                      <TableCell>{row.clinic.name}</TableCell>
                       <TableCell>{row.date}</TableCell>
-                      <TableCell>{row.time}</TableCell>
+                      <TableCell>{convertTimeFormat(row.timeFrom)}</TableCell>
                       <TableCell>
-                        {row.activePatients}/{row.maxPatients}
+                        {row.activePatients}/{row.noOfPatients}
                       </TableCell>
                       <TableCell align="right">
                         <MyModal
@@ -170,57 +211,3 @@ function SessionHistory() {
 }
 
 export default SessionHistory;
-
-//dummy data for sessions
-const sessions = [
-  {
-    doctor: "Dr Stephen Strange",
-    clinic: "Medicare Clinic",
-    activePatients: 12,
-    maxPatients: 20,
-    date: "2024/03/21",
-    time: "7.30 PM",
-    isRefundableAppointments: true,
-    docFee: 2000,
-  },
-  {
-    doctor: "Dr Stephen Strange",
-    clinic: "Medicare Clinic",
-    activePatients: 12,
-    maxPatients: 20,
-    date: "2024/03/22",
-    time: "8.00 PM",
-    isRefundableAppointments: true,
-    docFee: 2000,
-  },
-  {
-    doctor: "Dr John Doe",
-    clinic: "Healthy Life Clinic",
-    activePatients: 15,
-    maxPatients: 25,
-    date: "2024/03/22",
-    time: "10.00 AM",
-    isRefundableAppointments: false,
-    docFee: 1800,
-  },
-  {
-    doctor: "Dr Jane Smith",
-    clinic: "Family Wellness Center",
-    activePatients: 18,
-    maxPatients: 30,
-    date: "2024/03/23",
-    time: "2.00 PM",
-    isRefundableAppointments: true,
-    docFee: 2200,
-  },
-  {
-    doctor: "Dr Michael Johnson",
-    clinic: "Central Family Practice",
-    activePatients: 10,
-    maxPatients: 20,
-    date: "2024/03/25",
-    time: "11.30 AM",
-    isRefundableAppointments: false,
-    docFee: 1900,
-  },
-];

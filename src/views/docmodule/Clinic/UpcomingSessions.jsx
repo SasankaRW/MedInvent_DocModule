@@ -25,6 +25,11 @@ import { SessionDetailsModal } from "../../../Components/SessionDetailsModal";
 import CancelSessionModal from "../../../Components/CancelSessionModal";
 import { motion } from "framer-motion";
 import Button from "../../../Components/Button/Button";
+import Loader from "../../../Components/Loader/Loader";
+import axios from "axios";
+import config from "../../../config";
+import { useAlert } from "../../../Contexts/AlertContext";
+import { useAuth } from "../../../Contexts/AuthContext";
 
 const columns = [
   { id: "doctor", label: "Doctor", minWidth: 170 },
@@ -49,21 +54,45 @@ const columns = [
 function UpcomingSessions() {
   const [date, setDate] = useState("");
   const [doctor, setDoctor] = useState("");
+  const [sessions, setSessions] = useState([]);
   const [filteredSessions, setFilteredSessions] = useState(sessions);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { showAlert } = useAlert();
+
+  const { user } = useAuth();
+
+  useEffect(() => {
+    setIsLoading(true);
+    axios
+      .get(`${config.baseURL}/session/get/clinic/upcoming/${user.id}`)
+      .then((res) => {
+        setSessions(res.data.data);
+      })
+      .catch((err) => {
+        showAlert("error", "Error upcoming sessions.");
+        console.log("Error getting upcoming sessions. Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [user.id]);
 
   useEffect(() => {
     const filtered = sessions.filter((session) => {
       const sessionDate = new Date(session.date).toISOString().split("T")[0];
       return (
         (date === "" || sessionDate === date) &&
-        (doctor === "" || session.doctor === doctor)
+        (doctor === "" ||
+          session.doctor.fname + " " + session.doctor.lname === doctor)
       );
     });
     setFilteredSessions(filtered);
     setPage(0);
-  }, [date, doctor]);
+  }, [date, doctor, sessions]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -78,6 +107,18 @@ function UpcomingSessions() {
     setDate("");
     setDoctor("");
   };
+
+  function convertTimeFormat(time) {
+    let [hours, minutes, seconds] = time.split(":").map(Number);
+    let period = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12;
+    minutes = minutes.toString().padStart(2, "0");
+    return `${hours}:${minutes} ${period}`;
+  }
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div>
@@ -109,7 +150,11 @@ function UpcomingSessions() {
                 borderRadius: "20px",
               }}
             >
-              {Array.from(new Set(sessions.map((x) => x.doctor)))
+              {Array.from(
+                new Set(
+                  sessions.map((x) => x.doctor.fname + " " + x.doctor.lname)
+                )
+              )
                 .sort()
                 .map((doctor) => (
                   <MenuItem key={doctor} value={doctor}>
@@ -139,12 +184,14 @@ function UpcomingSessions() {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
-                    <TableRow key={row.doctor} hover>
-                      <TableCell>{row.doctor}</TableCell>
-                      <TableCell>{row.date}</TableCell>
-                      <TableCell>{row.time}</TableCell>
+                    <TableRow key={row.session_id} hover>
                       <TableCell>
-                        {row.activePatients}/{row.maxPatients}
+                        {row.doctor.fname} {row.doctor.lname}
+                      </TableCell>
+                      <TableCell>{row.date}</TableCell>
+                      <TableCell>{convertTimeFormat(row.timeFrom)}</TableCell>
+                      <TableCell>
+                        {row.activePatients}/{row.noOfPatients}
                       </TableCell>
                       <TableCell align="right">
                         <div className="d-flex justify-content-end">

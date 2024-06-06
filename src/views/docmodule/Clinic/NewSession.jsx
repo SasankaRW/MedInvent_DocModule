@@ -54,7 +54,7 @@ function reducer(state, action) {
     case "endTime":
       return { ...state, endTime: action.payload };
 
-    case "initial":
+    case "initState":
       return initialState;
 
     default:
@@ -161,30 +161,36 @@ function NewSession() {
       return;
     }
 
+    if (user.clinicFee === null) {
+      showAlert("error", "Clinic Fee is not set");
+      return;
+    }
+
     const sessionDetails = {
+      doctor_id: selectedDoctor,
+      clinic_id: user.id,
+      scheduledById: user.id,
+      scheduledByType: scheduledBy,
+      dates: [...sessionDates],
       timeFrom: startTime + ":00",
       timeTo: endTime + ":00",
-      sessionDates: sessionDates.sort(),
       noOfPatients: parseInt(noOfPatients),
       isRefundable: isRefundable,
-      clinic_id: user.id,
-      doctor_id: selectedDoctor,
-      docFee: parseFloat(docFee),
-      clinicFee: parseFloat(user.clinicFee),
-      scheduledBy,
     };
 
     setIsLoading(true);
 
     axios
-      .post("http://localhost:8080/clinic/newsession", sessionDetails)
+      .post(`${config.baseURL}/session/newsession`, sessionDetails)
       .then((response) => {
         showAlert("success", "New sesssion scheduled successfully.");
         dispatch({ type: "initState" });
       })
       .catch((error) => {
-        console.error("Error adding pharmacy:", error);
-        showAlert("error", "Error scheduling the session.");
+        console.error("Error scheduling the session:", error);
+        const errorMessage =
+          error.response?.data?.message || "Error scheduling the session.";
+        showAlert("error", errorMessage);
       })
       .finally(() => {
         setIsLoading(false);
