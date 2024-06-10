@@ -1,190 +1,101 @@
 import { InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import Title from "../../../Components/Title";
 import styles from "./NewAppointment.module.css";
-import MyDatePicker from "../../../Components/MyDatePicker";
-import { useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../../Components/Button/Button";
 import axios from "axios";
 import Loader from "../../.././Components/Loader/Loader";
+import Loader2 from "../../.././Components/Loader2/Loader2";
 import { useAlert } from "../../../Contexts/AlertContext";
 import { motion } from "framer-motion";
-
-const doctors = [
-  "Dr. Emily Watson",
-  "Dr. Michael Brown",
-  "Dr. Sophia Johnson",
-  "Dr. Ethan Smith",
-  "Dr. Olivia Jones",
-  "Dr. Daniel Lee",
-  "Dr. Ava Taylor",
-  "Dr. Matthew Martinez",
-  "Dr. Isabella Davis",
-  "Dr. Lucas Garcia",
-];
-
-const timeSlots = ["5.00 PM", "9.30 PM"];
-
-const initialState = {
-  doctor: "",
-  date: "",
-  time: "",
-  apppointmentNo: 0,
-  title: "Mr.",
-  patientName: "",
-  mobileNumber: "",
-  emailAddress: "",
-  area: "",
-  nic: "",
-};
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "doctor":
-      return { ...state, doctor: action.payload };
-
-    case "date":
-      return { ...state, date: action.payload };
-
-    case "time":
-      return { ...state, time: action.payload };
-
-    case "appointmentNo":
-      return { ...state, apppointmentNo: action.payload };
-
-    case "title":
-      return { ...state, title: action.payload };
-
-    case "PatientName":
-      return { ...state, patientName: action.payload };
-
-    case "mobileNumber":
-      return { ...state, mobileNumber: action.payload };
-
-    case "emailAddress":
-      return { ...state, emailAddress: action.payload };
-
-    case "area":
-      return { ...state, area: action.payload };
-
-    case "nic":
-      return { ...state, nic: action.payload };
-
-    case "isRefundable":
-      return { ...state, isRefundable: !state.isRefundable };
-
-    case "resetState":
-      return { ...initialState };
-
-    default:
-      throw Error("Invalid");
-  }
-}
+import { useAuth } from "../../../Contexts/AuthContext";
+import config from "../../../config";
 
 function NewAppointment() {
-  const [
-    {
-      doctor,
-      date,
-      time,
-      apppointmentNo,
-      title,
-      patientName,
-      mobileNumber,
-      emailAddress,
-      area,
-      nic,
-    },
-    dispatch,
-  ] = useReducer(reducer, initialState);
-
   const { showAlert } = useAlert();
   const [isLoading, setIsLoading] = useState(false);
+  const [isSessionsLoading, setIsSessionsLoading] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
 
-  const session_id = "aaefaefa";
+  const [sessions, setSessions] = useState([]);
+  const [selectedSession, setSelectedSession] = useState(null);
 
-  function handleDate(e) {
-    dispatch({ type: "date", payload: e.target.value });
-  }
+  const [title, setTitle] = useState("Mr");
+  const [patientName, setPatientName] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [area, setArea] = useState("");
+  const [nic, setNic] = useState("");
 
-  function handleTitle(e) {
-    dispatch({ type: "title", payload: e.target.value });
-  }
-
-  function handlePatientName(e) {
-    dispatch({ type: "PatientName", payload: e.target.value });
-  }
-
-  function handleMobileNumber(e) {
-    const mobileNo = e.target.value.replace(/[^0-9]/g, "");
-    dispatch({ type: "mobileNumber", payload: mobileNo });
-  }
-
-  function handleEmailAddress(e) {
-    dispatch({ type: "emailAddress", payload: e.target.value });
-  }
-
-  function handleArea(e) {
-    dispatch({ type: "area", payload: e.target.value });
-  }
-
-  function handleNic(e) {
-    dispatch({ type: "nic", payload: e.target.value });
-  }
-
-  function handleTime(e) {
-    dispatch({ type: "time", payload: e.target.value });
-  }
+  const { user } = useAuth();
 
   function validateEmail(email) {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(String(email).toLowerCase());
   }
 
-  function onSubmit(e) {
-    e.preventDefault();
-    if (
-      doctor === "" ||
-      date === null ||
-      time === "" ||
-      patientName === "" ||
-      mobileNumber === "" ||
-      nic === ""
-    ) {
-      showAlert("error", "Please fill all required fields");
+  function validateMobileNumber(number) {
+    const pattern = /^07\d{8}$/;
+    return pattern.test(number);
+  }
+
+  function onFindClick() {
+    if (selectedDoctor === null) {
+      showAlert("error", "Please select a doctor");
       return;
     }
 
-    if (emailAddress !== null && !validateEmail(emailAddress)) {
-      showAlert("error", "Please enter a valid email address");
+    setIsSessionsLoading(true);
+    setSelectedSession(null);
+
+    axios
+      .get(
+        `${config.baseURL}/session/get/upcoming?clinic_id=${user.id}&doctor_id=${selectedDoctor}`
+      )
+      .then((response) => {
+        setSessions(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching sessions:", error);
+        showAlert("error", "Error getting sessions");
+      })
+      .finally(() => {
+        setIsSessionsLoading(false);
+      });
+  }
+
+  function onSubmit() {
+    if (selectedSession === null) {
+      showAlert("error", "Please select a session");
       return;
     }
 
-    setIsLoading(true);
+    if (!patientName || !mobileNumber || !area || !nic) {
+      showAlert("error", "Please fill all fields");
+      return;
+    }
+
+    if (!validateMobileNumber(mobileNumber)) {
+      showAlert("error", "Please enter a valid mobile number");
+      return;
+    }
+
+    if (email && !validateEmail(email)) {
+      showAlert("error", "Please enter a valid email");
+      return;
+    }
 
     const appointmentDetails = {
-      apppointmentNo,
       patientTitle: title,
       patientName,
       contactNo: mobileNumber,
-      email: emailAddress,
+      email: email || null,
       area,
       nic,
-      session_id,
+      session_id: selectedSession.session_id,
     };
 
-    axios
-      .post("http://localhost:8080/insert", appointmentDetails)
-      .then((response) => {
-        showAlert("success", "Appointment booked successfully.");
-        dispatch({ type: "resetState" });
-      })
-      .catch((error) => {
-        console.error("Error booking appointment", error);
-        showAlert("error", "Error booking appointment.");
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    console.log(appointmentDetails);
   }
 
   if (isLoading) {
@@ -195,83 +106,57 @@ function NewAppointment() {
     <div className={styles.main}>
       <Title>New Appointment</Title>
       <motion.div
-        className="shadow bg-white rounded-5 p-5"
+        className="d-lg-flex"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <form action="" onSubmit={onSubmit}>
-          <div className="row">
-            <div className="col-md-6 col-sm-12 mb-4">
-              <InputLabel className="mb-2">Doctor's Name</InputLabel>
-              <SearchComponent dispatch={dispatch} doctors={doctors} />
-            </div>
-            <div className="col-md-6 col-sm-12 mb-4">
-              <InputLabel className="mb-2">Date</InputLabel>
-              <MyDatePicker
-                isStart={true}
-                selectedDate={date}
-                handleDateChange={handleDate}
-              />
-            </div>
+        <div className="shadow bg-white rounded-5 p-5 col-lg-6 col-12">
+          <div className="d-flex justify-content-between mb-4">
+            <SearchComponent setSelectedDoctor={setSelectedDoctor} />
+            <Button text="Find sessions" onClick={onFindClick} />
           </div>
 
-          <div className="row">
-            <div className="col-md-6 col-sm-12 mb-4">
-              <InputLabel className="mb-2">Time</InputLabel>
-              <Select
-                className="p-0 rounded-5 col-10"
-                value={time}
-                onChange={handleTime}
-                displayEmpty
-                sx={{
-                  borderRadius: "20px",
-                  height: "40px",
-                  padding: "0 10px",
-                }}
-              >
-                {timeSlots.map((x) => (
-                  <MenuItem key={x} value={x}>
-                    {x}
-                  </MenuItem>
+          <div className="mt-2">
+            {isSessionsLoading ? (
+              <div className="mt-5">
+                <Loader2 />
+              </div>
+            ) : selectedSession == null ? (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+                {sessions.map((session) => (
+                  <SessionTemplate
+                    key={session.session_id}
+                    session={session}
+                    setSelectedSession={setSelectedSession}
+                  />
                 ))}
-              </Select>
-            </div>
-            <div className="col-md-6 col-sm-12 mb-4">
-              <InputLabel className="mb-2">Appointment number</InputLabel>
-              <TextField
-                value={apppointmentNo}
-                className="col-2"
-                InputProps={{
-                  style: {
-                    borderRadius: "50px",
-                    padding: 0,
-                    height: "40px",
-                  },
-                }}
-              />
-            </div>
+              </div>
+            ) : (
+              <SessionDetails session={selectedSession} />
+            )}
           </div>
+        </div>
 
-          <hr className="mb-5" />
+        <div className="shadow bg-white rounded-5 p-5 col-lg-6 col-12 mx-lg-4 mt-lg-0 mt-4">
+          <div>
+            <InputLabel className="mb-2">Patient's Name</InputLabel>
 
-          <div className="row">
-            <div className="col-md-6 col-sm-12 mb-4">
-              <InputLabel className="mb-2">Patient's Name</InputLabel>
-
+            <div className="d-flex">
               <Select
-                className="p-0 rounded-5 col-2"
+                className="p-0 rounded-5"
                 value={title}
-                onChange={handleTitle}
+                onChange={(e) => setTitle(e.target.value)}
                 displayEmpty
                 sx={{
                   borderRadius: "20px",
                   height: "40px",
                   padding: "0 10px",
                   width: "80px",
+                  marginRight: "10px",
                 }}
               >
-                {["Mr.", "Mrs.", "Ms."].map((x) => (
+                {["Mr", "Mrs", "Ms"].map((x) => (
                   <MenuItem key={x} value={x}>
                     {x}
                   </MenuItem>
@@ -279,8 +164,27 @@ function NewAppointment() {
               </Select>
               <TextField
                 value={patientName}
-                onChange={handlePatientName}
-                className="col-8 mx-3"
+                onChange={(e) => setPatientName(e.target.value)}
+                InputProps={{
+                  style: {
+                    borderRadius: "50px",
+                    padding: "0 10px",
+                    height: "40px",
+                  },
+                }}
+                sx={{ flexGrow: 1 }}
+              />
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-sm-6 mt-4 ">
+              <InputLabel className="mb-2" value={"aefaef"}>
+                Mobile Number
+              </InputLabel>
+              <TextField
+                value={mobileNumber}
+                onChange={(e) => setMobileNumber(e.target.value)}
                 InputProps={{
                   style: {
                     borderRadius: "50px",
@@ -290,14 +194,13 @@ function NewAppointment() {
                 }}
               />
             </div>
-            <div className="col-md-6 col-sm-12 mb-4">
+            <div className="col-sm-6 mt-4 ">
               <InputLabel className="mb-2" value={"aefaef"}>
-                Mobile Number
+                NIC Number
               </InputLabel>
               <TextField
-                value={mobileNumber}
-                onChange={handleMobileNumber}
-                className="col-10"
+                value={nic}
+                onChange={(e) => setNic(e.target.value)}
                 InputProps={{
                   style: {
                     borderRadius: "50px",
@@ -309,59 +212,42 @@ function NewAppointment() {
             </div>
           </div>
 
-          <div className="row">
-            <div className="col-md-6 col-sm-12">
-              <InputLabel className="mb-2">Email Address (Optional)</InputLabel>
-              <TextField
-                value={emailAddress}
-                onChange={handleEmailAddress}
-                className="col-11"
-                InputProps={{
-                  style: {
-                    borderRadius: "50px",
-                    padding: 0,
-                    height: "40px",
-                  },
-                }}
-              />
-            </div>
-            <div className="col-md-6 col-sm-12">
-              <div className="row">
-                <div className="col-5">
-                  <InputLabel className="mb-2">Area</InputLabel>
-                  <TextField
-                    value={area}
-                    onChange={handleArea}
-                    InputProps={{
-                      style: {
-                        borderRadius: "50px",
-                        padding: 0,
-                        height: "40px",
-                      },
-                    }}
-                  />
-                </div>
-                <div className="col-5">
-                  <InputLabel className="mb-2">NIC</InputLabel>
-                  <TextField
-                    value={nic}
-                    onChange={handleNic}
-                    InputProps={{
-                      style: {
-                        borderRadius: "50px",
-                        padding: 0,
-                        height: "40px",
-                      },
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
+          <div className="mt-4">
+            <InputLabel className="mb-2">Area</InputLabel>
+            <TextField
+              value={area}
+              onChange={(e) => setArea(e.target.value)}
+              InputProps={{
+                style: {
+                  borderRadius: "50px",
+                  padding: "0 10px",
+                  height: "40px",
+                },
+              }}
+              sx={{ flexGrow: 1, display: "flex" }}
+            />
           </div>
-          <div className="text-end col-11 mt-5">
-            <Button text="Submit" />
+
+          <div className="mt-4">
+            <InputLabel className="mb-2">Email (Optional)</InputLabel>
+            <TextField
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              InputProps={{
+                style: {
+                  borderRadius: "50px",
+                  padding: "0 10px",
+                  height: "40px",
+                },
+              }}
+              sx={{ flexGrow: 1, display: "flex" }}
+            />
           </div>
-        </form>
+
+          <div className="mt-5 d-flex justify-content-end">
+            <Button text="Book aappointment" onClick={onSubmit} />
+          </div>
+        </div>
       </motion.div>
     </div>
   );
@@ -369,49 +255,82 @@ function NewAppointment() {
 
 export default NewAppointment;
 
-const SearchComponent = ({ dispatch, doctors }) => {
+const SearchComponent = ({ setSelectedDoctor }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showResults, setShowResults] = useState(false);
+  const [visitingDoctors, setVisitingDoctors] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  let filteredData = doctors.filter((item) =>
-    item.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const { user } = useAuth();
+  const { showAlert } = useAlert();
 
   const handleSelectItem = (item) => {
-    dispatch({ type: "doctor", payload: item });
-    setSearchTerm(item);
+    setSelectedDoctor(item.doctor.doctor_id);
+    setSearchTerm(item.doctor.fname + " " + item.doctor.lname);
     setShowResults(false);
   };
+
+  useEffect(() => {
+    if (searchTerm.length >= 3) {
+      setIsLoading(true);
+      axios
+        .get(
+          `${config.baseURL}/visiting/get/allVisitings/byDocName?doc_name=${searchTerm}&clinic_id=${user.id}`
+        )
+        .then((response) => {
+          setVisitingDoctors(response.data.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching doctors:", error);
+          showAlert("error", "Error getting doctors");
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      setVisitingDoctors([]);
+    }
+  }, [searchTerm, user.id]);
+
+  function onSearchTermChange(e) {
+    setSearchTerm(e.target.value);
+    setSelectedDoctor(null);
+    searchTerm.length >= 2 ? setShowResults(true) : setShowResults(false);
+  }
 
   return (
     <div>
       <TextField
-        placeholder="Search for the doctor"
+        placeholder="Enter doctor's name"
         value={searchTerm}
-        onChange={(e) => {
-          setSearchTerm(e.target.value);
-          setShowResults(true);
-        }}
-        className="col-10"
+        onChange={onSearchTermChange}
         InputProps={{
           style: {
             borderRadius: "50px",
             padding: 0,
             height: "40px",
+            width: "100%",
           },
         }}
       />
       {searchTerm && showResults && (
         <div className={styles.results}>
-          {filteredData.length !== 0 ? (
-            filteredData.map((item, index) => (
-              <div
-                key={index}
-                onClick={() => handleSelectItem(item)}
-                style={{ cursor: "pointer", padding: "0 10px" }}
-              >
-                {item}
-              </div>
+          {isLoading ? (
+            <div className="my-4">
+              <Loader2 />
+            </div>
+          ) : visitingDoctors.length !== 0 ? (
+            visitingDoctors.map((item, index) => (
+              <>
+                <div
+                  key={index}
+                  onClick={() => handleSelectItem(item)}
+                  style={{ cursor: "pointer", padding: "0 10px" }}
+                >
+                  {item.doctor.fname} {item.doctor.lname}
+                </div>
+                <hr style={{ margin: 0, padding: 0 }} />
+              </>
             ))
           ) : (
             <div>No result found</div>
@@ -421,3 +340,127 @@ const SearchComponent = ({ dispatch, doctors }) => {
     </div>
   );
 };
+
+const SessionTemplate = ({ session, setSelectedSession }) => {
+  function handleSelectSession(session) {
+    setSelectedSession(session);
+  }
+  return (
+    <div
+      className={`${styles.session}`}
+      onClick={() => handleSelectSession(session)}
+    >
+      <div>{formatDate(session.date)}</div>
+      <div>{formatTime(session.timeFrom)}</div>
+      <div>
+        {session.activePatients === session.noOfPatients ? (
+          <span style={{ color: "red" }}>Session Full</span>
+        ) : (
+          `${session.activePatients}/${session.noOfPatients}`
+        )}
+      </div>
+      <div>
+        Rs.
+        {(parseFloat(session.docFee) + parseFloat(session.clinicFee)).toFixed(
+          2
+        )}
+      </div>
+    </div>
+  );
+};
+
+const SessionDetails = ({ session }) => {
+  return (
+    <div className={styles.sessionDetails}>
+      <h5>Session Details</h5>
+      <hr />
+      <div className="row">
+        <div className="col-3">Doctor</div>
+        <div className="col-1">:</div>
+        <div className="col-8">
+          Dr {session.doctor.fname} {session.doctor.mname}{" "}
+          {session.doctor.lname}
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="col-3">Date</div>
+        <div className="col-1">:</div>
+        <div className="col-8">{formatDate(session.date)}</div>
+      </div>
+
+      <div className="row">
+        <div className="col-3">Time</div>
+        <div className="col-1">:</div>
+        <div className="col-8">{formatTime(session.timeFrom)}</div>
+      </div>
+
+      <div className="row">
+        <div className="col-3">Patients</div>
+        <div className="col-1">:</div>
+        <div className="col-8">{session.activePatients}</div>
+      </div>
+
+      <div className="row">
+        <div className="col-3">Fees</div>
+        <div className="col-1">:</div>
+        <div className="col-8">
+          Rs.
+          {(parseFloat(session.docFee) + parseFloat(session.clinicFee)).toFixed(
+            2
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+function formatDate(inputDate) {
+  const date = new Date(inputDate);
+
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const monthsOfYear = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const dayOfWeek = daysOfWeek[date.getDay()];
+  const day = date.getDate();
+  const month = monthsOfYear[date.getMonth()];
+
+  const dayWithSuffix = (day) => {
+    if (day > 3 && day < 21) return day + "th";
+    switch (day % 10) {
+      case 1:
+        return day + "st";
+      case 2:
+        return day + "nd";
+      case 3:
+        return day + "rd";
+      default:
+        return day + "th";
+    }
+  };
+
+  return `${dayOfWeek}, ${dayWithSuffix(day)} ${month}`;
+}
+
+function formatTime(inputTime) {
+  const [hours, minutes, seconds] = inputTime.split(":").map(Number);
+
+  const period = hours >= 12 ? "PM" : "AM";
+  const formattedHours = hours % 12 || 12;
+  const formattedMinutes = minutes.toString().padStart(2, "0");
+
+  return `${formattedHours}:${formattedMinutes} ${period}`;
+}

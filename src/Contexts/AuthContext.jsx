@@ -19,7 +19,7 @@ const users = [
     role: "doctor",
   },
   {
-    id: "49f89e71-67a4-46ed-b621-b45d914e861a",
+    id: "492419fb-c662-447c-bb95-b007229539a3",
     name: "Health care clinic",
     email: "clinic",
     password: "clinic",

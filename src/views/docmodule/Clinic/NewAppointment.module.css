@@ -26,7 +26,6 @@
 }
 
 .results>div {
-    border-bottom: 1px solid #cccc;
     padding: 10px 10px !important;
     transition: 300ms;
 }
@@ -34,4 +33,32 @@
 .results>div:hover {
     background-color: rgb(238, 238, 238);
     border-radius: 10px;
+}
+
+.session {
+    width: 200px;
+    text-align: center;
+    background-color: #ddf1ff;
+    padding: 15px 20px;
+    margin-bottom: 8px;
+    border-radius: 20px;
+    transition: 300ms;
+    cursor: pointer;
+}
+
+.session:hover {
+    background-color: #c4e8ff;
+}
+
+.session>div {
+    margin-bottom: 5px;
+}
+
+.session>div:first-child {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.sessionDetails>div {
+    margin-bottom: 10px;
 }
