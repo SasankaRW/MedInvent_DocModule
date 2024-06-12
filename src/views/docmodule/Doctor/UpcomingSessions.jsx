@@ -30,6 +30,7 @@ import axios from "axios";
 import config from "../../../config";
 import { useAlert } from "../../../Contexts/AlertContext";
 import { useAuth } from "../../../Contexts/AuthContext";
+import { UpdateSessionModal } from "../Clinic/UpcomingSessions";
 
 const columns = [
   { id: "clinic", label: "Clinic", minWidth: 170 },
@@ -115,6 +116,16 @@ function UpcomingSessions() {
     return `${hours}:${minutes} ${period}`;
   }
 
+  const updateSessionState = (updatedSession) => {
+    setSessions((prevSessions) =>
+      prevSessions.map((session) =>
+        session.session_id === updatedSession.session_id
+          ? { ...session, ...updatedSession }
+          : session
+      )
+    );
+  };
+
   if (isLoading) {
     return <Loader />;
   }
@@ -179,7 +190,11 @@ function UpcomingSessions() {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
-                    <TableRow key={row.session_id} hover>
+                    <TableRow
+                      key={row.session_id}
+                      hover
+                      sx={row.isCancelled && { backgroundColor: "#ffe3e3" }}
+                    >
                       <TableCell>{row.clinic.name}</TableCell>
                       <TableCell>{row.date}</TableCell>
                       <TableCell>{convertTimeFormat(row.timeFrom)}</TableCell>
@@ -196,14 +211,29 @@ function UpcomingSessions() {
                               type="upcoming"
                             />
                           </MyModal>
-                          <MyModal
-                            icon={<CancelOutlinedIcon fontSize="small" />}
-                          >
-                            <CancelSessionModal session={row} />
-                          </MyModal>
-                          <IconButton style={{ padding: "0px 5px" }}>
-                            <BorderColorOutlinedIcon fontSize="small" />
-                          </IconButton>
+                          {!row.isCancelled && (
+                            <>
+                              <MyModal
+                                icon={<CancelOutlinedIcon fontSize="small" />}
+                              >
+                                <CancelSessionModal
+                                  session={row}
+                                  updateSessionState={updateSessionState}
+                                  type="clinic"
+                                />
+                              </MyModal>
+                              <MyModal
+                                icon={
+                                  <BorderColorOutlinedIcon fontSize="small" />
+                                }
+                              >
+                                <UpdateSessionModal
+                                  session={row}
+                                  updateSessionState={updateSessionState}
+                                />
+                              </MyModal>
+                            </>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>

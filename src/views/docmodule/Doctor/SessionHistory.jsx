@@ -176,7 +176,11 @@ function SessionHistory() {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
-                    <TableRow key={row.session_id} hover>
+                    <TableRow
+                      key={row.session_id}
+                      hover
+                      sx={row.isCancelled && { backgroundColor: "#ffe3e3" }}
+                    >
                       <TableCell>{row.clinic.name}</TableCell>
                       <TableCell>{row.date}</TableCell>
                       <TableCell>{convertTimeFormat(row.timeFrom)}</TableCell>

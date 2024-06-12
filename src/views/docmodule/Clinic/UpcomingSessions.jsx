@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react";
 import Title from "../../../Components/Title";
 import MyDatePicker from "../../../Components/MyDatePicker";
-import {
-  FormControl,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -30,6 +24,9 @@ import axios from "axios";
 import config from "../../../config";
 import { useAlert } from "../../../Contexts/AlertContext";
 import { useAuth } from "../../../Contexts/AuthContext";
+import TimePicker from "../../../Components/TimePicker/TimePicker";
+import NumberSelect from "../../../Components/NumberSelect/NumberSelect";
+import Loader2 from "../../../Components/Loader2/Loader2";
 
 const columns = [
   { id: "doctor", label: "Doctor", minWidth: 170 },
@@ -37,17 +34,22 @@ const columns = [
   {
     id: "time",
     label: "Time",
-    minWidth: 170,
+    minWidth: 150,
   },
   {
     id: "patients",
     label: "Patients",
-    minWidth: 170,
+    minWidth: 150,
+  },
+  {
+    id: "arrived",
+    label: "",
+    minWidth: 100,
   },
   {
     id: "actions",
     label: "",
-    minWidth: 100,
+    minWidth: 80,
   },
 ];
 
@@ -109,12 +111,22 @@ function UpcomingSessions() {
   };
 
   function convertTimeFormat(time) {
-    let [hours, minutes, seconds] = time.split(":").map(Number);
+    let [hours, minutes] = time.split(":").map(Number);
     let period = hours >= 12 ? "PM" : "AM";
     hours = hours % 12 || 12;
     minutes = minutes.toString().padStart(2, "0");
     return `${hours}:${minutes} ${period}`;
   }
+
+  const updateSessionState = (updatedSession) => {
+    setSessions((prevSessions) =>
+      prevSessions.map((session) =>
+        session.session_id === updatedSession.session_id
+          ? { ...session, ...updatedSession }
+          : session
+      )
+    );
+  };
 
   if (isLoading) {
     return <Loader />;
@@ -184,7 +196,11 @@ function UpcomingSessions() {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
-                    <TableRow key={row.session_id} hover>
+                    <TableRow
+                      key={row.session_id}
+                      hover
+                      sx={row.isCancelled && { backgroundColor: "#ffe3e3" }}
+                    >
                       <TableCell>
                         {row.doctor.fname} {row.doctor.lname}
                       </TableCell>
@@ -193,6 +209,20 @@ function UpcomingSessions() {
                       <TableCell>
                         {row.activePatients}/{row.noOfPatients}
                       </TableCell>
+                      <TableCell>
+                        {row.isArrived && (
+                          <span
+                            style={{
+                              backgroundColor: "green",
+                              color: "white",
+                              padding: "4px 8px",
+                              borderRadius: "5px",
+                            }}
+                          >
+                            Arrived
+                          </span>
+                        )}
+                      </TableCell>
                       <TableCell align="right">
                         <div className="d-flex justify-content-end">
                           <MyModal
@@ -200,17 +230,33 @@ function UpcomingSessions() {
                           >
                             <SessionDetailsModal
                               session={row}
-                              type="upcoming"
+                              updateSessionState={updateSessionState}
+                              type="clinic"
                             />
                           </MyModal>
-                          <MyModal
-                            icon={<CancelOutlinedIcon fontSize="small" />}
-                          >
-                            <CancelSessionModal session={row} />
-                          </MyModal>
-                          <IconButton style={{ padding: "0px 5px" }}>
-                            <BorderColorOutlinedIcon fontSize="small" />
-                          </IconButton>
+                          {!row.isCancelled && (
+                            <>
+                              <MyModal
+                                icon={<CancelOutlinedIcon fontSize="small" />}
+                              >
+                                <CancelSessionModal
+                                  session={row}
+                                  updateSessionState={updateSessionState}
+                                  type="clinic"
+                                />
+                              </MyModal>
+                              <MyModal
+                                icon={
+                                  <BorderColorOutlinedIcon fontSize="small" />
+                                }
+                              >
+                                <UpdateSessionModal
+                                  session={row}
+                                  updateSessionState={updateSessionState}
+                                />
+                              </MyModal>
+                            </>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>
@@ -235,115 +281,84 @@ function UpcomingSessions() {
 
 export default UpcomingSessions;
 
-const sessions = [
-  {
-    doctor: "Dr Stephen Strange",
-    clinic: "Medicare Clinic",
-    activePatients: 12,
-    maxPatients: 20,
-    date: "2024/03/21",
-    time: "7.30 PM",
-    isRefundableAppointments: true,
-    docFee: 2000,
-  },
-  {
-    doctor: "Dr John Doe",
-    clinic: "Healthy Life Clinic",
-    activePatients: 15,
-    maxPatients: 25,
-    date: "2024/03/22",
-    time: "10.00 AM",
-    isRefundableAppointments: false,
-    docFee: 1800,
-  },
-  {
-    doctor: "Dr Jane Smith",
-    clinic: "Family Wellness Center",
-    activePatients: 18,
-    maxPatients: 30,
-    date: "2024/03/23",
-    time: "2.00 PM",
-    isRefundableAppointments: true,
-    docFee: 2200,
-  },
-  {
-    doctor: "Dr Michael Johnson",
-    clinic: "Sunset Healthcare",
-    activePatients: 10,
-    maxPatients: 20,
-    date: "2024/03/25",
-    time: "11.30 AM",
-    isRefundableAppointments: false,
-    docFee: 1900,
-  },
-  {
-    doctor: "Dr Sarah Williams",
-    clinic: "Elder Care Clinic",
-    activePatients: 22,
-    maxPatients: 25,
-    date: "2024/03/26",
-    time: "3.30 PM",
-    isRefundableAppointments: true,
-    docFee: 2100,
-  },
-  {
-    doctor: "Dr David Lee",
-    clinic: "Hope Hospital",
-    activePatients: 17,
-    maxPatients: 20,
-    date: "2024/03/27",
-    time: "9.00 AM",
-    isRefundableAppointments: true,
-    docFee: 2300,
-  },
-  {
-    doctor: "Dr Emily Anderson",
-    clinic: "Green Meadows Clinic",
-    activePatients: 20,
-    maxPatients: 30,
-    date: "2024/03/28",
-    time: "4.00 PM",
-    isRefundableAppointments: false,
-    docFee: 2000,
-  },
-  {
-    doctor: "Dr James Brown",
-    clinic: "First Aid Clinic",
-    activePatients: 13,
-    maxPatients: 15,
-    date: "2024/03/29",
-    time: "1.30 PM",
-    isRefundableAppointments: true,
-    docFee: 2400,
-  },
-  {
-    doctor: "Dr Samantha Taylor",
-    clinic: "Bright Health Clinic",
-    activePatients: 19,
-    maxPatients: 25,
-    date: "2024/03/30",
-    time: "10.30 AM",
-    isRefundableAppointments: false,
-    docFee: 1950,
-  },
-  {
-    doctor: "Dr Benjamin Martinez",
-    clinic: "Sunrise Wellness Center",
-    activePatients: 16,
-    maxPatients: 20,
-    date: "2024/03/31",
-    time: "3.00 PM",
-    isRefundableAppointments: true,
-    docFee: 2250,
-  },
-  {
-    doctor: "Dr Olivia Clark",
-    clinic: "Silver Health Clinic",
-    activePatients: 14,
-    maxPatients: 18,
-    date: "2024/04/01",
-    time: "11.00 AM",
-    isRefundableAppointments: true,
-    docFee: 2150,
-  },
-];
+export function UpdateSessionModal({ session, updateSessionState, closeModal }) {
+  const [timeFrom, setTimeFrom] = useState(session.timeFrom);
+  const [timeTo, setTimeTo] = useState(session.timeTo);
+  const [noOfPatients, setNoOfPatients] = useState(session.noOfPatients);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { showAlert } = useAlert();
+
+  function handleStartTime(time) {
+    setTimeFrom(time.target.value);
+  }
+
+  function handleEndTime(time) {
+    setTimeTo(time.target.value);
+  }
+
+  function handleNoOfPatients(number) {
+    setNoOfPatients(number.target.value);
+  }
+
+  function onUpdate() {
+    const newData = {
+      timeFrom: timeFrom === session.timeFrom ? timeFrom : timeFrom + ":00",
+      timeTo: timeTo === session.timeTo ? timeTo : timeTo + ":00",
+      noOfPatients: parseInt(noOfPatients),
+    };
+    if (
+      timeFrom === session.timeFrom &&
+      timeTo === session.timeTo &&
+      noOfPatients === session.noOfPatients
+    ) {
+      closeModal();
+      return;
+    }
+
+    setIsLoading(true);
+    axios
+      .put(`${config.baseURL}/session/update/${session.session_id}`, newData)
+      .then((res) => {
+        showAlert("success", "Session updated successfully.");
+        updateSessionState({ ...session, ...newData });
+        closeModal();
+      })
+      .catch((err) => {
+        showAlert("error", "Error updating the session.");
+        console.log("Error updating the session. Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  const handleClose = () => {};
+
+  return (
+    <div className="p-3">
+      <div className="text-secondary mx-2">Time slot</div>
+      <div style={{ display: "flex" }} className="mt-2">
+        <TimePicker
+          label={"from"}
+          time={timeFrom}
+          handleTime={handleStartTime}
+        />
+        <TimePicker label={"to"} time={timeTo} handleTime={handleEndTime} />
+      </div>
+
+      <div className="text-secondary mx-2 mt-4">Maximum patients</div>
+      <div style={{ display: "flex" }} className="mt-2">
+        <NumberSelect number={noOfPatients} handleNumber={handleNoOfPatients} />
+      </div>
+      {isLoading ? (
+        <Loader2 />
+      ) : (
+        <div className="mt-4 d-flex justify-content-end">
+          <Button text="Update" onClick={onUpdate} />
+        </div>
+      )}
+    </div>
+  );
+}

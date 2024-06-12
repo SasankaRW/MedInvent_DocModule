@@ -80,7 +80,7 @@ export function AppointmentDetailsModal({
         }
       )
       .then((res) => {
-        showAlert("success", "Marked as attended.");
+        showAlert("success", "Appointment cancelled successfully.");
         updateAppointmentStatus({
           ...appointment,
           isCancelled: true,
@@ -88,7 +88,7 @@ export function AppointmentDetailsModal({
         });
       })
       .catch((err) => {
-        showAlert("error", "Error cancelling appointment.");
+        showAlert("error", "Error cancelling the appointment.");
       })
       .finally(() => {
         setIsCancelledLoading(false);

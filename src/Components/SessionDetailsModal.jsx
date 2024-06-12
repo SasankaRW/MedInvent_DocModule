@@ -1,12 +1,48 @@
+import axios from "axios";
 import Button from "./Button/Button";
+import config from "../config";
+import { useAlert } from "../Contexts/AlertContext";
+import { useState } from "react";
+import Loader2 from "./Loader2/Loader2";
 
-export function SessionDetailsModal({ session, type }) {
+export function SessionDetailsModal({
+  session,
+  updateSessionState,
+  type,
+  closeModal,
+}) {
+  const { showAlert } = useAlert();
+
+  const [isLoading, setIsLoading] = useState(false);
+
   function convertTimeFormat(time) {
-    let [hours, minutes, seconds] = time.split(":").map(Number);
+    let [hours, minutes] = time.split(":").map(Number);
     let period = hours >= 12 ? "PM" : "AM";
     hours = hours % 12 || 12;
     minutes = minutes.toString().padStart(2, "0");
     return `${hours}:${minutes} ${period}`;
+  }
+
+  function onMarkAsArrived() {
+    setIsLoading(true);
+    axios
+      .put(`${config.baseURL}/session/update/${session.session_id}`, {
+        isArrived: true,
+      })
+      .then((res) => {
+        showAlert("success", "Marked as arrived.");
+        closeModal();
+        updateSessionState({
+          ...session,
+          isArrived: true,
+        });
+      })
+      .catch((err) => {
+        showAlert("error", "Error marking as arrived.");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   return (
@@ -64,7 +100,10 @@ export function SessionDetailsModal({ session, type }) {
             <small className="text-secondary">Time</small>
           </div>
           <div>
-            <strong>{convertTimeFormat(session.timeFrom)}</strong>
+            <strong>
+              {convertTimeFormat(session.timeFrom)} -{" "}
+              {convertTimeFormat(session.timeTo)}
+            </strong>
           </div>
         </div>
       </div>
@@ -87,12 +126,31 @@ export function SessionDetailsModal({ session, type }) {
           </div>
         </div>
       </div>
-      {type === "upcoming" && (
-        <div className="text-end mt-5">
-          <span className="mx-2">
-            <Button text="Reschedule" />
-          </span>
-          <Button text="Cancel session" />
+      {session.isCancelled && (
+        <div className="mt-4" style={{ color: "red", fontSize: "18px" }}>
+          This session is cancelled by the {session.cancelledByType}
+        </div>
+      )}
+      {type === "clinic" && !session.isCancelled && (
+        <div className="d-flex justify-content-end mt-3">
+          {session.isArrived ? (
+            <span
+              style={{
+                margin: "20px",
+                backgroundColor: "green",
+                fontSize: "15px",
+                color: "white",
+                padding: "5px 15px",
+                borderRadius: "20px",
+              }}
+            >
+              Doctor has arrived
+            </span>
+          ) : isLoading ? (
+            <Loader2 />
+          ) : (
+            <Button text="Mark as arrived" onClick={onMarkAsArrived} />
+          )}
         </div>
       )}
     </div>
