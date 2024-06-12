@@ -8,6 +8,7 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import NumberSelect from "../../../Components/NumberSelect/NumberSelect";
 import AppointmentDatePicker from "../../../Components/AppointmentDatePicker/AppointmentDatePicker";
 import TimePicker from "../../../Components/TimePicker/TimePicker";
+import AddDoctorModal from "../../../Components/AddDoctorModal";
 import axios from "axios";
 import Loader from "../../.././Components/Loader/Loader";
 import { useAlert } from "../../../Contexts/AlertContext";
@@ -213,186 +214,174 @@ function NewSession() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <form action="" onSubmit={handleSubmit} className="w-100">
-          <div className="p-5">
-            <div className="row">
-              <div className="col-sm-5">
-                <div className={`${styles.gridItem} text-secondary`}>
-                  Doctor's Name
-                </div>
+        <div className="p-5 w-100">
+          <div className="row">
+            <div className="col-sm-5">
+              <div className={`${styles.gridItem} text-secondary`}>
+                Doctor's Name
               </div>
-              <div className="col-sm-7">
-                <div className={`${styles.gridItem} d-flex`}>
-                  <Select
-                    sx={{
-                      borderRadius: "20px",
-                      height: "40px",
-                      padding: "0 10px",
-                    }}
-                    fullWidth
-                    value={selectedDoctor}
-                    onChange={handleSelectedDoctor}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      Select a doctor
+            </div>
+            <div className="col-sm-7">
+              <div className={`${styles.gridItem} d-flex`}>
+                <Select
+                  sx={{
+                    borderRadius: "20px",
+                    height: "40px",
+                    padding: "0 10px",
+                  }}
+                  fullWidth
+                  value={selectedDoctor}
+                  onChange={handleSelectedDoctor}
+                  displayEmpty
+                >
+                  <MenuItem value="" disabled>
+                    Select a doctor
+                  </MenuItem>
+                  {visitingDoctors.map((doctor) => (
+                    <MenuItem value={doctor.doctor_id} key={doctor.doctor_id}>
+                      {doctor.doctor.fname} {doctor.doctor.lname}
                     </MenuItem>
-                    {visitingDoctors.map((doctor) => (
-                      <MenuItem value={doctor.doctor_id} key={doctor.doctor_id}>
-                        {doctor.doctor.fname} {doctor.doctor.lname}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <div style={{ margin: "0 30px" }}>
-                    <Button
-                      text={"Add"}
-                      onClick={(e) => {
-                        e.preventDefault();
-                      }}
-                    />
-                  </div>
+                  ))}
+                </Select>
+                <div style={{ margin: "0 30px", display: "flex" }}>
+                  <AddDoctorModal />
                 </div>
               </div>
-            </div>
-            <div className="row">
-              <div className="col-sm-5">
-                <div className={`${styles.gridItem} text-secondary`}>Dates</div>
-              </div>
-              <div className="col-sm-7">
-                <div className={styles.gridItem}>
-                  <div style={{ display: "flex" }}>
-                    <MyDatePicker
-                      isStart={true}
-                      selectedDate={startDate}
-                      handleDateChange={handleStartDate}
-                      label={"Start date"}
-                    />
-                    <MyDatePicker
-                      selectedDate={endDate}
-                      handleDateChange={handleEndDate}
-                      label={"End date"}
-                      minDate={startDate}
-                    />
-                  </div>
-                  <AppointmentDatePicker
-                    sessionDates={sessionDates}
-                    setSessionDates={setSessionDates}
-                    startDate={startDate}
-                    endDate={endDate}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-sm-5">
-                <div className={`${styles.gridItem} text-secondary`}>
-                  Clinic Name
-                </div>
-              </div>
-              <div className="col-sm-7">
-                <div className={styles.gridItem}>{user.name}</div>
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-sm-5">
-                <div className={`${styles.gridItem} text-secondary`}>
-                  Time slot
-                </div>
-              </div>
-              <div className="col-sm-7">
-                <div className={styles.gridItem} style={{ display: "flex" }}>
-                  <TimePicker
-                    label={"from"}
-                    time={startTime}
-                    handleTime={handleStartTime}
-                  />
-                  <TimePicker
-                    label={"to"}
-                    time={endTime}
-                    handleTime={handleEndTime}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-sm-5">
-                <div className={`${styles.gridItem} text-secondary`}>
-                  Number of patients
-                </div>
-              </div>
-              <div className="col-sm-7">
-                <div className={styles.gridItem}>
-                  <NumberSelect
-                    number={noOfPatients}
-                    handleNumber={handleNoOfPatients}
-                  />
-                </div>
-              </div>
-            </div>
-            <hr />
-            <div className="row">
-              <div className="col-sm-5">
-                <div className={`${styles.gridItem} text-secondary`}>
-                  Clinic fee
-                </div>
-              </div>
-              <div className="col-sm-7">
-                <div className={styles.gridItem}>
-                  Rs. {user.clinicFee}
-                  <button
-                    style={{
-                      backgroundColor: "white",
-                      border: "none",
-                      marginLeft: "20px",
-                    }}
-                    onClick={() => {}}
-                  >
-                    <BorderColorIcon
-                      fontSize="small"
-                      onClick={(e) => {
-                        e.preventDefault();
-                      }}
-                    />
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-sm-5">
-                <div className={`${styles.gridItem} text-secondary`}>
-                  Doctor's fee
-                </div>
-              </div>
-              <div className="col-sm-7">
-                <div className={styles.gridItem}>
-                  {docFee === null ? "Not set" : "Rs. " + docFee}
-                </div>
-              </div>
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                style={{ marginRight: "10px" }}
-                checked={isRefundable}
-                onChange={handleIsRefundable}
-              />
-              <span>
-                Accept refundable appointments (Rs. 250 will be extra charged
-                for refundable appointments
-              </span>
-            </div>
-            <div
-              style={{
-                height: "40px",
-                margin: "30px 30px 0 0",
-                textAlign: "end",
-              }}
-            >
-              <Button text={"Schedule"} />
             </div>
           </div>
-        </form>
+          <div className="row">
+            <div className="col-sm-5">
+              <div className={`${styles.gridItem} text-secondary`}>Dates</div>
+            </div>
+            <div className="col-sm-7">
+              <div className={styles.gridItem}>
+                <div style={{ display: "flex" }}>
+                  <MyDatePicker
+                    isStart={true}
+                    selectedDate={startDate}
+                    handleDateChange={handleStartDate}
+                    label={"Start date"}
+                  />
+                  <MyDatePicker
+                    selectedDate={endDate}
+                    handleDateChange={handleEndDate}
+                    label={"End date"}
+                    minDate={startDate}
+                  />
+                </div>
+                <AppointmentDatePicker
+                  sessionDates={sessionDates}
+                  setSessionDates={setSessionDates}
+                  startDate={startDate}
+                  endDate={endDate}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-5">
+              <div className={`${styles.gridItem} text-secondary`}>
+                Clinic Name
+              </div>
+            </div>
+            <div className="col-sm-7">
+              <div className={styles.gridItem}>{user.name}</div>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-sm-5">
+              <div className={`${styles.gridItem} text-secondary`}>
+                Time slot
+              </div>
+            </div>
+            <div className="col-sm-7">
+              <div className={styles.gridItem} style={{ display: "flex" }}>
+                <TimePicker
+                  label={"from"}
+                  time={startTime}
+                  handleTime={handleStartTime}
+                />
+                <TimePicker
+                  label={"to"}
+                  time={endTime}
+                  handleTime={handleEndTime}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-5">
+              <div className={`${styles.gridItem} text-secondary`}>
+                Number of patients
+              </div>
+            </div>
+            <div className="col-sm-7">
+              <div className={styles.gridItem}>
+                <NumberSelect
+                  number={noOfPatients}
+                  handleNumber={handleNoOfPatients}
+                />
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div className="row">
+            <div className="col-sm-5">
+              <div className={`${styles.gridItem} text-secondary`}>
+                Clinic fee
+              </div>
+            </div>
+            <div className="col-sm-7">
+              <div className={styles.gridItem}>
+                Rs. {user.clinicFee}
+                <button
+                  style={{
+                    backgroundColor: "white",
+                    border: "none",
+                    marginLeft: "20px",
+                  }}
+                  onClick={() => {}}
+                >
+                  <BorderColorIcon fontSize="small" />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-5">
+              <div className={`${styles.gridItem} text-secondary`}>
+                Doctor's fee
+              </div>
+            </div>
+            <div className="col-sm-7">
+              <div className={styles.gridItem}>
+                {docFee === null ? "Not set" : "Rs. " + docFee}
+              </div>
+            </div>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              style={{ marginRight: "10px" }}
+              checked={isRefundable}
+              onChange={handleIsRefundable}
+            />
+            <span>
+              Accept refundable appointments (Rs. 250 will be extra charged for
+              refundable appointments)
+            </span>
+          </div>
+          <div
+            style={{
+              height: "40px",
+              margin: "30px 30px 0 0",
+              textAlign: "end",
+            }}
+          >
+            <Button text={"Schedule"} onClick={handleSubmit} />
+          </div>
+        </div>
         <div className={`${styles.image} d-none d-lg-flex align-items-end`}>
           <img src="../../images/newsession.png" alt="img" height={300} />
         </div>

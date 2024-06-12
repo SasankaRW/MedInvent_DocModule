@@ -190,7 +190,9 @@ function AddedTab({ userId }) {
     );
   }
   return (
-    <div style={{ maxHeight: "60vh", scrollbarWidth: "thin" }}>
+    <div
+      style={{ maxHeight: "60vh", scrollbarWidth: "thin", overflowY: "auto" }}
+    >
       {addedClinics.map((clinic) => (
         <VisitingElement
           item={clinic}
@@ -230,11 +232,13 @@ function PendingTab({ userId }) {
   }
 
   return (
-    <>
+    <div
+      style={{ maxHeight: "60vh", scrollbarWidth: "thin", overflowY: "auto" }}
+    >
       {pendingClinics.map((clinic) => (
         <Pending item={clinic} type="clinic" key={clinic.clinic_id} />
       ))}
-    </>
+    </div>
   );
 }
 
@@ -265,7 +269,9 @@ function RequestsTab({ userId }) {
   }
 
   return (
-    <>
+    <div
+      style={{ maxHeight: "60vh", scrollbarWidth: "thin", overflowY: "auto" }}
+    >
       {requestedClinics.map((clinic) => (
         <Requested
           item={clinic}
@@ -275,7 +281,7 @@ function RequestsTab({ userId }) {
           userId={userId}
         />
       ))}
-    </>
+    </div>
   );
 }
 

@@ -27,13 +27,15 @@ export function ResultItem({ item, type }) {
   };
 
   function onAddClick() {
+    const data = {
+      doctor_id: type === "doctor" ? item.doctor_id : user.id,
+      clinic_id: type === "doctor" ? user.id : item.clinic_id,
+      reqSentBy: type === "doctor" ? "clinic" : "doctor",
+    };
+
     setIsLoading(true);
     axios
-      .post(`${config.baseURL}/visiting/newvisiting`, {
-        doctor_id: type === "doctor" ? item.doctor_id : user.id,
-        clinic_id: type === "doctor" ? user.id : item.clinic_id,
-        reqSentBy: type === "doctor" ? "clinic" : "doctor",
-      })
+      .post(`${config.baseURL}/visiting/newvisiting`, data)
       .then((response) => {
         setIsRequested(true);
       })

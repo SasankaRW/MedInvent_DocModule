@@ -244,7 +244,9 @@ function AddedTab({ userId }) {
     );
   }
   return (
-    <div style={{ maxHeight: "60vh", scrollbarWidth: "thin" }}>
+    <div
+      style={{ maxHeight: "60vh", scrollbarWidth: "thin", overflowY: "auto" }}
+    >
       {addedDoctors.map((doctor) => (
         <VisitingElement
           item={doctor}
@@ -284,11 +286,13 @@ function PendingTab({ userId }) {
   }
 
   return (
-    <>
+    <div
+      style={{ maxHeight: "60vh", scrollbarWidth: "thin", overflowY: "auto" }}
+    >
       {pendingDoctors.map((doctor) => (
         <Pending item={doctor} type="doctor" key={doctor.doctor_id} />
       ))}
-    </>
+    </div>
   );
 }
 
@@ -319,7 +323,9 @@ function RequestsTab({ userId }) {
   }
 
   return (
-    <>
+    <div
+      style={{ maxHeight: "60vh", scrollbarWidth: "thin", overflowY: "auto" }}
+    >
       {requestedDoctors.map((doctor) => (
         <Requested
           item={doctor}
@@ -329,7 +335,7 @@ function RequestsTab({ userId }) {
           userId={userId}
         />
       ))}
-    </>
+    </div>
   );
 }
 

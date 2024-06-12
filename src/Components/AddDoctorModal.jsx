@@ -7,7 +7,7 @@ import Button from "./Button/Button";
 import { useState } from "react";
 import DoctorSearch from "./DoctorSearch";
 
-export default function AddDoctorModal({}) {
+export default function AddDoctorModal() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
