@@ -73,7 +73,7 @@ function UpcomingSessions() {
         setSessions(res.data.data);
       })
       .catch((err) => {
-        showAlert("error", "Error upcoming sessions.");
+        showAlert("error", "Error loading sessions.");
         console.log("Error getting upcoming sessions. Error:" + err);
       })
       .finally(() => {

@@ -4,7 +4,6 @@ import styles from "../Doctor/NewSession.module.css";
 import { useEffect, useReducer, useState } from "react";
 import MyDatePicker from "../../../Components/MyDatePicker";
 import Button from "../../../Components/Button/Button";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
 import NumberSelect from "../../../Components/NumberSelect/NumberSelect";
 import AppointmentDatePicker from "../../../Components/AppointmentDatePicker/AppointmentDatePicker";
 import TimePicker from "../../../Components/TimePicker/TimePicker";
@@ -15,7 +14,6 @@ import { useAlert } from "../../../Contexts/AlertContext";
 import { motion } from "framer-motion";
 import config from "../../../config";
 import { useAuth } from "../../../Contexts/AuthContext";
-import MyModal from "../../../Components/MyModal";
 import UpdateClinicFeeModal from "../../../Components/UpdateClinicFeeModal";
 
 const initialState = {

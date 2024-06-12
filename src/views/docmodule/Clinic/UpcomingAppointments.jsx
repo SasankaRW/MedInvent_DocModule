@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import Title from "../../../Components/Title";
 import MyDatePicker from "../../../Components/MyDatePicker";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+} from "@mui/material";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -15,6 +21,11 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import { AppointmentDetailsModal } from "../../../Components/AppointmentDetailsModal";
 import { motion } from "framer-motion";
 import Button from "../../../Components/Button/Button";
+import axios from "axios";
+import config from "../../../config";
+import { useAuth } from "../../../Contexts/AuthContext";
+import { useAlert } from "../../../Contexts/AlertContext";
+import Loader from "../../../Components/Loader/Loader";
 
 const columns = [
   { id: "patient", label: "Patient", minWidth: 170 },
@@ -33,31 +44,61 @@ const columns = [
 ];
 
 function UpcomingAppointments() {
+  const { user } = useAuth();
+  const { showAlert } = useAlert();
+
   const [date, setDate] = useState("");
   const [doctor, setDoctor] = useState("");
   const [time, setTime] = useState("");
-  const [filteredAppointments, setFilteredAppointments] =
-    useState(appointments);
+  const [patientName, setPatientName] = useState("");
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const [appointments, setAppointments] = useState([]);
+  const [filteredAppointments, setFilteredAppointments] =
+    useState(appointments);
+
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
-    let filtered = appointments;
+    setIsLoading(true);
+    axios
+      .get(`${config.baseURL}/appointment/get/clinic/upcoming/${user.id}`)
+      .then((res) => {
+        setAppointments(res.data.data);
+      })
+      .catch((err) => {
+        showAlert("error", "Error loading appointments.");
+        console.log("Error getting appointments. Error:" + err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [user.id]);
 
-    if (date) {
-      filtered = filtered.filter((appointment) => appointment.date === date);
-    }
-    if (doctor) {
-      filtered = filtered.filter(
-        (appointment) => appointment.doctor === doctor
+  useEffect(() => {
+    const filtered = appointments.filter((appointment) => {
+      const appointmentDate = new Date(appointment.session.date)
+        .toISOString()
+        .split("T")[0];
+      return (
+        (date === "" || appointmentDate === date) &&
+        (doctor === "" ||
+          appointment.session.doctor.fname +
+            " " +
+            appointment.session.doctor.lname ===
+            doctor) &&
+        (time === "" || appointment.session.timeFrom === time) &&
+        (patientName === "" ||
+          appointment.patientName
+            .toLowerCase()
+            .includes(patientName.toLowerCase()))
       );
-    }
-    if (time) {
-      filtered = filtered.filter((appointment) => appointment.time === time);
-    }
-
+    });
     setFilteredAppointments(filtered);
-  }, [date, doctor, time]);
+    setPage(0);
+  }, [date, doctor, appointments, time, patientName]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -69,10 +110,33 @@ function UpcomingAppointments() {
   };
 
   const onClearClick = () => {
+    setPatientName("");
     setDate("");
     setDoctor("");
     setTime("");
   };
+
+  function convertTimeFormat(time) {
+    let [hours, minutes] = time.split(":").map(Number);
+    let period = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12;
+    minutes = minutes.toString().padStart(2, "0");
+    return `${hours}:${minutes} ${period}`;
+  }
+
+  const updateAppointmentStatus = (updatedAppointment) => {
+    setAppointments((prevAppointments) =>
+      prevAppointments.map((appointment) =>
+        appointment.appointment_id === updatedAppointment.appointment_id
+          ? { ...appointment, ...updatedAppointment }
+          : appointment
+      )
+    );
+  };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div>
@@ -83,7 +147,17 @@ function UpcomingAppointments() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-lg-center">
+          <OutlinedInput
+            value={patientName}
+            onChange={(e) => {
+              setPatientName(e.target.value);
+            }}
+            variant="outlined"
+            placeholder={"Patient's name"}
+            size="small"
+            style={{ borderRadius: "20px", marginRight: "10px" }}
+          />
           <MyDatePicker
             selectedDate={date}
             handleDateChange={(e) => setDate(e.target.value)}
@@ -104,7 +178,13 @@ function UpcomingAppointments() {
                 borderRadius: "20px",
               }}
             >
-              {Array.from(new Set(appointments.map((x) => x.doctor)))
+              {Array.from(
+                new Set(
+                  appointments.map(
+                    (x) => x.session.doctor.fname + " " + x.session.doctor.lname
+                  )
+                )
+              )
                 .sort()
                 .map((doctor) => (
                   <MenuItem key={doctor} value={doctor}>
@@ -113,9 +193,9 @@ function UpcomingAppointments() {
                 ))}
             </Select>
           </FormControl>
-          <FormControl style={{ width: "20%", marginRight: "20px" }}>
+          <FormControl style={{ width: "15%", marginRight: "20px" }}>
             <InputLabel id="doctor" size="small">
-              Select Session time
+              Session time
             </InputLabel>
             <Select
               size="small"
@@ -123,16 +203,16 @@ function UpcomingAppointments() {
               id="demo-simple-select"
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              label="Select Session time"
+              label="Session time"
               sx={{
                 borderRadius: "20px",
               }}
             >
-              {Array.from(new Set(appointments.map((x) => x.time)))
+              {Array.from(new Set(appointments.map((x) => x.session.timeFrom)))
                 .sort()
                 .map((time) => (
                   <MenuItem key={time} value={time}>
-                    {time}
+                    {convertTimeFormat(time)}
                   </MenuItem>
                 ))}
             </Select>
@@ -158,21 +238,29 @@ function UpcomingAppointments() {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
-                    //change this to appointment id
                     <TableRow
-                      key={`${row.patient}-${row.date}-${row.time}`}
+                      key={row.appointment_id}
                       hover
+                      sx={row.isCancelled && { backgroundColor: "#ffe3e3" }}
                     >
-                      <TableCell>{row.patient}</TableCell>
-                      <TableCell>{row.doctor}</TableCell>
-                      <TableCell>{row.date}</TableCell>
-                      <TableCell>{row.time}</TableCell>
+                      <TableCell>{row.patientName}</TableCell>
+                      <TableCell>
+                        {row.session.doctor.fname} {row.session.doctor.lname}
+                      </TableCell>
+                      <TableCell>{row.session.date}</TableCell>
+                      <TableCell>
+                        {convertTimeFormat(row.session.timeFrom)}
+                      </TableCell>
                       <TableCell align="right">
                         <div className="d-flex justify-content-end">
                           <MyModal
                             icon={<RemoveRedEyeOutlinedIcon fontSize="small" />}
                           >
-                            <AppointmentDetailsModal appointment={row} />
+                            <AppointmentDetailsModal
+                              appointment={row}
+                              updateAppointmentStatus={updateAppointmentStatus}
+                              type="upcoming"
+                            />
                           </MyModal>
                         </div>
                       </TableCell>
@@ -197,90 +285,3 @@ function UpcomingAppointments() {
 }
 
 export default UpcomingAppointments;
-
-const appointments = [
-  {
-    patient: "John Doe",
-    doctor: "Dr Stephen Strange",
-    clinic: "Medicare Clinic",
-    date: "2024/03/21",
-    time: "7.30 PM",
-    appointmentNo: 12,
-    mobileNo: "0771234567",
-    email: "abcd@gmail.com",
-    area: "moratuwa",
-    nic: "123456779V",
-  },
-  {
-    patient: "Jane Smith",
-    doctor: "Dr. Jane Foster",
-    clinic: "Healing Hands Clinic",
-    date: "2024/03/22",
-    time: "9:00 AM",
-    appointmentNo: 13,
-    mobileNo: "0777654321",
-    email: "jane.smith@example.com",
-    area: "Colombo",
-    nic: "987654321V",
-  },
-  {
-    patient: "David Brown",
-    doctor: "Dr. Bruce Banner",
-    clinic: "Green Health Center",
-    date: "2024/03/23",
-    time: "3:00 PM",
-    appointmentNo: 14,
-    mobileNo: "0712345678",
-    email: null,
-    area: "Kandy",
-    nic: "456789123V",
-  },
-  {
-    patient: "Emily Johnson",
-    doctor: "Dr. Tony Stark",
-    clinic: "IronCare Clinic",
-    date: "2024/03/24",
-    time: "10:30 AM",
-    appointmentNo: 15,
-    mobileNo: "0777777777",
-    email: "emilyj@example.com",
-    area: "Galle",
-    nic: "147258369V",
-  },
-  {
-    patient: "Michael Wilson",
-    doctor: "Dr. Peter Parker",
-    clinic: "Web Health Center",
-    date: "2024/03/25",
-    time: "1:00 PM",
-    appointmentNo: 16,
-    mobileNo: "0765432109",
-    email: "michael.wilson@example.com",
-    area: "Negombo",
-    nic: "369852147V",
-  },
-  {
-    patient: "Sarah Davis",
-    doctor: "Dr. Tony Stark",
-    clinic: "IronCare Clinic",
-    date: "2024-03-24",
-    time: "2:45 PM",
-    appointmentNo: 17,
-    mobileNo: "0701234567",
-    email: "sarah.davis@example.com",
-    area: "Colombo",
-    nic: "258147369V",
-  },
-  {
-    patient: "Mark Thompson",
-    doctor: "Dr. Tony Stark",
-    clinic: "IronCare Clinic",
-    date: "2024-03-26",
-    time: "9:15 AM",
-    appointmentNo: 18,
-    mobileNo: "0719876543",
-    email: "mark.thompson@example.com",
-    area: "Jaffna",
-    nic: "963852741V",
-  },
-];

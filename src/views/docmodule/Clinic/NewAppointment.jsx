@@ -27,6 +27,8 @@ function NewAppointment() {
   const [area, setArea] = useState("");
   const [nic, setNic] = useState("");
 
+  const [patients, setPatients] = useState(0);
+
   const { user } = useAuth();
 
   function validateEmail(email) {
@@ -85,6 +87,7 @@ function NewAppointment() {
       return;
     }
 
+    setIsLoading(true);
     const appointmentDetails = {
       patientTitle: title,
       patientName,
@@ -94,12 +97,27 @@ function NewAppointment() {
       nic,
       session_id: selectedSession.session_id,
     };
-
-    console.log(appointmentDetails);
-  }
-
-  if (isLoading) {
-    return <Loader />;
+    axios
+      .post(`${config.baseURL}/appointment/newappointment`, appointmentDetails)
+      .then((response) => {
+        showAlert("success", "Appointment booked successfully.");
+        setTitle("Mr");
+        setPatientName("");
+        setMobileNumber("");
+        setEmail("");
+        setNic("");
+        setArea("");
+        setPatients((prev) => prev + 1);
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.response?.data?.message || "Error booking the appointment.";
+        console.error(errorMessage);
+        showAlert("Error booking the appointment");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   return (
@@ -129,11 +147,15 @@ function NewAppointment() {
                     key={session.session_id}
                     session={session}
                     setSelectedSession={setSelectedSession}
+                    setActivePatients={setPatients}
                   />
                 ))}
               </div>
             ) : (
-              <SessionDetails session={selectedSession} />
+              <SessionDetails
+                session={selectedSession}
+                activePatients={patients}
+              />
             )}
           </div>
         </div>
@@ -245,7 +267,11 @@ function NewAppointment() {
           </div>
 
           <div className="mt-5 d-flex justify-content-end">
-            <Button text="Book aappointment" onClick={onSubmit} />
+            {isLoading ? (
+              <Loader2 />
+            ) : (
+              <Button text="Book aappointment" onClick={onSubmit} />
+            )}
           </div>
         </div>
       </motion.div>
@@ -341,9 +367,14 @@ const SearchComponent = ({ setSelectedDoctor }) => {
   );
 };
 
-const SessionTemplate = ({ session, setSelectedSession }) => {
+const SessionTemplate = ({
+  session,
+  setSelectedSession,
+  setActivePatients,
+}) => {
   function handleSelectSession(session) {
     setSelectedSession(session);
+    setActivePatients(session.activePatients);
   }
   return (
     <div
@@ -369,7 +400,7 @@ const SessionTemplate = ({ session, setSelectedSession }) => {
   );
 };
 
-const SessionDetails = ({ session }) => {
+const SessionDetails = ({ session, activePatients }) => {
   return (
     <div className={styles.sessionDetails}>
       <h5>Session Details</h5>
@@ -398,7 +429,7 @@ const SessionDetails = ({ session }) => {
       <div className="row">
         <div className="col-3">Patients</div>
         <div className="col-1">:</div>
-        <div className="col-8">{session.activePatients}</div>
+        <div className="col-8">{activePatients}</div>
       </div>
 
       <div className="row">
