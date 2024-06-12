@@ -15,6 +15,8 @@ import { useAlert } from "../../../Contexts/AlertContext";
 import { motion } from "framer-motion";
 import config from "../../../config";
 import { useAuth } from "../../../Contexts/AuthContext";
+import MyModal from "../../../Components/MyModal";
+import UpdateClinicFeeModal from "../../../Components/UpdateClinicFeeModal";
 
 const initialState = {
   startDate: "",
@@ -86,6 +88,8 @@ function NewSession() {
   const [visitingDoctors, setVisitingDoctors] = useState([]);
   const { showAlert } = useAlert();
 
+  const [clinicFee, setClinicFee] = useState(user.clinicFee);
+
   useEffect(() => {
     setIsLoading(true);
     axios
@@ -103,13 +107,13 @@ function NewSession() {
   }, [user.id]);
 
   function handleSelectedDoctor(e) {
-    const selectedDoctorId = e.target.value;
+    const selectedDoctor = e.target.value;
     const doctor = visitingDoctors.find(
-      (doc) => doc.doctor_id === selectedDoctorId
+      (doc) => doc.doctor_id === selectedDoctor.doctor_id
     );
     dispatch({
       type: "selectedDoctor",
-      payload: selectedDoctorId,
+      payload: selectedDoctor,
       fee: doctor.docFee,
     });
   }
@@ -162,13 +166,13 @@ function NewSession() {
       return;
     }
 
-    if (user.clinicFee === null) {
+    if (clinicFee === null) {
       showAlert("error", "Clinic Fee is not set");
       return;
     }
 
     const sessionDetails = {
-      doctor_id: selectedDoctor,
+      doctor_id: selectedDoctor.doctor_id,
       clinic_id: user.id,
       scheduledById: user.id,
       scheduledByType: scheduledBy,
@@ -177,7 +181,7 @@ function NewSession() {
       timeTo: endTime + ":00",
       noOfPatients: parseInt(noOfPatients),
       docFee: parseFloat(docFee),
-      clinicFee: parseFloat(user.clinicFee),
+      clinicFee: parseFloat(clinicFee),
       isRefundable: isRefundable,
     };
 
@@ -238,7 +242,7 @@ function NewSession() {
                     Select a doctor
                   </MenuItem>
                   {visitingDoctors.map((doctor) => (
-                    <MenuItem value={doctor.doctor_id} key={doctor.doctor_id}>
+                    <MenuItem value={doctor} key={doctor.doctor_id}>
                       {doctor.doctor.fname} {doctor.doctor.lname}
                     </MenuItem>
                   ))}
@@ -334,7 +338,7 @@ function NewSession() {
             </div>
             <div className="col-sm-7">
               <div className={styles.gridItem}>
-                Rs. {user.clinicFee}
+                Rs. {clinicFee}
                 <button
                   style={{
                     backgroundColor: "white",
@@ -343,7 +347,10 @@ function NewSession() {
                   }}
                   onClick={() => {}}
                 >
-                  <BorderColorIcon fontSize="small" />
+                  <UpdateClinicFeeModal
+                    setClinicFee={setClinicFee}
+                    id={user.id}
+                  />
                 </button>
               </div>
             </div>

@@ -15,12 +15,13 @@ import { useAlert } from "../../../Contexts/AlertContext";
 import { motion } from "framer-motion";
 import { useAuth } from "../../../Contexts/AuthContext";
 import config from "../../../config";
+import MyModal from "../../../Components/MyModal";
+import { UpdateDocFee } from "../../../Components/VisitingElement";
 
 const initialState = {
   startDate: "",
   endDate: "",
-  selectedClinicr: "",
-  docFee: 0,
+  selectedClinic: "",
   clinicFee: 0,
   noOfPatients: 0,
   isRefundable: false,
@@ -35,7 +36,6 @@ function reducer(state, action) {
       return {
         ...state,
         selectedClinic: action.payload,
-        docFee: action.docfee,
         clinicFee: action.clinicFee,
       };
 
@@ -73,7 +73,6 @@ function NewSession() {
       startDate,
       endDate,
       selectedClinic,
-      docFee,
       clinicFee,
       noOfPatients,
       isRefundable,
@@ -88,6 +87,8 @@ function NewSession() {
   const [sessionDates, setSessionDates] = useState([]);
   const [visitingClinics, setVisitingClinics] = useState([]);
   const { showAlert } = useAlert();
+
+  const [docFee, setDocFee] = useState(0);
 
   useEffect(() => {
     setIsLoading(true);
@@ -106,19 +107,16 @@ function NewSession() {
   }, [user.id]);
 
   function handleSelectedClinic(e) {
-    const selectedClinicId = e.target.value;
+    const selectedClinic = e.target.value;
     const clinic = visitingClinics.find(
-      (clinic) => clinic.clinic_id === selectedClinicId
+      (clinic) => clinic.clinic_id === selectedClinic.clinic_id
     );
     dispatch({
       type: "selectedClinic",
-      payload: selectedClinicId,
-      docfee: clinic.docFee,
+      payload: selectedClinic,
       clinicFee: clinic.clinic.clinicFees,
     });
-
-    console.log(clinic.docFee);
-    console.log(clinic.clinic.clinicFees);
+    setDocFee(clinic.docFee);
   }
 
   function handleNoOfPatients(e) {
@@ -164,19 +162,19 @@ function NewSession() {
       return;
     }
 
-    if (docFee === null) {
+    if (docFee === null || parseInt(docFee) === 0) {
       showAlert("error", "Doctor Fee is not set for the selected doctor");
       return;
     }
 
-    if (clinicFee === null) {
+    if (clinicFee === null || parseInt(clinicFee) === 0) {
       showAlert("error", "Clinic Fee is not set for the selected doctor");
       return;
     }
 
     const sessionDetails = {
       doctor_id: user.id,
-      clinic_id: selectedClinic,
+      clinic_id: selectedClinic.clinic_id,
       scheduledById: user.id,
       scheduledByType: scheduledBy,
       dates: [...sessionDates],
@@ -187,6 +185,7 @@ function NewSession() {
       docFee: parseFloat(docFee),
       isRefundable: isRefundable,
     };
+
     setIsLoading(true);
 
     axios
@@ -205,6 +204,8 @@ function NewSession() {
         setIsLoading(false);
       });
   }
+
+  const handleClose = () => {};
 
   if (isLoading) {
     return <Loader />;
@@ -283,7 +284,7 @@ function NewSession() {
                     Select a clinic
                   </MenuItem>
                   {visitingClinics.map((clinic) => (
-                    <MenuItem value={clinic.clinic_id} key={clinic.clinic_id}>
+                    <MenuItem value={clinic} key={clinic.clinic_id}>
                       {clinic.clinic.name}
                     </MenuItem>
                   ))}
@@ -347,7 +348,24 @@ function NewSession() {
                     marginLeft: "20px",
                   }}
                 >
-                  <BorderColorIcon fontSize="small" />
+                  {" "}
+                  {selectedClinic !== "" && (
+                    <MyModal
+                      icon={
+                        <BorderColorIcon
+                          fontSize="small"
+                          className="mx-3"
+                          style={{ color: "gray" }}
+                        />
+                      }
+                    >
+                      <UpdateDocFee
+                        closeModal={handleClose}
+                        item={selectedClinic}
+                        setDocFee={setDocFee}
+                      />
+                    </MyModal>
+                  )}
                 </button>
               </div>
             </div>

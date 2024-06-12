@@ -107,7 +107,7 @@ export function VisitingElement({ item, type, setAddedClinics }) {
   );
 }
 
-function UpdateDocFee({ closeModal, item, setDocFee }) {
+export function UpdateDocFee({ closeModal, item, setDocFee }) {
   const { showAlert } = useAlert();
 
   const [fee, setFee] = useState(null);
@@ -145,9 +145,7 @@ function UpdateDocFee({ closeModal, item, setDocFee }) {
 
   return (
     <div className="text-center">
-      <div className="lead">
-        Change doctor fee for medicare clinic appointments
-      </div>
+      <div className="lead">Change doctor fee for {item.clinic.name}</div>
       <div>
         <OutlinedInput
           variant="outlined"

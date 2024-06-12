@@ -60,7 +60,6 @@ function a11yProps(index) {
 }
 
 function Profile() {
-  const [visitingDoctors, setVisitingDoctors] = useState(doctors);
   const [value, setValue] = useState(0);
 
   const [clinicFee, setClinicFee] = useState(0);
