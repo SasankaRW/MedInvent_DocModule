@@ -83,4 +83,5 @@
 .fc-event {
     background-color: rgb(252, 252, 252);
     border: none;
+    width: 200px;
 }

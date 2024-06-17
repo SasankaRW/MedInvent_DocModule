@@ -38,6 +38,8 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
+//initial states of all the input fields
+// for the use of reducers
 const initialState = {
   firstName: "",
   middleName: "",
@@ -53,10 +55,11 @@ const initialState = {
   note: "",
 };
 
+// reducer function to find which field has changed
 function reducer(state, action) {
   switch (action.type) {
     case "firstName":
-      return { ...state, firstName: action.payload };
+      return { ...state, firstName: action.payload};
 
     case "lastName":
       return { ...state, lastName: action.payload };
@@ -98,7 +101,7 @@ function reducer(state, action) {
       throw Error("Invalid");
   }
 }
-
+// new doctor form function
 export default function NewDoctorForm() {
   const [
     {
@@ -139,6 +142,22 @@ export default function NewDoctorForm() {
 
     return dateOnly;
   }
+
+  function validateEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(String(email).toLowerCase());
+  }
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const day = ("0" + date.getDate()).slice(-2);
+    const dateOnly = `${year}-${month}-${day}`;
+
+    return dateOnly;
+  }
+
 
   function onSubmit(e) {
     e.preventDefault();

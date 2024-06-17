@@ -16,6 +16,7 @@ import { DoctorDetailsModal } from "../../../../Components/DoctorDetailsModal";
 import { TableFooter } from "@mui/material";
 import DoctorUpdateModal from "../../../../Components/DoctorUpdateModal";
 
+//table headers sample data
 const columns = [
   { id: "name", label: "Name", minWidth: 200 },
   {
