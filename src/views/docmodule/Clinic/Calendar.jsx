@@ -81,7 +81,7 @@ function Calendar() {
 
   const handleArriveDialog=()=>{
 
-        axios.put(`http://localhost:8080/api/Session/update/active/${selectedEvent.extendedProps.session_id}`,
+        axios.put(`http://localhost:8080/api/Session/update/isArrive/${selectedEvent.extendedProps.session_id}`,
         {
           "isArrived":!selectedEvent.extendedProps.isArrived
         })
@@ -247,7 +247,7 @@ function Calendar() {
               </button>
               {!selectedEvent.extendedProps.isArrived && (
                 <button onClick={confirmationPopUp} class="calendarClosePopup">
-                   Update doctor Arrived
+                   Update as doctor Arrived
                 </button>
               )}
               {selectedEvent.extendedProps.isArrived &&(
