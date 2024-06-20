@@ -213,7 +213,7 @@ export default function NewClinicForm() {
         email: email,
         clinicAddress: {
           lineOne: addressLine1,
-          lineTwo: addressLine2,
+          lineTwo: addressLine2 === "" ? null : addressLine2,
           city: city,
           district: district,
         },
