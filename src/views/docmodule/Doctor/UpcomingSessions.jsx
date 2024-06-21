@@ -211,7 +211,7 @@ function UpcomingSessions() {
                                 <CancelSessionModal
                                   session={row}
                                   updateSessionState={updateSessionState}
-                                  type="clinic"
+                                  type="doctor"
                                 />
                               </MyModal>
                               <MyModal

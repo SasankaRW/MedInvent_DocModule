@@ -35,7 +35,7 @@ export default function PrescriptionPreview({
     setIsLoading(true);
     axios
       .get(
-        `${config.baseURL}/PatientUser/get/PatientUser/details/nic/${patientNic}`
+        `${config.baseURL}/PatientUser/get/PatientUser/details/bynic/${patientNic}`
       )
       .then((res) => {
         if (
