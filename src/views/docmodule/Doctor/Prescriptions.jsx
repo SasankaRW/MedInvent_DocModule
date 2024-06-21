@@ -130,7 +130,7 @@ function Prescriptions() {
                     <div className="col-2">Qty</div>
                     <div className="col-3">Frq</div>
                     <div className="col-2">Meal Timing</div>
-                    <div className="col-2">Duration</div>
+                    <div className="col-2">Duration(days)</div>
                   </div>
                   <div className="my-4">
                     {medicine.map((drug, index) => (
