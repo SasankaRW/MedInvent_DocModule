@@ -1,5 +1,5 @@
 import React, { useReducer, useState } from "react";
-import Container from "../../../../Components/Container/Container";
+import Container from "../../../Components/Container/Container";
 import Paper from "@mui/material/Paper";
 import {
   Button,
@@ -19,12 +19,12 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
-import TextArea from "../../../../Components/TextArea/TextArea";
+import TextArea from "../../../Components/TextArea/TextArea";
 import { doctorSpecializations } from "./data/doctorSpecializations";
-import { useAlert } from "../../../../Contexts/AlertContext";
-import Loader from "../../../../Components/Loader/Loader";
+import { useAlert } from "../../../Contexts/AlertContext";
+import Loader from "../../../Components/Loader/Loader";
 import axios from "axios";
-import config from "../../../../config";
+import config from "../../../config";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -59,7 +59,7 @@ const initialState = {
 function reducer(state, action) {
   switch (action.type) {
     case "firstName":
-      return { ...state, firstName: action.payload};
+      return { ...state, firstName: action.payload };
 
     case "lastName":
       return { ...state, lastName: action.payload };
@@ -157,7 +157,6 @@ export default function NewDoctorForm() {
 
     return dateOnly;
   }
-
 
   function onSubmit(e) {
     e.preventDefault();

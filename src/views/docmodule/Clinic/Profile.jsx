@@ -4,7 +4,6 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import axios from "axios";
-
 import Title from "../../../Components/Title";
 import { VisitingElement } from "../../../Components/VisitingElement";
 import { Pending } from "../../../Components/Pending";
@@ -17,21 +16,6 @@ import { useAlert } from "../../../Contexts/AlertContext";
 import config from "../../../config";
 import Loader2 from "../../../Components/Loader2/Loader2";
 import { motion } from "framer-motion";
-
-const doctors = [
-  {
-    name: "Dr. Emily Watson",
-    fee: 2000,
-  },
-  {
-    name: "Dr. John Carter",
-    fee: 1800,
-  },
-  {
-    name: "Dr. Sarah Lin",
-    fee: 2200,
-  },
-];
 
 function CustomTabPanel({ children, value, index }) {
   return (

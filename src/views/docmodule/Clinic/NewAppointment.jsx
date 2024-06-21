@@ -4,7 +4,6 @@ import styles from "./NewAppointment.module.css";
 import { useEffect, useState } from "react";
 import Button from "../../../Components/Button/Button";
 import axios from "axios";
-import Loader from "../../.././Components/Loader/Loader";
 import Loader2 from "../../.././Components/Loader2/Loader2";
 import { useAlert } from "../../../Contexts/AlertContext";
 import { motion } from "framer-motion";

@@ -1,12 +1,11 @@
 import Title from "../../../Components/Title";
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 //import CalendarCss from '../../../CssModules/calendar.module.css';
 import "../../../CssModules/CalendarOverride.css";
-import { color } from "@mui/system";
 import { motion } from "framer-motion";
 import axios from "axios";
 
@@ -76,61 +75,63 @@ import axios from "axios";
 //   },
 // ];
 
-const generateSessionArray = (res)=>{
-    const resArrayLength = res.data.data.length;
-    if(resArrayLength!=0)
-    {
-      const NumOfSessions = res.data.data[0].sessions.length;
-      const SessionAccess = res.data.data[0].sessions;
-      let SessionCount,z=[];
-      for(SessionCount=0;SessionCount<NumOfSessions;SessionCount++)
-      {
-          //date:SessionAccess[SessionCount].SessionDates[t].date,
-          //start: SessionAccess[SessionCount].timeFrom,
-          //end: SessionAccess[SessionCount].timeTo,
-          
-          //const start = SessionAccess[SessionCount].SessionDates[t].date + "T" + SessionAccess[SessionCount].timeFrom.substring(0, 8);
-          //const end = SessionAccess[SessionCount].SessionDates[t].date + "T" + SessionAccess[SessionCount].timeTo.substring(0, 8);
-          //date:SessionAccess[SessionCount].SessionDates[t].date,
+const generateSessionArray = (res) => {
+  const resArrayLength = res.data.data.length;
+  if (resArrayLength !== 0) {
+    const NumOfSessions = res.data.data[0].sessions.length;
+    const SessionAccess = res.data.data[0].sessions;
+    let SessionCount,
+      z = [];
+    for (SessionCount = 0; SessionCount < NumOfSessions; SessionCount++) {
+      //date:SessionAccess[SessionCount].SessionDates[t].date,
+      //start: SessionAccess[SessionCount].timeFrom,
+      //end: SessionAccess[SessionCount].timeTo,
 
-          z.push({
-            clinicName: SessionAccess[SessionCount].clinic.name,
-            start: SessionAccess[SessionCount].date + "T" + SessionAccess[SessionCount].timeFrom.substring(0, 8),
-            end: SessionAccess[SessionCount].date + "T" + SessionAccess[SessionCount].timeTo.substring(0, 8),
-            maxPatients: SessionAccess[SessionCount].noOfPatients,
-            activePatients: SessionAccess[SessionCount].activePatients,
-            isCancelled: SessionAccess[SessionCount].isCancelled,
-            session_id: SessionAccess[SessionCount].session_id,
-            clinic_id: SessionAccess[SessionCount].clinic_id,
-            doctor_id: SessionAccess[SessionCount].doctor_id
-          });
-        
-      }
-      return z;
+      //const start = SessionAccess[SessionCount].SessionDates[t].date + "T" + SessionAccess[SessionCount].timeFrom.substring(0, 8);
+      //const end = SessionAccess[SessionCount].SessionDates[t].date + "T" + SessionAccess[SessionCount].timeTo.substring(0, 8);
+      //date:SessionAccess[SessionCount].SessionDates[t].date,
+
+      z.push({
+        clinicName: SessionAccess[SessionCount].clinic.name,
+        start:
+          SessionAccess[SessionCount].date +
+          "T" +
+          SessionAccess[SessionCount].timeFrom.substring(0, 8),
+        end:
+          SessionAccess[SessionCount].date +
+          "T" +
+          SessionAccess[SessionCount].timeTo.substring(0, 8),
+        maxPatients: SessionAccess[SessionCount].noOfPatients,
+        activePatients: SessionAccess[SessionCount].activePatients,
+        isCancelled: SessionAccess[SessionCount].isCancelled,
+        session_id: SessionAccess[SessionCount].session_id,
+        clinic_id: SessionAccess[SessionCount].clinic_id,
+        doctor_id: SessionAccess[SessionCount].doctor_id,
+      });
     }
-    else{
-      return [];
-    }
-}
-
-
+    return z;
+  } else {
+    return [];
+  }
+};
 
 function Calendar() {
-
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [events, setEvents] = useState([]);
 
-  useEffect(()=>{
-      axios.get('http://localhost:8080/api/Session/get/All/Sessions/details/02bb93de-3093-4821-b3e3-5a8a86455a0a')
-      .then(res=>{
+  useEffect(() => {
+    axios
+      .get(
+        "http://localhost:8080/api/Session/get/All/Sessions/details/02bb93de-3093-4821-b3e3-5a8a86455a0a"
+      )
+      .then((res) => {
         console.log(res);
         const objectArray = generateSessionArray(res);
         console.log(objectArray);
         setEvents(objectArray);
-      } )
-      .catch(err=>console.log(err));
-  },[])
-
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   const handleEventClick = (clickInfo) => {
     console.log(clickInfo.event);
@@ -144,60 +145,57 @@ function Calendar() {
   //"isCancelled":!selectedEvent.extendedProps.isCancelled,
 
   const handleToggleCancellable = () => {
-
-    if(selectedEvent.extendedProps.isCancelled==true){
-
-      axios.put(`http://localhost:8080/api/Session/update/active/${selectedEvent.extendedProps.session_id}`,
-      {
-        "cancelledByType":null,
-        "isCancelled":false,
-        "cancelledById":null
-      })
-      .then(res=>{
-        console.log(res);
-        const updatedEvents = events.map((event) => {
-          if (event.session_id === selectedEvent.extendedProps.session_id) {
-    
-            return {
-              ...event,
-              isCancelled:false,
-            };
+    if (selectedEvent.extendedProps.isCancelled == true) {
+      axios
+        .put(
+          `http://localhost:8080/api/Session/update/active/${selectedEvent.extendedProps.session_id}`,
+          {
+            cancelledByType: null,
+            isCancelled: false,
+            cancelledById: null,
           }
-          return event;
-        });
-        console.log(updatedEvents);
-        setEvents(updatedEvents);
-        setSelectedEvent(null);
-      })
-      .catch(err=>console.log(err)); 
-
-    }
-    else{
-
-      axios.put(`http://localhost:8080/api/Session/update/Cancel/Session/${selectedEvent.extendedProps.session_id}`,
-      {
-        "doctor_id": selectedEvent.extendedProps.doctor_id
-      })
-      .then(res=>{
-        console.log(res);
-        const updatedEvents = events.map((event) => {
-          if (event.session_id === selectedEvent.extendedProps.session_id) {
-    
-            return {
-              ...event,
-              isCancelled:true,
-            };
+        )
+        .then((res) => {
+          console.log(res);
+          const updatedEvents = events.map((event) => {
+            if (event.session_id === selectedEvent.extendedProps.session_id) {
+              return {
+                ...event,
+                isCancelled: false,
+              };
+            }
+            return event;
+          });
+          console.log(updatedEvents);
+          setEvents(updatedEvents);
+          setSelectedEvent(null);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      axios
+        .put(
+          `http://localhost:8080/api/Session/update/Cancel/Session/${selectedEvent.extendedProps.session_id}`,
+          {
+            doctor_id: selectedEvent.extendedProps.doctor_id,
           }
-          return event;
-        });
-        console.log(updatedEvents);
-        setEvents(updatedEvents);
-        setSelectedEvent(null);
-      })
-      .catch(err=>console.log(err));
-
+        )
+        .then((res) => {
+          console.log(res);
+          const updatedEvents = events.map((event) => {
+            if (event.session_id === selectedEvent.extendedProps.session_id) {
+              return {
+                ...event,
+                isCancelled: true,
+              };
+            }
+            return event;
+          });
+          console.log(updatedEvents);
+          setEvents(updatedEvents);
+          setSelectedEvent(null);
+        })
+        .catch((err) => console.log(err));
     }
-
   };
 
   const eventContent = (eventInfo) => (
@@ -238,7 +236,7 @@ function Calendar() {
         transition={{ duration: 0.5 }}
       >
         <div className="CalendarDesign">
-           <FullCalendar
+          <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView={"timeGridDay"}
             headerToolbar={{
@@ -267,7 +265,7 @@ function Calendar() {
               <p>
                 Patients Filled: {selectedEvent.extendedProps.activePatients} /{" "}
                 {selectedEvent.extendedProps.maxPatients}
-              </p> 
+              </p>
               <button
                 onClick={handleToggleCancellable}
                 className="calendarAcCanPopup"

@@ -1,19 +1,26 @@
 import React, { useReducer, useState } from "react";
-import Container from "../../../../Components/Container/Container";
-import Loader from "../../../../Components/Loader/Loader";
+import Container from "../../../Components/Container/Container";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import cities from "../cities.json";
 import { Button, MenuItem, Select } from "@mui/material";
-import Day from "../../../../Components/Day/Day";
-import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
+import Day from "../../../Components/Day/Day";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
 import axios from "axios";
-import { useAlert } from "../../../../Contexts/AlertContext";
-import config from "../../../../config";
+import Loader from "../../../Components/Loader/Loader";
+import { useAlert } from "../../../Contexts/AlertContext";
+import config from "../../../config";
 
+// Initial state for the form
 const initialState = {
-  pharmacyName: "",
+  clinicName: "",
   contactNumber: "",
   openHoursFrom: null,
   openHoursTo: null,
@@ -23,15 +30,17 @@ const initialState = {
   city: "",
   district: Object.keys(cities).at(0),
   email: "",
+  password: "",
   locationURL: "",
   position: null,
   isURLcorrect: false,
 };
 
+// Reducer function to handle state updates
 function reducer(state, action) {
   switch (action.type) {
-    case "pharmacyName":
-      return { ...state, pharmacyName: action.payload };
+    case "clinicName":
+      return { ...state, clinicName: action.payload };
 
     case "contactNumber":
       return { ...state, contactNumber: action.payload };
@@ -60,6 +69,9 @@ function reducer(state, action) {
     case "email":
       return { ...state, email: action.payload };
 
+    case "password":
+      return { ...state, password: action.payload };
+
     case "locationURL":
       return {
         ...state,
@@ -84,10 +96,11 @@ function reducer(state, action) {
   }
 }
 
-export default function NewPharmacyForm() {
+export default function NewClinicForm() {
+  // State management using useReducer hook
   const [
     {
-      pharmacyName,
+      clinicName,
       contactNumber,
       openHoursFrom,
       openHoursTo,
@@ -97,6 +110,7 @@ export default function NewPharmacyForm() {
       city,
       district,
       email,
+      password,
       locationURL,
       position,
       isURLcorrect,
@@ -104,15 +118,18 @@ export default function NewPharmacyForm() {
     dispatch,
   ] = useReducer(reducer, initialState);
 
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { showAlert } = useAlert();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   function validateEmail(email) {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(String(email).toLowerCase());
   }
 
+  // Function to extract latitude and longitude from Google Maps URL
   function extractLatLongFromGoogleMapsURL(url) {
     var regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
 
@@ -130,6 +147,7 @@ export default function NewPharmacyForm() {
     }
   }
 
+  // Function to handle URL verification
   function handleURLVerification() {
     dispatch({
       type: "latLong",
@@ -147,6 +165,7 @@ export default function NewPharmacyForm() {
     return `${hours}:${minutes}:${seconds}`;
   }
 
+  // Function to toggle selected days for clinic open hours
   function toggleDay(day) {
     dispatch({
       type: "openDays",
@@ -156,16 +175,18 @@ export default function NewPharmacyForm() {
     });
   }
 
+  // Function to handle form submission
   function onSubmit(e) {
     e.preventDefault();
     if (
-      pharmacyName === "" ||
+      clinicName === "" ||
       contactNumber === "" ||
       openHoursFrom === null ||
       openHoursTo === null ||
       openDays.length === 0 ||
       addressLine1 === "" ||
-      city === ""
+      city === "" ||
+      password === ""
     ) {
       showAlert("error", "Fields cannot be empty.");
       return;
@@ -182,33 +203,40 @@ export default function NewPharmacyForm() {
     }
 
     setIsLoading(true);
-    const pharmacyData = {
-      name: pharmacyName,
-      contactNo: contactNumber,
-      openHoursFrom: getTime(openHoursFrom),
-      openHoursTo: getTime(openHoursTo),
-      openDays: openDays,
-      email: email === "" ? null : email,
-      pharmacyAddress: {
-        lineOne: addressLine1,
-        lineTwo: addressLine2,
-        city: city,
-        district: district,
+    const clinicData = {
+      data: {
+        name: clinicName,
+        contactNo: contactNumber,
+        openHoursFrom: getTime(openHoursFrom),
+        openHoursTo: getTime(openHoursTo),
+        openDays: openDays,
+        email: email,
+        clinicAddress: {
+          lineOne: addressLine1,
+          lineTwo: addressLine2 === "" ? null : addressLine2,
+          city: city,
+          district: district,
+        },
+        clinicLocation: {
+          lat: position.lat,
+          long: position.long,
+        },
       },
-      pharmacyLocation: {
-        lat: position.lat,
-        long: position.long,
+      credentials: {
+        email,
+        password,
       },
     };
+
     axios
-      .post(`${config.baseURL}/pharmacy/newpharmacy`, pharmacyData)
+      .post(`${config.baseURL}/clinic/newclinic`, clinicData)
       .then((response) => {
-        showAlert("success", "Pharmacy added successfully.");
+        showAlert("success", "Clinic added successfully.");
         dispatch({ type: "initState" });
       })
       .catch((error) => {
-        console.error("Error adding pharmacy:", error);
-        showAlert("error", "Error adding pharmacy.");
+        console.error("Error adding clinic:", error);
+        showAlert("error", "Error adding clinic.");
       })
       .finally(() => {
         setIsLoading(false);
@@ -221,17 +249,18 @@ export default function NewPharmacyForm() {
 
   return (
     <Paper elevation={5} sx={{ borderRadius: "10px" }}>
-      <Container title="New Pharmacy">
+      <Container title="New clinic">
         <form style={{ margin: "50px 0px" }} onSubmit={onSubmit}>
+          {/* Clinic Name and Contact Number fields */}
           <div className="row mb-4">
             <div className="col-md-6">
-              <div className="lead mb-2">Pharmacy Name</div>
+              <div className="lead mb-2">Clinic Name</div>
               <TextField
-                placeholder="Enter pharmacy name"
+                placeholder="Enter Clinic name"
                 className="w-75"
-                value={pharmacyName}
+                value={clinicName}
                 onChange={(e) =>
-                  dispatch({ type: "pharmacyName", payload: e.target.value })
+                  dispatch({ type: "clinicName", payload: e.target.value })
                 }
               />
             </div>
@@ -251,7 +280,7 @@ export default function NewPharmacyForm() {
               />
             </div>
           </div>
-
+          {/* Open Hours and Open days fields */}
           <div className="row mb-4">
             <div className="col-md-6">
               <div className="lead mb-2">Open Hours</div>
@@ -296,7 +325,7 @@ export default function NewPharmacyForm() {
               </div>
             </div>
           </div>
-
+          {/* Address and Email fields */}
           <div className="row mb-4">
             <div className="col-md-6">
               <div className="lead mb-2">Address</div>
@@ -326,6 +355,7 @@ export default function NewPharmacyForm() {
                   />
                 </div>
               </div>
+              {/* Dropdown for selecting district */}
               <div className="row mt-3">
                 <div className="col-sm-5">
                   <Select
@@ -363,22 +393,41 @@ export default function NewPharmacyForm() {
               <div className="lead mb-2">Email Address</div>
               <TextField
                 className="w-75"
-                placeholder="Enter email address (Optional)"
+                placeholder="Enter email address"
                 value={email}
                 onChange={(e) =>
                   dispatch({ type: "email", payload: e.target.value })
                 }
-                error={!validateEmail(email) && email !== ""}
-                helperText={
-                  !validateEmail(email) && email !== "" && "Enter a valid email"
+              />
+              <OutlinedInput
+                className="w-75 mt-3"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter a Password"
+                value={password}
+                onChange={(e) =>
+                  dispatch({ type: "password", payload: e.target.value })
+                }
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
                 }
               />
             </div>
           </div>
+          {/* Location field with URL verification */}
           <div>
             <div className="lead mb-3">Location</div>
             <div className="d-flex align-items-center">
-              <Button variant="contained">Select on map</Button>{" "}
+              <Button variant="contained" onClick={() => {}}>
+                Select on map
+              </Button>{" "}
               <span className="mx-5">or</span>
               <TextField
                 value={locationURL}
@@ -415,7 +464,7 @@ export default function NewPharmacyForm() {
             <input
               type="submit"
               className="btn btn-primary"
-              value="Add Pharmacy"
+              value="Add Clinic"
             />
           </div>
         </form>

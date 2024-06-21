@@ -4,7 +4,6 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import axios from "axios";
-
 import Title from "../../../Components/Title";
 import { VisitingElement } from "../../../Components/VisitingElement";
 import { Pending } from "../../../Components/Pending";

@@ -1,3 +1,4 @@
+import * as React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -5,30 +6,27 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import IconButton from "@mui/material/IconButton";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { useState } from "react";
-import MyModal from "../../../../Components/MyModal";
-import { DeleteItemModal } from "../../../../Components/DeleteItemModal";
-import { DoctorDetailsModal } from "../../../../Components/DoctorDetailsModal";
+import MyModal from "../../../Components/MyModal";
+import { DeleteItemModal } from "../../../Components/DeleteItemModal";
+import { PharmacyNClinicDetailsModal } from "../../../Components/PharmacyNClinicDetailsModal";
+import PharmacyClinicUpdateModal from "../../../Components/PharmacyClinicUpdateModal";
 import { TableFooter } from "@mui/material";
-import DoctorUpdateModal from "../../../../Components/DoctorUpdateModal";
 
-//table headers sample data
 const columns = [
-  { id: "name", label: "Name", minWidth: 200 },
+  { id: "name", label: "Name", minWidth: 300 },
   {
-    id: "specialty",
-    label: "Specialty",
-    minWidth: 200,
+    id: "location",
+    label: "Location",
+    minWidth: 250,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "mobileNo",
     label: "Mobile Number",
-    minWidth: 100,
+    minWidth: 50,
     format: (value) => value.toLocaleString("en-US"),
   },
   {
@@ -39,9 +37,13 @@ const columns = [
   },
 ];
 
-export default function DoctorsTable({ doctors, setIsLoading, setDoctors }) {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+export default function PharmaciesTable({
+  pharmacies,
+  setIsLoading,
+  setPharmacies,
+}) {
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -71,42 +73,44 @@ export default function DoctorsTable({ doctors, setIsLoading, setDoctors }) {
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? doctors.slice(
+              ? pharmacies.slice(
                   page * rowsPerPage,
                   page * rowsPerPage + rowsPerPage
                 )
-              : doctors
+              : pharmacies
             ).map((row) => (
-              <TableRow key={row.doctor_id} hover>
+              <TableRow key={row.name} hover>
                 <TableCell component="th" scope="row" style={{ width: 200 }}>
-                  {row.fname} {row.lname}
+                  {row.name}
                 </TableCell>
-                <TableCell style={{ width: 200 }} align="left">
-                  {row.specialization}
+                <TableCell align="left">
+                  {row.pharmacyAddress.city}, {row.pharmacyAddress.district}
                 </TableCell>
-                <TableCell style={{ width: 100 }} align="left">
-                  {row.contactNo}
-                </TableCell>
-                <TableCell style={{ width: 50 }} align="right">
+                <TableCell align="left">{row.contactNo}</TableCell>
+                <TableCell align="left">
                   <div className="d-flex justify-content-end">
                     <MyModal
                       icon={<RemoveRedEyeOutlinedIcon fontSize="small" />}
                     >
-                      <DoctorDetailsModal doctor={row} />
+                      <PharmacyNClinicDetailsModal row={row} type="pharmacy" />
                     </MyModal>
                     <MyModal icon={<DeleteOutlineIcon fontSize="small" />}>
                       <DeleteItemModal
                         item={row}
                         setIsLoading={setIsLoading}
-                        setItems={setDoctors}
-                        items={doctors}
-                        itemType="doctor"
+                        setItems={setPharmacies}
+                        items={pharmacies}
+                        itemType="pharmacy"
                       />
                     </MyModal>
                     <MyModal
                       icon={<BorderColorOutlinedIcon fontSize="small" />}
                     >
-                      <DoctorUpdateModal doctor={row} />
+                      <PharmacyClinicUpdateModal
+                        item={row}
+                        type="pharmacy"
+                        id={row.pharmacy_id}
+                      />
                     </MyModal>
                   </div>
                 </TableCell>
@@ -117,7 +121,7 @@ export default function DoctorsTable({ doctors, setIsLoading, setDoctors }) {
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[10, 25, 50]}
-                count={doctors.length}
+                count={pharmacies.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}

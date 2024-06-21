@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Title from "../../../Components/Title";
 import MyDatePicker from "../../../Components/MyDatePicker";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,7 +10,6 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import MyModal from "../../../Components/MyModal";
-
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
@@ -281,7 +279,11 @@ function UpcomingSessions() {
 
 export default UpcomingSessions;
 
-export function UpdateSessionModal({ session, updateSessionState, closeModal }) {
+export function UpdateSessionModal({
+  session,
+  updateSessionState,
+  closeModal,
+}) {
   const [timeFrom, setTimeFrom] = useState(session.timeFrom);
   const [timeTo, setTimeTo] = useState(session.timeTo);
   const [noOfPatients, setNoOfPatients] = useState(session.noOfPatients);

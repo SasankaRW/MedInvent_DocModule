@@ -6,9 +6,9 @@ import AllPharmacies from "./pharmacies/AllPharmacies";
 import NewClinicForm from "./clinics/NewClinicForm";
 import NewPharmacyForm from "./pharmacies/NewPharmacyForm";
 
-import Route from "../../../Components/Routes";
-import SideNav from "../../../Components/SideNav";
-import NavigationContex from "../context/navigation";
+import Route from "../../Components/Routes";
+import SideNav from "../../Components/SideNav";
+import NavigationContex from "../../Contexts/navigation";
 
 function AdminView() {
   const [activeSubMenu, setActiveSubMenu] = useState("All Doctors");

@@ -3,10 +3,8 @@ import InsertInvitationOutlinedIcon from "@mui/icons-material/InsertInvitationOu
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import { useContext } from "react";
 import { useState } from "react";
-
 import Route from "../../../Components/Routes.js";
-import NavigationContex from "../../admin/context/navigation.js";
-
+import NavigationContex from "../../../Contexts/navigation";
 import NewAppointment from "../../docmodule/Clinic/NewAppointment.jsx";
 import UpcomingAppointments from "../../docmodule/Clinic/UpcomingAppointments.jsx";
 import AppointmentHistory from "../../docmodule/Clinic/AppointmentHistory.jsx";

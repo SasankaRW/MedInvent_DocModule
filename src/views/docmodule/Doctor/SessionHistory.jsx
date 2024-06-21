@@ -1,7 +1,6 @@
 import Title from "../../../Components/Title";
 import MyDatePicker from "../../../Components/MyDatePicker";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,13 +10,10 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import MyModal from "../../../Components/MyModal";
 import { motion } from "framer-motion";
-
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import { SessionDetailsModal } from "../../../Components/SessionDetailsModal";
-
 import { useEffect, useState } from "react";
 import Button from "../../../Components/Button/Button";
-
 import Loader from "../../../Components/Loader/Loader";
 import axios from "axios";
 import config from "../../../config";

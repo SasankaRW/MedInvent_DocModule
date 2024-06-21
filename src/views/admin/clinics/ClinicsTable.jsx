@@ -6,15 +6,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import IconButton from "@mui/material/IconButton";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import MyModal from "../../../../Components/MyModal";
-import { DeleteItemModal } from "../../../../Components/DeleteItemModal";
-import { PharmacyNClinicDetailsModal } from "../../../../Components/PharmacyNClinicDetailsModal";
+import MyModal from "../../../Components/MyModal";
+import { DeleteItemModal } from "../../../Components/DeleteItemModal";
+import { PharmacyNClinicDetailsModal } from "../../../Components/PharmacyNClinicDetailsModal";
 import { TableFooter } from "@mui/material";
-import PharmacyClinicUpdateModal from "../../../../Components/PharmacyClinicUpdateModal";
+import PharmacyClinicUpdateModal from "../../../Components/PharmacyClinicUpdateModal";
 
 const columns = [
   { id: "name", label: "Name", minWidth: 300 },

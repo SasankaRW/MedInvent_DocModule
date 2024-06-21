@@ -1,14 +1,12 @@
 import SideNavNew from "../../../Components/SideNavNew.jsx";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import { useContext, useState } from "react";
-import NavigationContex from "../../admin/context/navigation.js";
-
+import NavigationContex from "../../../Contexts/navigation";
 import Calendar from "../../docmodule/Doctor/Calendar.jsx";
 import NewSession from "../../docmodule/Doctor/NewSession.jsx";
 import SessionHistory from "../../docmodule/Doctor/SessionHistory.jsx";
 import UpcomingSessions from "../../docmodule/Doctor/UpcomingSessions.jsx";
 import Profile from "../../docmodule/Doctor/Profile.jsx";
-
 import Route from "../../../Components/Routes.js";
 import Prescriptions from "./Prescriptions.jsx";
 

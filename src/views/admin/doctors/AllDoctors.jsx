@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import "./AllDoctors.css";
-import Container from "../../../../Components/Container/Container";
+import Container from "../../../Components/Container/Container";
 import Paper from "@mui/material/Paper";
 import DoctorsTable from "./DoctorsTable";
 import axios from "axios";
-import Loader from "../../../../Components/Loader/Loader";
-import { useAlert } from "../../../../Contexts/AlertContext";
-import config from "../../../../config";
+import Loader from "../../../Components/Loader/Loader";
+import { useAlert } from "../../../Contexts/AlertContext";
+import config from "../../../config";
 
 export default function AllDoctors() {
   const [doctors, setDoctors] = React.useState([]);
