@@ -90,7 +90,7 @@ function NewAppointment() {
     const appointmentDetails = {
       patientTitle: title,
       patientName,
-      contactNo: mobileNumber,
+      contactNo: "+94" + mobileNumber.substring(1),
       email: email || null,
       area,
       nic,
@@ -112,7 +112,7 @@ function NewAppointment() {
         const errorMessage =
           error.response?.data?.message || "Error booking the appointment.";
         console.error(errorMessage);
-        showAlert("Error booking the appointment");
+        showAlert("error", "Error booking the appointment");
       })
       .finally(() => {
         setIsLoading(false);

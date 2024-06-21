@@ -7,7 +7,6 @@ import config from "../../config";
 import { useAlert } from "../../Contexts/AlertContext";
 import Loader2 from "../Loader2/Loader2";
 import { useAuth } from "../../Contexts/AuthContext";
-import Loader from "../Loader/Loader";
 
 export default function PrescriptionPreview({
   medicine,
