@@ -181,6 +181,11 @@ export default function NewDoctorForm() {
       return;
     }
 
+    function formatMobileNo(number) {
+      const formattedNumber = number.replace(/^0/, "+94");
+      return formattedNumber;
+    }
+
     setIsLoading(true);
     const doctorData = {
       data: {
@@ -198,6 +203,7 @@ export default function NewDoctorForm() {
       },
       credentials: {
         email,
+        mobileNo: formatMobileNo(contactNo),
         password,
       },
     };

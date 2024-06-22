@@ -175,6 +175,11 @@ export default function NewClinicForm() {
     });
   }
 
+  function formatMobileNo(number) {
+    const formattedNumber = number.replace(/^0/, "+94");
+    return formattedNumber;
+  }
+
   // Function to handle form submission
   function onSubmit(e) {
     e.preventDefault();
@@ -206,7 +211,7 @@ export default function NewClinicForm() {
     const clinicData = {
       data: {
         name: clinicName,
-        contactNo: contactNumber,
+        contactNo: formatMobileNo(contactNumber),
         openHoursFrom: getTime(openHoursFrom),
         openHoursTo: getTime(openHoursTo),
         openDays: openDays,
@@ -224,6 +229,7 @@ export default function NewClinicForm() {
       },
       credentials: {
         email,
+        mobileNo: formatMobileNo(contactNumber),
         password,
       },
     };
