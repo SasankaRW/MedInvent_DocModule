@@ -23,7 +23,7 @@ export default function CancelSessionModal({
     const newData = {
       isCancelled: true,
       cancelledByType: type,
-      cancelledById: user.id,
+      cancelledById: type === "clinic" ? user.clinic_id : user.doctor_id,
     };
 
     setIsLoading(true);
