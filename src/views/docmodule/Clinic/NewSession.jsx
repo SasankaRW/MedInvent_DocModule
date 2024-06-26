@@ -86,7 +86,7 @@ function NewSession() {
   const [visitingDoctors, setVisitingDoctors] = useState([]);
   const { showAlert } = useAlert();
 
-  const [clinicFee, setClinicFee] = useState(user.clinicFee);
+  const [clinicFee, setClinicFee] = useState(user.clinicFees);
 
   useEffect(() => {
     setIsLoading(true);
