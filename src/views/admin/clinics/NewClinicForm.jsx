@@ -17,6 +17,7 @@ import axios from "axios";
 import Loader from "../../../Components/Loader/Loader";
 import { useAlert } from "../../../Contexts/AlertContext";
 import config from "../../../config";
+import { useAuth } from "../../../Contexts/AuthContext";
 
 // Initial state for the form
 const initialState = {
@@ -121,6 +122,7 @@ export default function NewClinicForm() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { showAlert } = useAlert();
+  const { accessToken } = useAuth();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -209,18 +211,21 @@ export default function NewClinicForm() {
 
     setIsLoading(true);
     const clinicData = {
+      accessToken,
       data: {
-        name: clinicName,
-        contactNo: formatMobileNo(contactNumber),
-        openHoursFrom: getTime(openHoursFrom),
-        openHoursTo: getTime(openHoursTo),
-        openDays: openDays,
-        email: email,
-        clinicAddress: {
-          lineOne: addressLine1,
-          lineTwo: addressLine2 === "" ? null : addressLine2,
-          city: city,
-          district: district,
+        clinicDetails: {
+          name: clinicName,
+          contactNo: formatMobileNo(contactNumber),
+          openHoursFrom: getTime(openHoursFrom),
+          openHoursTo: getTime(openHoursTo),
+          openDays: openDays,
+          email: email,
+          clinicAddress: {
+            lineOne: addressLine1,
+            lineTwo: addressLine2 === "" ? null : addressLine2,
+            city: city,
+            district: district,
+          },
         },
         clinicLocation: {
           lat: position.lat,
@@ -229,13 +234,13 @@ export default function NewClinicForm() {
       },
       credentials: {
         email,
-        mobileNo: formatMobileNo(contactNumber),
         password,
+        role: "clinic",
       },
     };
 
     axios
-      .post(`${config.baseURL}/clinic/newclinic`, clinicData)
+      .post(`${config.baseURL}/user/create`, clinicData)
       .then((response) => {
         showAlert("success", "Clinic added successfully.");
         dispatch({ type: "initState" });

@@ -51,7 +51,7 @@ function NewAppointment() {
 
     axios
       .get(
-        `${config.baseURL}/session/get/upcoming?clinic_id=${user.id}&doctor_id=${selectedDoctor}`
+        `${config.baseURL}/session/get/upcoming?clinic_id=${user.clinic_id}&doctor_id=${selectedDoctor}`
       )
       .then((response) => {
         setSessions(response.data.data);
@@ -300,7 +300,7 @@ const SearchComponent = ({ setSelectedDoctor }) => {
       setIsLoading(true);
       axios
         .get(
-          `${config.baseURL}/visiting/get/allVisitings/byDocName?doc_name=${searchTerm}&clinic_id=${user.id}`
+          `${config.baseURL}/visiting/get/allVisitings/byDocName?doc_name=${searchTerm}&clinic_id=${user.clinic_id}`
         )
         .then((response) => {
           setVisitingDoctors(response.data.data);
@@ -315,7 +315,7 @@ const SearchComponent = ({ setSelectedDoctor }) => {
     } else {
       setVisitingDoctors([]);
     }
-  }, [searchTerm, user.id]);
+  }, [searchTerm, user.clinic_id]);
 
   function onSearchTermChange(e) {
     setSearchTerm(e.target.value);

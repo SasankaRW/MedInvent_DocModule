@@ -15,66 +15,32 @@ import { useAuth } from "../../../Contexts/AuthContext";
 import { useAlert } from "../../../Contexts/AlertContext";
 import config from "../../../config";
 import { motion } from "framer-motion";
-
-function CustomTabPanel({ children, value, index }) {
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-    >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-}
-
-CustomTabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
+import Button from "../../../Components/Button/Button";
+import { LineWave } from "react-loader-spinner";
 
 function Profile() {
   const [value, setValue] = useState(0);
-
-  const [doctor, setDoctor] = useState({});
-
-  const [isLoading, setIsLoading] = useState(false);
-
   const { user } = useAuth();
   const { showAlert } = useAlert();
-
-  useEffect(() => {
-    setIsLoading(true);
-    axios
-      .get(`${config.baseURL}/doctor/get/${user.id}`)
-      .then((res) => {
-        setDoctor(res.data.data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        showAlert("error", "Error loading profile data");
-        console.log("Error getting profile data. Error:" + err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [showAlert, user.id]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  if (isLoading) {
-    return <Loader />;
+  async function onPasswordReset() {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(
+        `${config.baseURL}/user/resetpassword/${user.doctor_id}`
+      );
+
+      showAlert("success", "Password reset email sent");
+    } catch (error) {
+      showAlert("error", "Failed to send password reset email");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -92,9 +58,9 @@ function Profile() {
               <img src={"/images/dp.png"} alt="" height={80} />
               <div className="mx-4">
                 <h3 className="my-0">
-                  Dr. {doctor.fname} {doctor.mname} {doctor.lname}
+                  Dr. {user.fname} {user.mname} {user.lname}
                 </h3>
-                <div>{doctor.specialization}</div>
+                <div>{user.specialization}</div>
               </div>
             </div>
           </div>
@@ -102,32 +68,43 @@ function Profile() {
           <div className="container p-4">
             <div className="row mb-3">
               <div className="col-4 text-muted">NIC</div>
-              <div className="col-8">{doctor.nic}</div>
+              <div className="col-8">{user.nic}</div>
             </div>
 
             <div className="row mb-3">
               <div className="col-4 text-muted">Medical license No.</div>
-              <div className="col-8">{doctor.medical_license_no}</div>
+              <div className="col-8">{user.medical_license_no}</div>
             </div>
 
             <div className="row mb-3">
               <div className="col-4 text-muted">Email address</div>
-              <div className="col-8">{doctor.email}</div>
+              <div className="col-8">{user.email}</div>
             </div>
 
             <div className="row mb-3">
               <div className="col-4 text-muted">Contact number</div>
-              <div className="col-8">{doctor.contactNo}</div>
+              <div className="col-8">{user.contactNo}</div>
             </div>
 
             <div className="row mb-3">
               <div className="col-4 text-muted">Gender</div>
-              <div className="col-8">{doctor.gender}</div>
+              <div className="col-8">{user.gender}</div>
             </div>
 
             <div className="row mb-3">
               <div className="col-4 text-muted">Date of Birth</div>
-              <div className="col-8">{doctor.dob}</div>
+              <div className="col-8">{user.dob}</div>
+            </div>
+
+            <div className="d-flex justify-content-end mt-4">
+              {isLoading ? (
+                <Loader2 />
+              ) : (
+                <Button
+                  text={"Request password reset"}
+                  onClick={onPasswordReset}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -149,13 +126,13 @@ function Profile() {
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            <AddedTab userId={user.id} />
+            <AddedTab userId={user.doctor_id} />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            <PendingTab userId={user.id} />
+            <PendingTab userId={user.doctor_id} />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
-            <RequestsTab userId={user.id} />
+            <RequestsTab userId={user.doctor_id} />
           </CustomTabPanel>
         </div>
       </motion.div>
@@ -285,3 +262,29 @@ function RequestsTab({ userId }) {
 }
 
 export default Profile;
+
+function CustomTabPanel({ children, value, index }) {
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}

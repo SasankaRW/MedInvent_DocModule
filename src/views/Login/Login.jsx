@@ -12,11 +12,15 @@ import Button from "../../Components/Button/Button";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Contexts/AuthContext";
+import { useAlert } from "../../Contexts/AlertContext";
+import { LineWave } from "react-loader-spinner";
 
 function Login() {
-  const { login, isAuthenticated, user } = useAuth();
+  const { login, isAuthenticated, user, isLoading, roles } = useAuth();
 
-  const [username, setUsername] = useState("");
+  const { showAlert } = useAlert();
+
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
@@ -29,23 +33,42 @@ function Login() {
     event.preventDefault();
   };
 
-  function handleLogin() {
-    login(username, password);
+  async function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  async function handleLogin() {
+    if (email === "" || password === "") {
+      showAlert("error", "Email or password cannot be empty");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      showAlert("error", "Please enter a valid email");
+      return;
+    }
+
+    try {
+      await login(email, password);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   useEffect(
     function () {
       if (isAuthenticated && user !== null) {
-        if (user.role === "admin") {
+        if (roles.includes("admin")) {
           navigate("/admin", { replace: true });
-        } else if (user.role === "doctor") {
+        } else if (roles.includes("doctor")) {
           navigate("/doctor", { replace: true });
-        } else if (user.role === "clinic") {
+        } else if (roles.includes("clinic")) {
           navigate("/clinic", { replace: true });
         }
       }
     },
-    [isAuthenticated, navigate, user]
+    [isAuthenticated, navigate, user, roles]
   );
 
   return (
@@ -72,17 +95,17 @@ function Login() {
 
           <div className="mt-5 d-flex flex-column">
             <FormControl>
-              <InputLabel id="username" size="small">
-                Username
+              <InputLabel id="email" size="small">
+                Email
               </InputLabel>
               <OutlinedInput
                 size="small"
-                id="username"
-                label="Username"
+                id="email"
+                label="Email"
                 variant="outlined"
                 sx={{ borderRadius: "30px" }}
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </FormControl>
             <FormControl className="mt-3">
@@ -117,9 +140,22 @@ function Login() {
               />
             </FormControl>
           </div>
-          <div className="mt-5">
-            <Button onClick={handleLogin} text="Log in" width="100%" />
-          </div>
+          {isLoading ? (
+            <LineWave
+              visible={true}
+              color="#2c82bb"
+              ariaLabel="line-wave-loading"
+              wrapperStyle={{ justifyContent: "center" }}
+              wrapperClass=""
+              firstLineColor="#75bded"
+              middleLineColor="#2c82bb"
+              lastLineColor="#75bded"
+            />
+          ) : (
+            <div className="mt-5">
+              <Button onClick={handleLogin} text="Log in" width="100%" />
+            </div>
+          )}
         </div>
         <div
           className={`${styles.image} d-none d-lg-flex flex-column align-items-center`}

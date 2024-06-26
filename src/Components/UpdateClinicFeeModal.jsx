@@ -7,6 +7,7 @@ import Loader2 from "./Loader2/Loader2";
 import axios from "axios";
 import config from "../config";
 import { useAlert } from "../Contexts/AlertContext";
+import { useAuth } from "../Contexts/AuthContext";
 
 export default function UpdateClinicFeeModal({ setClinicFee, id }) {
   const handleClose = () => {};
@@ -29,10 +30,11 @@ export default function UpdateClinicFeeModal({ setClinicFee, id }) {
   );
 }
 
-function UpdateClinicFee({ closeModal, setClinicFee, id }) {
+function UpdateClinicFee({ closeModal, id }) {
   const [fee, setFee] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { showAlert } = useAlert();
+  const { setClinicFees } = useAuth();
 
   function onUpdate() {
     setIsLoading(true);
@@ -41,7 +43,7 @@ function UpdateClinicFee({ closeModal, setClinicFee, id }) {
         clinicFees: parseFloat(fee),
       })
       .then((res) => {
-        setClinicFee(parseFloat(fee));
+        setClinicFees(parseFloat(fee));
         showAlert("success", "Clinic fees updated successfully");
       })
       .catch((err) => {

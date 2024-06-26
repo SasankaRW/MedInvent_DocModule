@@ -1,4 +1,4 @@
-import SideNavNew from "../../../Components/SideNavNew.jsx";
+import SideNav from "../../../Components/SideNavNew.jsx";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import { useContext, useState } from "react";
 import NavigationContex from "../../../Contexts/navigation";
@@ -9,6 +9,7 @@ import UpcomingSessions from "../../docmodule/Doctor/UpcomingSessions.jsx";
 import Profile from "../../docmodule/Doctor/Profile.jsx";
 import Route from "../../../Components/Routes.js";
 import Prescriptions from "./Prescriptions.jsx";
+import { useAuth } from "../../../Contexts/AuthContext.jsx";
 
 const menuItems = [
   {
@@ -26,6 +27,7 @@ const menuItems = [
 function DoctorView() {
   const [activeSubMenu, setActiveSubMenu] = useState("Upcoming|Sessions");
   const { navigate } = useContext(NavigationContex);
+  const { user } = useAuth();
 
   const PathReturn = (getSubMenuText) => {
     switch (getSubMenuText) {
@@ -85,15 +87,15 @@ function DoctorView() {
 
   return (
     <div>
-      <SideNavNew
+      <SideNav
         menuItems={menuItems}
         onSubMenuClick={handleSubMenuClick}
         activeSubMenu={activeSubMenu}
-        username={"Doctor"}
+        username={"Dr " + user.fname}
         user="doctor"
       >
         {renderSubMenu(activeSubMenu)}
-      </SideNavNew>
+      </SideNav>
     </div>
   );
 }

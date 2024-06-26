@@ -18,6 +18,8 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import MedicationLiquidIcon from "@mui/icons-material/MedicationLiquid";
+import { useAuth } from "../Contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 270;
 
@@ -54,6 +56,14 @@ export default function SideNavNew({
       [menuText]: !prevExpandedMenus[menuText],
     }));
   };
+
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  function onLogout() {
+    logout();
+    navigate("/");
+  }
 
   const drawer = (
     <div>
@@ -203,6 +213,7 @@ export default function SideNavNew({
         <div>
           <ListItem>
             <ListItemButton
+              onClick={onLogout}
               sx={{
                 color: "inherit",
                 borderRadius: "10px",

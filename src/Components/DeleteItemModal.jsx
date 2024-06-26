@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import axios from "axios";
 import { useAlert } from "../Contexts/AlertContext";
+import { useAuth } from "../Contexts/AuthContext";
 import config from "../config";
 
 export function DeleteItemModal({
@@ -12,6 +13,7 @@ export function DeleteItemModal({
   itemType,
 }) {
   const { showAlert } = useAlert();
+  const { accessToken } = useAuth();
 
   const onYesClick = async () => {
     setIsLoading(true);
@@ -24,9 +26,13 @@ export function DeleteItemModal({
       } else if (itemType === "pharmacy") {
         itemId = item.pharmacy_id;
       }
-      let url = `${config.baseURL}/${itemType}/delete/${itemId}`;
+      let url = `${config.baseURL}/user/delete`;
 
-      const response = await axios.delete(url);
+      const response = await axios.post(url, {
+        accessToken,
+        id: itemId,
+        role: itemType,
+      });
 
       if (response.status === 200) {
         setItems(

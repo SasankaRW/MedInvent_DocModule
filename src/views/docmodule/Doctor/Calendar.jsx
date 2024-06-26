@@ -4,10 +4,11 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-//import CalendarCss from '../../../CssModules/calendar.module.css';
 import "../../../CssModules/CalendarOverride.css";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { useAuth } from "../../../Contexts/AuthContext";
+import config from "../../../config";
 
 // const sessions = [
 //   {
@@ -118,11 +119,12 @@ const generateSessionArray = (res) => {
 function Calendar() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [events, setEvents] = useState([]);
+  const { user } = useAuth();
 
   useEffect(() => {
     axios
       .get(
-        "http://localhost:8080/api/Session/get/All/Sessions/details/02bb93de-3093-4821-b3e3-5a8a86455a0a"
+        `${config.baseURL}/Session/get/All/Sessions/details/${user.doctor_id}`
       )
       .then((res) => {
         console.log(res);
@@ -148,7 +150,7 @@ function Calendar() {
     if (selectedEvent.extendedProps.isCancelled == true) {
       axios
         .put(
-          `http://localhost:8080/api/Session/update/active/${selectedEvent.extendedProps.session_id}`,
+          `${config.baseURL}/Session/update/active/${selectedEvent.extendedProps.session_id}`,
           {
             cancelledByType: null,
             isCancelled: false,
@@ -174,7 +176,7 @@ function Calendar() {
     } else {
       axios
         .put(
-          `http://localhost:8080/api/Session/update/Cancel/Session/${selectedEvent.extendedProps.session_id}`,
+          `${config.baseURL}/Session/update/Cancel/Session/${selectedEvent.extendedProps.session_id}`,
           {
             doctor_id: selectedEvent.extendedProps.doctor_id,
           }

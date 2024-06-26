@@ -68,7 +68,7 @@ function UpcomingSessions() {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(`${config.baseURL}/session/get/clinic/upcoming/${user.id}`)
+      .get(`${config.baseURL}/session/get/clinic/upcoming/${user.clinic_id}`)
       .then((res) => {
         setSessions(res.data.data);
       })
@@ -79,7 +79,7 @@ function UpcomingSessions() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [user.id]);
+  }, [user.clinic_id]);
 
   useEffect(() => {
     const filtered = sessions.filter((session) => {

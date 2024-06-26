@@ -1,75 +1,103 @@
 import { createContext, useContext, useReducer } from "react";
+import axios from "axios";
 import { useAlert } from "./AlertContext";
+import config from "../config";
 
 const AuthContext = createContext();
 
-const users = [
-  {
-    id: "",
-    name: "admin",
-    email: "admin",
-    password: "admin",
-    role: "admin",
-  },
-  {
-    id: "c98c4ae2-4319-4f41-8411-111877e8254f",
-    name: "John Doe",
-    email: "doctor",
-    password: "doctor",
-    role: "doctor",
-  },
-  {
-    id: "492419fb-c662-447c-bb95-b007229539a3",
-    name: "Health care clinic",
-    email: "clinic",
-    password: "clinic",
-    role: "clinic",
-    clinicFee: 850.0,
-  },
-];
-
 const initialState = {
   user: null,
+  accessToken: null,
+  roles: null,
   isAuthenticated: false,
+  isLoading: false,
 };
 
 function reducer(state, action) {
   switch (action.type) {
-    case "login":
-      return { ...state, user: action.payload, isAuthenticated: true };
+    case "login_request":
+      return { ...state, isLoading: true };
+
+    case "login_success":
+      return {
+        ...state,
+        user: action.payload.user,
+        accessToken: action.payload.accessToken,
+        roles: action.payload.roles,
+        isAuthenticated: true,
+        isLoading: false,
+      };
+
+    case "login_failure":
+      return { ...state, isLoading: false };
 
     case "logout":
-      return { ...state, user: null, isAuthenticated: false };
+      return {
+        ...state,
+        user: null,
+        accessToken: null,
+        roles: [],
+        isAuthenticated: false,
+        isLoading: false,
+      };
+
+    case "set_clinicFees":
+      return { ...state, user: { ...state.user, clinicFees: action.payload } };
 
     default:
-      throw new Error("fails");
+      throw new Error("Unsupported action type");
   }
 }
 
 function AuthProvider({ children }) {
-  const [{ user, isAuthenticated }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
+  const [{ user, accessToken, roles, isAuthenticated, isLoading }, dispatch] =
+    useReducer(reducer, initialState);
+
   const { showAlert } = useAlert();
 
-  function login(email, password) {
-    const userFound = users.find(
-      (user) => user.email === email && user.password === password
-    );
-    if (userFound) {
-      dispatch({ type: "login", payload: userFound });
-    } else {
+  const login = async (email, password) => {
+    dispatch({ type: "login_request" });
+    try {
+      const response = await axios.post(`${config.baseURL}/user/login`, {
+        email,
+        password,
+      });
+      const { accessToken, user, roles } = response.data.data;
+      dispatch({
+        type: "login_success",
+        payload: { user, accessToken, roles },
+      });
+    } catch (error) {
+      console.error(
+        "Login failed:",
+        error.response ? error.response.data.message : error.message
+      );
       showAlert("error", "Invalid credentials entered");
+      dispatch({ type: "login_failure" });
     }
-  }
+  };
 
-  function logout() {
+  const logout = () => {
     dispatch({ type: "logout" });
-  }
+  };
+
+  const setClinicFees = (fee) => {
+    dispatch({ type: "set_clinicFees", payload: fee });
+  };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        accessToken,
+        roles,
+        isAuthenticated,
+        isLoading,
+        login,
+        logout,
+        setClinicFees,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -77,6 +105,9 @@ function AuthProvider({ children }) {
 
 function useAuth() {
   const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
   return context;
 }
 

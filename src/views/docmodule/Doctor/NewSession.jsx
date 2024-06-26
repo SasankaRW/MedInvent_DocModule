@@ -93,7 +93,9 @@ function NewSession() {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(`${config.baseURL}/visiting/doctor/get/allvisitings/${user.id}`)
+      .get(
+        `${config.baseURL}/visiting/doctor/get/allvisitings/${user.doctor_id}`
+      )
       .then((res) => {
         setVisitingClinics(res.data.data);
       })
@@ -104,7 +106,7 @@ function NewSession() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [user.id]);
+  }, [user.doctor_id]);
 
   function handleSelectedClinic(e) {
     const selectedClinic = e.target.value;
@@ -173,9 +175,9 @@ function NewSession() {
     }
 
     const sessionDetails = {
-      doctor_id: user.id,
+      doctor_id: user.doctor_id,
       clinic_id: selectedClinic.clinic_id,
-      scheduledById: user.id,
+      scheduledById: user.doctor_id,
       scheduledByType: scheduledBy,
       dates: [...sessionDates],
       timeFrom: startTime + ":00",
@@ -229,7 +231,9 @@ function NewSession() {
               </div>
             </div>
             <div className="col-sm-7">
-              <div className={styles.gridItem}>{user.name}</div>
+              <div className={styles.gridItem}>
+                Dr {user.fname} {user.lname}
+              </div>
             </div>
           </div>
           <div className="row">

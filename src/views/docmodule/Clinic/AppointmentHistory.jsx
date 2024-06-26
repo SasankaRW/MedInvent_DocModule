@@ -64,7 +64,7 @@ function AppointmentHistory() {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(`${config.baseURL}/appointment/get/clinic/past/${user.id}`)
+      .get(`${config.baseURL}/appointment/get/clinic/past/${user.clinic_id}`)
       .then((res) => {
         setAppointments(res.data.data);
       })
@@ -75,7 +75,7 @@ function AppointmentHistory() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [user.id]);
+  }, [user.clinic_id]);
 
   useEffect(() => {
     const filtered = appointments.filter((appointment) => {

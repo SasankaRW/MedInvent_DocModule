@@ -64,7 +64,9 @@ function UpcomingAppointments() {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(`${config.baseURL}/appointment/get/clinic/upcoming/${user.id}`)
+      .get(
+        `${config.baseURL}/appointment/get/clinic/upcoming/${user.clinic_id}`
+      )
       .then((res) => {
         setAppointments(res.data.data);
       })
@@ -75,7 +77,7 @@ function UpcomingAppointments() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [user.id]);
+  }, [user.clinic_id]);
 
   useEffect(() => {
     const filtered = appointments.filter((appointment) => {

@@ -27,11 +27,20 @@ export function ResultItem({ item, type }) {
   };
 
   function onAddClick() {
-    const data = {
-      doctor_id: type === "doctor" ? item.doctor_id : user.id,
-      clinic_id: type === "doctor" ? user.id : item.clinic_id,
-      reqSentBy: type === "doctor" ? "clinic" : "doctor",
-    };
+    let data;
+    if (type === "clinic") {
+      data = {
+        doctor_id: user.doctor_id,
+        clinic_id: item.clinic_id,
+        reqSentBy: "doctor",
+      };
+    } else {
+      data = {
+        doctor_id: item.doctor_id,
+        clinic_id: user.clinic_id,
+        reqSentBy: "clinic",
+      };
+    }
 
     setIsLoading(true);
     axios
@@ -57,8 +66,12 @@ export function ResultItem({ item, type }) {
         <div>
           {type === "clinic" ? item.name : item.fname + " " + item.lname}
         </div>
-        {type === "clinic" && <small>{item.address}</small>}
-        {type === "doctor" && <small>{item.specialty}</small>}
+        {type === "clinic" && (
+          <small>
+            {item.clinicAddress.city}, {item.clinicAddress.district}
+          </small>
+        )}
+        {type === "doctor" && <small>{item.specialization}</small>}
       </div>
       <div>{renderAction()}</div>
     </div>

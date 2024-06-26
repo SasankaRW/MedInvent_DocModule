@@ -57,7 +57,7 @@ function SessionHistory() {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(`${config.baseURL}/session/get/clinic/past/${user.id}`)
+      .get(`${config.baseURL}/session/get/clinic/past/${user.clinic_id}`)
       .then((res) => {
         setSessions(res.data.data);
       })
@@ -68,7 +68,7 @@ function SessionHistory() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [user.id]);
+  }, [user.clinic_id]);
 
   useEffect(() => {
     const filtered = sessions.filter((session) => {

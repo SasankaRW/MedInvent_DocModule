@@ -25,6 +25,7 @@ import { useAlert } from "../../../Contexts/AlertContext";
 import Loader from "../../../Components/Loader/Loader";
 import axios from "axios";
 import config from "../../../config";
+import { useAuth } from "../../../Contexts/AuthContext";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -122,6 +123,7 @@ export default function NewDoctorForm() {
   ] = useReducer(reducer, initialState);
 
   const { showAlert } = useAlert();
+  const { accessToken } = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
@@ -188,6 +190,7 @@ export default function NewDoctorForm() {
 
     setIsLoading(true);
     const doctorData = {
+      accessToken,
       data: {
         fname: firstName,
         mname: middleName,
@@ -195,7 +198,7 @@ export default function NewDoctorForm() {
         email,
         gender,
         nic: nicNo,
-        contactNo,
+        contactNo: formatMobileNo(contactNo),
         dob: formatDate(dob),
         medical_license_no: MLNo,
         specialization: speciality,
@@ -203,12 +206,12 @@ export default function NewDoctorForm() {
       },
       credentials: {
         email,
-        mobileNo: formatMobileNo(contactNo),
         password,
+        role: "doctor",
       },
     };
     axios
-      .post(`${config.baseURL}/doctor/newdoctor`, doctorData)
+      .post(`${config.baseURL}/user/create`, doctorData)
       .then((response) => {
         showAlert("success", "Doctor added successfully.");
         dispatch({ type: "initState" });

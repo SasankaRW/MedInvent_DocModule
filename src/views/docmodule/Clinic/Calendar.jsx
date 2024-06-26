@@ -8,6 +8,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import "../../../CssModules/CalendarOverride.css";
 import axios from "axios";
 import { motion } from "framer-motion";
+import config from "../../../config";
+import { useAuth } from "../../../Contexts/AuthContext";
 
 const generateSessionArray = (res) => {
   const resArrayLength = res.data.data.length;
@@ -48,11 +50,13 @@ function Calendar() {
   const [events, setEvents] = useState([]);
   const [OpenBox, setOpenBox] = useState(false);
 
+  const { user } = useAuth();
+
   useEffect(() => {
     console.log("hello");
     axios
       .get(
-        "http://localhost:8080/api/Session/get/All/Sessions/details/by/49f89e71-67a4-46ed-b621-b45d914e861a"
+        `${config.baseURL}/Session/get/All/Sessions/details/by/${user.clinic_id}`
       )
       .then((res) => {
         console.log(res);
@@ -83,7 +87,7 @@ function Calendar() {
   const handleArriveDialog = () => {
     axios
       .put(
-        `http://localhost:8080/api/Session/update/isArrive/${selectedEvent.extendedProps.session_id}`,
+        `${config.baseURL}/Session/update/isArrive/${selectedEvent.extendedProps.session_id}`,
         {
           isArrived: !selectedEvent.extendedProps.isArrived,
         }
@@ -111,7 +115,7 @@ function Calendar() {
     if (selectedEvent.extendedProps.isCancelled == true) {
       axios
         .put(
-          `http://localhost:8080/api/Session/update/active/${selectedEvent.extendedProps.session_id}`,
+          `${config.baseURL}/Session/update/active/${selectedEvent.extendedProps.session_id}`,
           {
             cancelledByType: null,
             isCancelled: false,
@@ -137,7 +141,7 @@ function Calendar() {
     } else {
       axios
         .put(
-          `http://localhost:8080/api/Session/update/Cancel/Session/${selectedEvent.extendedProps.session_id}`,
+          `${config.baseURL}/Session/update/Cancel/Session/${selectedEvent.extendedProps.session_id}`,
           {
             clinic_id: selectedEvent.extendedProps.clinic_id,
           }

@@ -91,7 +91,9 @@ function NewSession() {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(`${config.baseURL}/visiting/clinic/get/allvisitings/${user.id}`)
+      .get(
+        `${config.baseURL}/visiting/clinic/get/allvisitings/${user.clinic_id}`
+      )
       .then((res) => {
         setVisitingDoctors(res.data.data);
       })
@@ -102,7 +104,7 @@ function NewSession() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [user.id]);
+  }, [user.clinic_id]);
 
   function handleSelectedDoctor(e) {
     const selectedDoctor = e.target.value;
@@ -171,8 +173,8 @@ function NewSession() {
 
     const sessionDetails = {
       doctor_id: selectedDoctor.doctor_id,
-      clinic_id: user.id,
-      scheduledById: user.id,
+      clinic_id: user.clinic_id,
+      scheduledById: user.clinic_id,
       scheduledByType: scheduledBy,
       dates: [...sessionDates],
       timeFrom: startTime + ":00",
@@ -347,7 +349,7 @@ function NewSession() {
                 >
                   <UpdateClinicFeeModal
                     setClinicFee={setClinicFee}
-                    id={user.id}
+                    id={user.clinic_id}
                   />
                 </button>
               </div>

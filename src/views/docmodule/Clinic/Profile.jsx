@@ -16,6 +16,7 @@ import { useAlert } from "../../../Contexts/AlertContext";
 import config from "../../../config";
 import Loader2 from "../../../Components/Loader2/Loader2";
 import { motion } from "framer-motion";
+import Button from "../../../Components/Button/Button";
 
 function CustomTabPanel({ children, value, index }) {
   return (
@@ -44,37 +45,10 @@ function a11yProps(index) {
 }
 
 function Profile() {
-  const [value, setValue] = useState(0);
-
-  const [clinicFee, setClinicFee] = useState(0);
-  const [clinic, setClinic] = useState({});
-  const [clinicAddress, setClinicAddress] = useState({});
-  const [clinicLocation, setClinicLocation] = useState({});
-
-  const [isLoading, setIsLoading] = useState(false);
-
   const { user } = useAuth();
   const { showAlert } = useAlert();
-
-  useEffect(() => {
-    setIsLoading(true);
-    axios
-      .get(`${config.baseURL}/clinic/get/${user.id}`)
-      .then((res) => {
-        setClinic(res.data.data);
-        setClinicAddress(res.data.data.clinicAddress);
-        setClinicLocation(res.data.data.location);
-        setClinicFee(res.data.data.clinicFees);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        showAlert("error", "Error loading profile data");
-        console.log("Error getting profile data. Error:" + err);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [showAlert, user.id]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -87,11 +61,22 @@ function Profile() {
       hour12: true,
     });
 
-  const mapURL = `https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3961.3885038149997!2d${clinicLocation[0]}!3d${clinicLocation[1]}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNsKwNTAnMzguMiJOIDc5wrA1NycyMi45IkU!5e0!3m2!1sen!2slk!4v1709995715108!5m2!1sen!2slk`;
+  async function onPasswordReset() {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(
+        `${config.baseURL}/user/resetpassword/${user.doctor_id}`
+      );
 
-  if (isLoading) {
-    return <Loader />;
+      showAlert("success", "Password reset email sent");
+    } catch (error) {
+      showAlert("error", "Failed to send password reset email");
+    } finally {
+      setIsLoading(false);
+    }
   }
+
+  const mapURL = `https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3961.3885038149997!2d${user.location.coordinates[0]}!3d${user.location.coordinates[1]}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNsKwNTAnMzguMiJOIDc5wrA1NycyMi45IkU!5e0!3m2!1sen!2slk!4v1709995715108!5m2!1sen!2slk`;
 
   return (
     <div>
@@ -107,7 +92,7 @@ function Profile() {
             <div className="d-flex align-items-center">
               <img src={"/images/dp.png"} alt="" height={80} />
               <div className="mx-4">
-                <h3 className="my-0">{clinic.name}</h3>
+                <h3 className="my-0">{user.name}</h3>
               </div>
             </div>
           </div>
@@ -116,26 +101,26 @@ function Profile() {
             <div className="row mb-3">
               <div className="col-4 text-muted">Address</div>
               <div className="col-8">
-                {clinicAddress.lineOne}, {clinicAddress.lineTwo},{" "}
-                {clinicAddress.city}, {clinicAddress.district}
+                {user.clinicAddress.lineOne}, {user.clinicAddress.lineTwo},{" "}
+                {user.clinicAddress.city}, {user.clinicAddress.district}
               </div>
             </div>
 
             <div className="row mb-3">
               <div className="col-4 text-muted">Email Address</div>
-              <div className="col-8">{clinic.email}</div>
+              <div className="col-8">{user.email}</div>
             </div>
 
             <div className="row mb-3">
               <div className="col-4 text-muted">Contact Number</div>
-              <div className="col-8">{clinic.contactNo}</div>
+              <div className="col-8">{user.contactNo}</div>
             </div>
 
             <div className="row mb-3">
               <div className="col-4 text-muted">Open Hours</div>
               <div className="col-8">
-                {convertTime(clinic.openHoursFrom)} to{" "}
-                {convertTime(clinic.openHoursTo)}
+                {convertTime(user.openHoursFrom)} to{" "}
+                {convertTime(user.openHoursTo)}
               </div>
             </div>
 
@@ -143,13 +128,12 @@ function Profile() {
               <div className="col-4 text-muted">Clinic Fees</div>
               <div className="col-8 d-flex">
                 <span>
-                  {clinicFee === null ? "Set clinic fee" : `Rs. ${clinicFee}`}
+                  {user.clinicFees === null
+                    ? "Set clinic fee"
+                    : `Rs. ${user.clinicFees}`}
                 </span>
                 <span>
-                  <UpdateClinicFeeModal
-                    setClinicFee={setClinicFee}
-                    id={user.id}
-                  />
+                  <UpdateClinicFeeModal id={user.clinic_id} />
                 </span>
               </div>
             </div>
@@ -166,6 +150,16 @@ function Profile() {
                   loading="lazy"
                 />
               </div>
+            </div>
+            <div className="d-flex justify-content-end mt-4">
+              {isLoading ? (
+                <Loader2 />
+              ) : (
+                <Button
+                  text={"Request password reset"}
+                  onClick={onPasswordReset}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -187,13 +181,13 @@ function Profile() {
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            <AddedTab userId={user.id} />
+            <AddedTab userId={user.clinic_id} />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            <PendingTab userId={user.id} />
+            <PendingTab userId={user.clinic_id} />
           </CustomTabPanel>
           <CustomTabPanel value={value} index={2}>
-            <RequestsTab userId={user.id} />
+            <RequestsTab userId={user.clinic_id} />
           </CustomTabPanel>
         </div>
       </motion.div>

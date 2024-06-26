@@ -1,4 +1,4 @@
-import SideNavClinic from "../../../Components/SideNavNew.jsx";
+import SideNav from "../../../Components/SideNavNew.jsx";
 import InsertInvitationOutlinedIcon from "@mui/icons-material/InsertInvitationOutlined";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import { useContext } from "react";
@@ -13,6 +13,7 @@ import NewSession from "../../docmodule/Clinic/NewSession.jsx";
 import SessionHistory from "../../docmodule/Clinic/SessionHistory.jsx";
 import UpcomingSessions from "../../docmodule/Clinic/UpcomingSessions.jsx";
 import Profile from "../../docmodule/Clinic/Profile.jsx";
+import { useAuth } from "../../../Contexts/AuthContext.jsx";
 
 const menuItems = [
   {
@@ -39,6 +40,7 @@ const menuItems = [
 function ClinicView() {
   const [activeSubMenu, setActiveSubMenu] = useState("New Appointment");
   const { navigate } = useContext(NavigationContex);
+  const { user } = useAuth();
 
   const PathReturn = (getSubMenuText) => {
     switch (getSubMenuText) {
@@ -111,14 +113,14 @@ function ClinicView() {
 
   return (
     <div>
-      <SideNavClinic
+      <SideNav
         menuItems={menuItems}
         onSubMenuClick={handleSubMenuClick}
         activeSubMenu={activeSubMenu}
-        username={"Clinic"}
+        username={user.name}
       >
         {renderSubMenu(activeSubMenu)}
-      </SideNavClinic>
+      </SideNav>
     </div>
   );
 }

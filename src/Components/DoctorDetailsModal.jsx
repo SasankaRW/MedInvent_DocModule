@@ -1,4 +1,28 @@
+import axios from "axios";
+import { useState } from "react";
+import { LineWave } from "react-loader-spinner";
+import config from "../config";
+import { useAlert } from "../Contexts/AlertContext";
+
 export function DoctorDetailsModal({ doctor }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const { showAlert } = useAlert();
+
+  async function onPasswordReset() {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(
+        `${config.baseURL}/user/resetpassword/${doctor.doctor_id}`
+      );
+
+      showAlert("success", "Password reset email sent");
+    } catch (error) {
+      showAlert("error", "Failed to send password reset email");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <div style={{ width: "500px" }}>
       <div className="d-flex align-items-center">
@@ -77,6 +101,20 @@ export function DoctorDetailsModal({ doctor }) {
           <strong>{doctor.note ? doctor.note : "N/A"}</strong>
         </div>
       </div>
+      {isLoading ? (
+        <LineWave
+          visible={true}
+          color="#0c6af3"
+          wrapperStyle={{}}
+          wrapperClass="d-flex justify-content-end"
+        />
+      ) : (
+        <div className="d-flex justify-content-end mt-3">
+          <button className="btn btn-primary" onClick={onPasswordReset}>
+            Send password reset email
+          </button>
+        </div>
+      )}
     </div>
   );
 }
