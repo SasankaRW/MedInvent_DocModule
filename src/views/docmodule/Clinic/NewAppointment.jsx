@@ -9,16 +9,19 @@ import { useAlert } from "../../../Contexts/AlertContext";
 import { motion } from "framer-motion";
 import { useAuth } from "../../../Contexts/AuthContext";
 import config from "../../../config";
+import { ThreeDots } from "react-loader-spinner";
 
 function NewAppointment() {
   const { showAlert } = useAlert();
   const [isLoading, setIsLoading] = useState(false);
   const [isSessionsLoading, setIsSessionsLoading] = useState(false);
+  const [isPatientLoading, setIsPatientLoading] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
 
   const [sessions, setSessions] = useState([]);
   const [selectedSession, setSelectedSession] = useState(null);
 
+  const [userId, setUserId] = useState(null);
   const [title, setTitle] = useState("Mr");
   const [patientName, setPatientName] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
@@ -38,6 +41,52 @@ function NewAppointment() {
   function validateMobileNumber(number) {
     const pattern = /^07\d{8}$/;
     return pattern.test(number);
+  }
+
+  function onFindPatientClick() {
+    if (mobileNumber === "") {
+      showAlert("error", "Please enter a mobile number");
+      return;
+    }
+
+    if (!validateMobileNumber(mobileNumber)) {
+      showAlert("error", "Please enter a valid mobile number");
+      return;
+    }
+
+    setIsPatientLoading(true);
+    axios
+      .get(
+        `${
+          config.baseURL
+        }/patientuser/get/patientuser/details/byMobileNo/+94${mobileNumber.substring(
+          1
+        )}`
+      )
+      .then((response) => {
+        if (response.data.data.success === false) {
+          showAlert("error", "Patient not found");
+          setPatientName("");
+          setEmail("");
+          setArea("");
+          setNic("");
+          setUserId(null);
+        } else {
+          const user = response.data.data;
+          setUserId(user.userID);
+          setPatientName(user.Fname + " " + user.Lname);
+          setEmail(user.email);
+          setArea(user.patientAddress.city);
+          setNic(user.nic);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching the patient data:", error);
+        showAlert("error", "Error getting patient data");
+      })
+      .finally(() => {
+        setIsPatientLoading(false);
+      });
   }
 
   function onFindClick() {
@@ -88,6 +137,7 @@ function NewAppointment() {
 
     setIsLoading(true);
     const appointmentDetails = {
+      user_id: userId,
       patientTitle: title,
       patientName,
       contactNo: "+94" + mobileNumber.substring(1),
@@ -163,6 +213,42 @@ function NewAppointment() {
 
         <div className="shadow bg-white rounded-5 p-5 col-lg-6 col-12 mx-lg-4 mt-lg-0 mt-4">
           <div>
+            <InputLabel className="mb-2" value={"aefaef"}>
+              Mobile Number
+            </InputLabel>
+            <div className="d-flex">
+              <div>
+                <TextField
+                  value={mobileNumber}
+                  onChange={(e) => setMobileNumber(e.target.value)}
+                  InputProps={{
+                    style: {
+                      borderRadius: "50px",
+                      padding: 0,
+                      height: "40px",
+                    },
+                  }}
+                />
+              </div>
+              <div>
+                <div className="mx-3">
+                  {isPatientLoading ? (
+                    <ThreeDots
+                      visible={true}
+                      height="40"
+                      width="40"
+                      color="#2980b9"
+                      radius="9"
+                    />
+                  ) : (
+                    <Button text="Find Patient" onClick={onFindPatientClick} />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4">
             <InputLabel className="mb-2">Patient's Name</InputLabel>
 
             <div className="d-flex">
@@ -203,22 +289,6 @@ function NewAppointment() {
           <div className="row">
             <div className="col-sm-6 mt-4 ">
               <InputLabel className="mb-2" value={"aefaef"}>
-                Mobile Number
-              </InputLabel>
-              <TextField
-                value={mobileNumber}
-                onChange={(e) => setMobileNumber(e.target.value)}
-                InputProps={{
-                  style: {
-                    borderRadius: "50px",
-                    padding: 0,
-                    height: "40px",
-                  },
-                }}
-              />
-            </div>
-            <div className="col-sm-6 mt-4 ">
-              <InputLabel className="mb-2" value={"aefaef"}>
                 NIC Number
               </InputLabel>
               <TextField
@@ -233,23 +303,24 @@ function NewAppointment() {
                 }}
               />
             </div>
+            <div className="col-sm-6 mt-4 ">
+              <InputLabel className="mb-2">Area</InputLabel>
+              <TextField
+                value={area}
+                onChange={(e) => setArea(e.target.value)}
+                InputProps={{
+                  style: {
+                    borderRadius: "50px",
+                    padding: "0 10px",
+                    height: "40px",
+                  },
+                }}
+                sx={{ flexGrow: 1, display: "flex" }}
+              />
+            </div>
           </div>
 
-          <div className="mt-4">
-            <InputLabel className="mb-2">Area</InputLabel>
-            <TextField
-              value={area}
-              onChange={(e) => setArea(e.target.value)}
-              InputProps={{
-                style: {
-                  borderRadius: "50px",
-                  padding: "0 10px",
-                  height: "40px",
-                },
-              }}
-              sx={{ flexGrow: 1, display: "flex" }}
-            />
-          </div>
+          <div className="mt-4"></div>
 
           <div className="mt-4">
             <InputLabel className="mb-2">Email (Optional)</InputLabel>
