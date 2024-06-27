@@ -141,14 +141,16 @@ function NewAppointment() {
               </div>
             ) : selectedSession == null ? (
               <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-                {sessions.map((session) => (
-                  <SessionTemplate
-                    key={session.session_id}
-                    session={session}
-                    setSelectedSession={setSelectedSession}
-                    setActivePatients={setPatients}
-                  />
-                ))}
+                {sessions
+                  .filter((session) => !session.isCancelled)
+                  .map((session) => (
+                    <SessionTemplate
+                      key={session.session_id}
+                      session={session}
+                      setSelectedSession={setSelectedSession}
+                      setActivePatients={setPatients}
+                    />
+                  ))}
               </div>
             ) : (
               <SessionDetails

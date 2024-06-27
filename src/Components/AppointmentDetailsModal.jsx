@@ -75,7 +75,7 @@ export function AppointmentDetailsModal({
       .put(
         `${config.baseURL}/appointment/update/cancel/${appointment.appointment_id}`,
         {
-          cancelledById: user.id,
+          cancelledById: user.clinic_id,
           cancelledByType: "clinic",
         }
       )

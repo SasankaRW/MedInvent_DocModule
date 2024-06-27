@@ -17,7 +17,6 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import TextArea from "../../../Components/TextArea/TextArea";
 import { doctorSpecializations } from "./data/doctorSpecializations";
@@ -26,18 +25,6 @@ import Loader from "../../../Components/Loader/Loader";
 import axios from "axios";
 import config from "../../../config";
 import { useAuth } from "../../../Contexts/AuthContext";
-
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
 
 //initial states of all the input fields
 // for the use of reducers
@@ -160,6 +147,25 @@ export default function NewDoctorForm() {
     return dateOnly;
   }
 
+  function validatePassword(password) {
+    if (password.length < 8) {
+      return false;
+    }
+    let hasDigit = false;
+    for (let i = 0; i < password.length; i++) {
+      if (!isNaN(parseInt(password[i]))) {
+        hasDigit = true;
+        break;
+      }
+    }
+    return hasDigit;
+  }
+
+  function formatMobileNo(number) {
+    const formattedNumber = number.replace(/^0/, "+94");
+    return formattedNumber;
+  }
+
   function onSubmit(e) {
     e.preventDefault();
     if (
@@ -183,9 +189,12 @@ export default function NewDoctorForm() {
       return;
     }
 
-    function formatMobileNo(number) {
-      const formattedNumber = number.replace(/^0/, "+94");
-      return formattedNumber;
+    if (!validatePassword(password)) {
+      showAlert(
+        "error",
+        "Password must contain at least 8 characters and a digit."
+      );
+      return;
     }
 
     setIsLoading(true);

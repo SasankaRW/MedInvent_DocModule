@@ -182,6 +182,20 @@ export default function NewClinicForm() {
     return formattedNumber;
   }
 
+  function validatePassword(password) {
+    if (password.length < 8) {
+      return false;
+    }
+    let hasDigit = false;
+    for (let i = 0; i < password.length; i++) {
+      if (!isNaN(parseInt(password[i]))) {
+        hasDigit = true;
+        break;
+      }
+    }
+    return hasDigit;
+  }
+
   // Function to handle form submission
   function onSubmit(e) {
     e.preventDefault();
@@ -206,6 +220,14 @@ export default function NewClinicForm() {
 
     if (position === null) {
       showAlert("error", "Please verify the location.");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      showAlert(
+        "error",
+        "Password must contain at least 8 characters and a digit."
+      );
       return;
     }
 
