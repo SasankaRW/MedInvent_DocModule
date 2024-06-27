@@ -282,7 +282,7 @@ export default function NewClinicForm() {
                 className="w-75"
                 value={contactNumber}
                 onChange={(e) => {
-                  const contactNo = e.target.value.replace(/[^0-9]/g, "");
+                  const contactNo = e.target.value;
                   dispatch({
                     type: "contactNumber",
                     payload: contactNo,
@@ -436,10 +436,6 @@ export default function NewClinicForm() {
           <div>
             <div className="lead mb-3">Location</div>
             <div className="d-flex align-items-center">
-              <Button variant="contained" onClick={() => {}}>
-                Select on map
-              </Button>{" "}
-              <span className="mx-5">or</span>
               <TextField
                 value={locationURL}
                 onChange={(e) => {

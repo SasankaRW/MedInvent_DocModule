@@ -378,8 +378,6 @@ export default function NewPharmacyForm() {
           <div>
             <div className="lead mb-3">Location</div>
             <div className="d-flex align-items-center">
-              <Button variant="contained">Select on map</Button>{" "}
-              <span className="mx-5">or</span>
               <TextField
                 value={locationURL}
                 onChange={(e) => {
