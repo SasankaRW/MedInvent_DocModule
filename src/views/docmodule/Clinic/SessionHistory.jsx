@@ -21,6 +21,7 @@ import { useAlert } from "../../../Contexts/AlertContext";
 import { useAuth } from "../../../Contexts/AuthContext";
 
 const columns = [
+  { id: "status", label: "", minWidth: 5 },
   { id: "doctor", label: "Doctor", minWidth: 170 },
   { id: "date", label: "Date", minWidth: 100 },
   {
@@ -154,6 +155,52 @@ function SessionHistory() {
           </FormControl>
 
           <Button text="Clear" onClick={onClearClick} />
+          <div className="d-flex mx-5 px-5">
+            <div className="d-flex flex-column align-items-center ">
+              <div
+                style={{
+                  height: "10px",
+                  width: "40px",
+                  backgroundColor: "#ff9191",
+                }}
+              ></div>
+              <div>
+                <small>Cancelled</small>
+              </div>
+            </div>
+            <div className="d-flex flex-column align-items-center mx-4">
+              <div
+                style={{
+                  height: "10px",
+                  width: "40px",
+                  backgroundColor: "#ffcb6e",
+                }}
+              ></div>
+              <div className="text-center">
+                <small>
+                  Scheduled by <br />
+                  doctor
+                </small>
+              </div>
+            </div>
+            <div className="d-flex flex-column align-items-center ">
+              <div
+                style={{
+                  height: "10px",
+                  width: "40px",
+                  backgroundColor: "#a3d0ff",
+                }}
+              ></div>
+              <div>
+                <div className="text-center">
+                  <small>
+                    Scheduled by <br />
+                    clinic
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <hr className="my-4" />
 
@@ -162,7 +209,10 @@ function SessionHistory() {
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <TableCell key={column.id}>
+                  <TableCell
+                    key={column.id}
+                    style={{ width: column.id === "status" ? "5px" : "auto" }}
+                  >
                     <b>{column.label}</b>
                   </TableCell>
                 ))}
@@ -173,11 +223,18 @@ function SessionHistory() {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => {
                   return (
-                    <TableRow
-                      key={row.session_id}
-                      hover
-                      sx={row.isCancelled && { backgroundColor: "#ffe3e3" }}
-                    >
+                    <TableRow key={row.session_id} hover>
+                      <TableCell
+                        sx={{
+                          backgroundColor: row.isCancelled
+                            ? "#ff9191"
+                            : row.scheduledByType === "clinic"
+                            ? "#a3d0ff"
+                            : row.scheduledByType === "doctor"
+                            ? "#ffcb6e"
+                            : "white",
+                        }}
+                      ></TableCell>
                       <TableCell>
                         {row.doctor.fname} {row.doctor.lname}
                       </TableCell>
@@ -214,5 +271,3 @@ function SessionHistory() {
 }
 
 export default SessionHistory;
-
-
