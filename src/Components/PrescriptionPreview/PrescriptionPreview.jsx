@@ -62,7 +62,7 @@ export default function PrescriptionPreview({
       presData: {
         presName,
         createdBy: "doctor",
-        doctorName: user.name,
+        doctorName: user.fname + " " + user.lname,
         userID: patient.userID,
       },
       presMedicines: [...medicine],
