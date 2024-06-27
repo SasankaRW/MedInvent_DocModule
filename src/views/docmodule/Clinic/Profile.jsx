@@ -65,7 +65,7 @@ function Profile() {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `${config.baseURL}/user/resetpassword/${user.doctor_id}`
+        `${config.baseURL}/user/resetpassword/${user.clinic_id}`
       );
 
       showAlert("success", "Password reset email sent");
