@@ -242,7 +242,7 @@ export default function NewPharmacyForm() {
                 className="w-75"
                 value={contactNumber}
                 onChange={(e) => {
-                  const contactNo = e.target.value.replace(/[^0-9]/g, "");
+                  const contactNo = e.target.value;
                   dispatch({
                     type: "contactNumber",
                     payload: contactNo,
