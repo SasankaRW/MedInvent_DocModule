@@ -407,19 +407,7 @@ export default function NewDoctorForm() {
                 }}
               />
             </div>
-            <div className="col-md-6">
-              <div className="lead mb-2">Photo</div>
-              <Button
-                component="label"
-                role={undefined}
-                variant="contained"
-                tabIndex={-1}
-                startIcon={<CloudUploadIcon />}
-              >
-                Upload photo
-                <VisuallyHiddenInput type="file" />
-              </Button>
-            </div>
+            <div className="col-md-6"></div>
           </div>
           <div className="col-10 text-end">
             <input

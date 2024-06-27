@@ -56,7 +56,7 @@ export default function DoctorUpdateModal({ doctor, closeModal }) {
         <TextField
           placeholder="New contact number"
           value={contactNo}
-          onChange={(e) => setContactNo(e.target.value.replace(/[^0-9]/g, ""))}
+          onChange={(e) => setContactNo(e.target.value)}
         />
       </div>
       <div className="mt-3">
