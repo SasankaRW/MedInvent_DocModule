@@ -20,7 +20,12 @@ export default function Medicine({ drug, onDelete, onUpdate }) {
       <div className="col-2">
         <TextField
           value={qty}
-          onChange={(e) => setQty(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (value >= 0) {
+              setQty(value);
+            }
+          }}
           type="number"
           InputProps={{
             style: {
@@ -78,7 +83,12 @@ export default function Medicine({ drug, onDelete, onUpdate }) {
       <div className="col-2">
         <TextField
           value={duration}
-          onChange={(e) => setDuration(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (value >= 0) {
+              setDuration(value);
+            }
+          }}
           type="number"
           InputProps={{
             style: {

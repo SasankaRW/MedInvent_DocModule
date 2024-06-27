@@ -300,8 +300,16 @@ export function UpdateSessionModal({
     setTimeTo(time.target.value);
   }
 
-  function handleNoOfPatients(number) {
-    setNoOfPatients(number.target.value);
+  function handleNoOfPatients(event) {
+    const newValue = parseInt(event.target.value);
+    if (newValue > session.activePatients) {
+      setNoOfPatients(newValue);
+    } else {
+      showAlert(
+        "error",
+        "Number of patients should be greater than active patients."
+      );
+    }
   }
 
   function onUpdate() {

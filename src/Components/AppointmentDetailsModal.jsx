@@ -233,12 +233,12 @@ export function AppointmentDetailsModal({
                 </div>
               )}
             </div>
-            {!appointment.isCancelled && (
+            {!appointment.isCancelled && !appointment.isAttended && (
               <div>
                 {isCancelledLoading ? (
                   <Loader2 />
                 ) : (
-                  <Button text={"Cancel"} onClick={onCancel} />
+                  <Button text="Cancel" onClick={onCancel} />
                 )}
               </div>
             )}

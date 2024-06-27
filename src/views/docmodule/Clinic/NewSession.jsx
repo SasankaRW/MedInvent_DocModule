@@ -367,18 +367,6 @@ function NewSession() {
               </div>
             </div>
           </div>
-          <div>
-            <input
-              type="checkbox"
-              style={{ marginRight: "10px" }}
-              checked={isRefundable}
-              onChange={handleIsRefundable}
-            />
-            <span>
-              Accept refundable appointments (Rs. 250 will be extra charged for
-              refundable appointments)
-            </span>
-          </div>
           <div
             style={{
               height: "40px",
