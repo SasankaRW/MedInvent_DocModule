@@ -273,8 +273,8 @@ function Calendar() {
                 className="calendarAcCanPopup"
               >
                 {selectedEvent.extendedProps.isCancelled
-                  ? "Active Task"
-                  : "Cancel Task"}
+                  ? "Active Session"
+                  : "Cancel Session"}
               </button>
               <button onClick={handleCloseDialog} class="calendarClosePopup">
                 Close
