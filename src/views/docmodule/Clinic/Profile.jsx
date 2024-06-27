@@ -10,39 +10,12 @@ import { Pending } from "../../../Components/Pending";
 import { Requested } from "../../../Components/Requested";
 import AddDoctorModal from "../../../Components/AddDoctorModal";
 import UpdateClinicFeeModal from "../../../Components/UpdateClinicFeeModal";
-import Loader from "../../../Components/Loader/Loader";
 import { useAuth } from "../../../Contexts/AuthContext";
 import { useAlert } from "../../../Contexts/AlertContext";
 import config from "../../../config";
 import Loader2 from "../../../Components/Loader2/Loader2";
 import { motion } from "framer-motion";
 import Button from "../../../Components/Button/Button";
-
-function CustomTabPanel({ children, value, index }) {
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-    >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-}
-
-CustomTabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
 
 function Profile() {
   const { user } = useAuth();
@@ -317,3 +290,29 @@ function RequestsTab({ userId }) {
 }
 
 export default Profile;
+
+function CustomTabPanel({ children, value, index }) {
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}

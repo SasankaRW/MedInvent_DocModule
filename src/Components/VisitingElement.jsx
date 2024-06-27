@@ -8,6 +8,7 @@ import { useAlert } from "../Contexts/AlertContext";
 import axios from "axios";
 import config from "../config";
 import Loader2 from "./Loader2/Loader2";
+import DeleteConfirmation from "./deleteConfirmation";
 
 export function VisitingElement({ item, type, setAddedClinics }) {
   const [docFee, setDocFee] = useState(item.docFee);
@@ -98,9 +99,17 @@ export function VisitingElement({ item, type, setAddedClinics }) {
         {isLoading ? (
           <Loader2 />
         ) : (
-          <IconButton onClick={onDelete}>
-            <DeleteOutlineIcon fontSize="medium" style={{ color: "gray" }} />
-          </IconButton>
+          <MyModal
+            icon={
+              <DeleteOutlineIcon fontSize="medium" style={{ color: "gray" }} />
+            }
+          >
+            <DeleteConfirmation
+              onDelete={onDelete}
+              closeModal={handleClose}
+              text="Are you sure you want to remove this doctor"
+            />
+          </MyModal>
         )}
       </div>
     </div>
