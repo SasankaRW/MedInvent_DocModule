@@ -271,7 +271,7 @@ function NewAppointment() {
             {isLoading ? (
               <Loader2 />
             ) : (
-              <Button text="Book aappointment" onClick={onSubmit} />
+              <Button text="Book appointment" onClick={onSubmit} />
             )}
           </div>
         </div>
