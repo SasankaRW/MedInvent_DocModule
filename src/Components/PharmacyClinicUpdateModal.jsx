@@ -117,7 +117,7 @@ export default function PharmacyClinicUpdateModal({
           className="w-75"
           value={contactNo}
           onChange={(e) => {
-            const contactNo = e.target.value.replace(/[^0-9]/g, "");
+            const contactNo = e.target.value;
             setContactNo(contactNo);
           }}
         />

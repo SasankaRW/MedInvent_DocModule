@@ -15,7 +15,28 @@ export function DeleteItemModal({
   const { showAlert } = useAlert();
   const { accessToken } = useAuth();
 
-  const onYesClick = async () => {
+  const pharmacyDelete = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.delete(
+        `${config.baseURL}/pharmacy/delete/${item.pharmacy_id}`
+      );
+
+      if (response.status === 200) {
+        setItems(items.filter((i) => i.pharmacy_id !== item.pharmacy_id));
+        showAlert("success", "Pharmacy deleted successfully");
+      } else {
+        showAlert("error", "Failed to delete the pharmacy");
+      }
+    } catch (error) {
+      showAlert("error", "Failed to delete the pharmacy");
+    } finally {
+      setIsLoading(false);
+    }
+    closeModal();
+  };
+
+  const clinicAndDoctorDelete = async () => {
     setIsLoading(true);
     try {
       let itemId;
@@ -48,6 +69,14 @@ export function DeleteItemModal({
       setIsLoading(false);
     }
     closeModal();
+  };
+
+  const onYesClick = () => {
+    if (itemType === "pharmacy") {
+      pharmacyDelete();
+    } else {
+      clinicAndDoctorDelete();
+    }
   };
 
   const onNoClick = () => {
