@@ -9,72 +9,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import { useAuth } from "../../../Contexts/AuthContext";
 import config from "../../../config";
-
-// const sessions = [
-//   {
-//     id: "1",
-//     hospital: "Hospital A",
-//     start: "2024-03-09T09:00:00",
-//     end: "2024-03-09T09:30:00",
-//     maxPatients: 10,
-//     patientsFilled: 5,
-//     cancellable: false,
-//   },
-//   {
-//     id: "2",
-//     hospital: "Hospital B",
-//     start: "2024-03-09T14:00:00",
-//     end: "2024-03-09T17:00:00",
-//     maxPatients: 15,
-//     patientsFilled: 8,
-//     cancellable: false,
-//   },
-//   {
-//     id: "3",
-//     hospital: "Hospital C",
-//     start: "2024-03-08T14:00:00",
-//     end: "2024-03-08T17:00:00",
-//     maxPatients: 20,
-//     patientsFilled: 10,
-//     cancellable: false,
-//   },
-//   {
-//     id: "4",
-//     hospital: "Hospital d",
-//     start: "2024-03-10T08:00:00",
-//     end: "2024-03-10T10:00:00",
-//     maxPatients: 20,
-//     patientsFilled: 10,
-//     cancellable: true,
-//   },
-//   {
-//     id: "5",
-//     hospital: "Hospital d",
-//     start: "2024-03-10T14:00:00",
-//     end: "2024-03-10T17:00:00",
-//     maxPatients: 20,
-//     patientsFilled: 10,
-//     cancellable: false,
-//   },
-//   {
-//     id: "6",
-//     hospital: "Hospital d",
-//     start: "2024-03-11T14:00:00",
-//     end: "2024-03-11T17:00:00",
-//     maxPatients: 20,
-//     patientsFilled: 10,
-//     cancellable: true,
-//   },
-//   {
-//     id: "7",
-//     hospital: "Hospital d",
-//     start: "2024-03-12T14:00:00",
-//     end: "2024-03-12T17:00:00",
-//     maxPatients: 20,
-//     patientsFilled: 10,
-//     cancellable: false,
-//   },
-// ];
+import { useAlert } from "../../../Contexts/AlertContext";
 
 const generateSessionArray = (res) => {
   const resArrayLength = res.data.data.length;
@@ -84,14 +19,6 @@ const generateSessionArray = (res) => {
     let SessionCount,
       z = [];
     for (SessionCount = 0; SessionCount < NumOfSessions; SessionCount++) {
-      //date:SessionAccess[SessionCount].SessionDates[t].date,
-      //start: SessionAccess[SessionCount].timeFrom,
-      //end: SessionAccess[SessionCount].timeTo,
-
-      //const start = SessionAccess[SessionCount].SessionDates[t].date + "T" + SessionAccess[SessionCount].timeFrom.substring(0, 8);
-      //const end = SessionAccess[SessionCount].SessionDates[t].date + "T" + SessionAccess[SessionCount].timeTo.substring(0, 8);
-      //date:SessionAccess[SessionCount].SessionDates[t].date,
-
       z.push({
         clinicName: SessionAccess[SessionCount].clinic.name,
         start:
@@ -119,7 +46,9 @@ const generateSessionArray = (res) => {
 function Calendar() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [events, setEvents] = useState([]);
+  const[confirm,setConfirm]=useState(false);
   const { user } = useAuth();
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     axios
@@ -132,7 +61,9 @@ function Calendar() {
         console.log(objectArray);
         setEvents(objectArray);
       })
-      .catch((err) => console.log(err));
+      .catch((err) =>{
+        showAlert("error", "fetching sessions not successed");
+      });
   }, []);
 
   const handleEventClick = (clickInfo) => {
@@ -144,7 +75,9 @@ function Calendar() {
     setSelectedEvent(null);
   };
 
-  //"isCancelled":!selectedEvent.extendedProps.isCancelled,
+  const handleConfirmCancel=()=>{
+    setConfirm(!confirm);
+  };
 
   const handleToggleCancellable = () => {
     if (selectedEvent.extendedProps.isCancelled == true) {
@@ -171,8 +104,12 @@ function Calendar() {
           console.log(updatedEvents);
           setEvents(updatedEvents);
           setSelectedEvent(null);
+          setConfirm(!confirm);
+          showAlert("success", "Session Actived again successfully");
         })
-        .catch((err) => console.log(err));
+        .catch((err) =>{
+          showAlert("error", "failed to active the session again");
+        });
     } else {
       axios
         .put(
@@ -195,8 +132,12 @@ function Calendar() {
           console.log(updatedEvents);
           setEvents(updatedEvents);
           setSelectedEvent(null);
+          setConfirm(!confirm);
+          showAlert("success", "cancel session messages sent successfully to patients");
         })
-        .catch((err) => console.log(err));
+        .catch((err) =>{
+          showAlert("error", "failed to send cancel session messages to patients");
+        });
     }
   };
 
@@ -259,27 +200,55 @@ function Calendar() {
             dayCellDidMount={handleDayCellDidMount}
           />
           {selectedEvent && (
-            <div className="dialog">
-              <p>Date: {selectedEvent.start.toLocaleDateString()}</p>
-              <p>Hospital: {selectedEvent.extendedProps.clinicName}</p>
-              <p>Start Time: {selectedEvent.start.toLocaleTimeString()}</p>
-              {/* <p>End Time: {selectedEvent.end.toLocaleTimeString()}</p> */}
-              <p>
-                Patients Filled: {selectedEvent.extendedProps.activePatients} /{" "}
-                {selectedEvent.extendedProps.maxPatients}
-              </p>
-              <button
-                onClick={handleToggleCancellable}
-                className="calendarAcCanPopup"
-              >
-                {selectedEvent.extendedProps.isCancelled
-                  ? "Active Session"
-                  : "Cancel Session"}
-              </button>
-              <button onClick={handleCloseDialog} class="calendarClosePopup">
-                Close
-              </button>
-            </div>
+            <>
+                <div className="overlay" onClick={handleCloseDialog}></div>
+                <div className="dialog">
+                  <p>Date: {selectedEvent.start.toLocaleDateString()}</p>
+                  <p>Hospital: {selectedEvent.extendedProps.clinicName}</p>
+                  <p>Start Time: {selectedEvent.start.toLocaleTimeString()}</p>
+                  {/* <p>End Time: {selectedEvent.end.toLocaleTimeString()}</p> */}
+                  <p>
+                    Patients Filled: {selectedEvent.extendedProps.activePatients} /{" "}
+                    {selectedEvent.extendedProps.maxPatients}
+                  </p>
+                  <button
+                    onClick={handleConfirmCancel}
+                    className="calendarAcCanPopup"
+                  >
+                    {selectedEvent.extendedProps.isCancelled
+                      ? "Active Session"
+                      : "Cancel Session"}
+                  </button>
+                  <button onClick={handleCloseDialog} class="calendarClosePopup">
+                    Close
+                  </button>
+                </div>
+            </>
+          )}
+          {confirm && (
+             <>
+              <div className="overlay_two" onClick={handleConfirmCancel}></div>
+              <div className="dialog_two">
+                <p>Are you sure you want to proceed with your decision?</p>
+                {!selectedEvent.extendedProps.isCancelled &&(
+                  <p>May I send Session cancel messages to Patients?</p>
+                )}
+                {selectedEvent.extendedProps.isCancelled &&(
+                  <p>May I Active the session again?</p>
+                )}
+                <button
+                  onClick={handleToggleCancellable}
+                  className="calendarAcCanPopup"
+                >
+                {!selectedEvent.extendedProps.isCancelled
+                      ? "Yes Send"
+                      : "Yes Active"}
+                </button>
+                <button onClick={handleConfirmCancel} class="calendarClosePopup">
+                  No mistake!
+                </button>
+              </div>
+           </>
           )}
         </div>
       </motion.div>

@@ -10,6 +10,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import config from "../../../config";
 import { useAuth } from "../../../Contexts/AuthContext";
+import { useAlert } from "../../../Contexts/AlertContext";
 
 const generateSessionArray = (res) => {
   const resArrayLength = res.data.data.length;
@@ -49,6 +50,8 @@ function Calendar() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [events, setEvents] = useState([]);
   const [OpenBox, setOpenBox] = useState(false);
+  const[confirm,setConfirm]=useState(false);
+  const { showAlert } = useAlert();
 
   const { user } = useAuth();
 
@@ -64,7 +67,9 @@ function Calendar() {
         console.log(objectArray);
         setEvents(objectArray);
       })
-      .catch((err) => console.log(err));
+      .catch((err) =>{
+        showAlert("error", "fetching sessions not successed");
+      });
   }, []);
 
   const handleEventClick = (clickInfo) => {
@@ -82,6 +87,10 @@ function Calendar() {
 
   const handleMistakeDialog = () => {
     setOpenBox(false);
+  };
+
+  const handleConfirmCancel=()=>{
+    setConfirm(!confirm);
   };
 
   const handleArriveDialog = () => {
@@ -107,8 +116,11 @@ function Calendar() {
         setEvents(updatedEvents);
         setOpenBox(false);
         setSelectedEvent(null);
+        showAlert("success", "Arrive messages sent successfully");
       })
-      .catch((err) => console.log(err));
+      .catch((err) =>{
+        showAlert("error", "failed to send arrive messages to patients");
+      });
   };
 
   const handleToggleCancellable = () => {
@@ -136,8 +148,12 @@ function Calendar() {
           console.log(updatedEvents);
           setEvents(updatedEvents);
           setSelectedEvent(null);
+          setConfirm(false);
+          showAlert("success", "Session Actived again successfully");
         })
-        .catch((err) => console.log(err));
+        .catch((err) =>{
+          showAlert("error", "failed to active the session again");
+        });
     } else {
       axios
         .put(
@@ -160,8 +176,12 @@ function Calendar() {
           console.log(updatedEvents);
           setEvents(updatedEvents);
           setSelectedEvent(null);
+          setConfirm(false);
+          showAlert("success", "cancel session messages sent successfully to patients");
         })
-        .catch((err) => console.log(err));
+        .catch((err) =>{
+          showAlert("error", "failed to send cancel session messages to patients");
+        });
     }
   };
 
@@ -225,6 +245,8 @@ function Calendar() {
             dayCellDidMount={handleDayCellDidMount}
           />
           {selectedEvent && (
+           <>
+            <div className="overlay" onClick={handleCloseDialog}></div>
             <div className="dialog">
               <p>Date: {selectedEvent.start.toLocaleDateString()}</p>
               <p>Doctor: {selectedEvent.extendedProps.doctorName}</p>
@@ -238,7 +260,7 @@ function Calendar() {
                 specialization: {selectedEvent.extendedProps.specialization}
               </p>
               <button
-                onClick={handleToggleCancellable}
+                onClick={handleConfirmCancel}
                 className="calendarAcCanPopup"
               >
                 {selectedEvent.extendedProps.isCancelled
@@ -257,21 +279,50 @@ function Calendar() {
                 <button class="calendarClosePopup">Arrived</button>
               )}
             </div>
+           </>
           )}
           {OpenBox && (
-            <div className="dialog">
-              <p>Are you sure doctor Arrived to hospital now?</p>
-              <p>May I send messages to Patients?</p>
-              <button
-                onClick={handleArriveDialog}
-                className="calendarAcCanPopup"
-              >
-                Yes send!
-              </button>
-              <button onClick={handleMistakeDialog} class="calendarClosePopup">
-                No mistake!
-              </button>
-            </div>
+            <>
+              <div className="overlay_two" onClick={handleMistakeDialog}></div>
+              <div className="dialog_two">
+                <p>Are you sure doctor Arrived to hospital now?</p>
+                <p>May I send messages to Patients?</p>
+                <button
+                  onClick={handleArriveDialog}
+                  className="calendarAcCanPopup"
+                >
+                  Yes send!
+                </button>
+                <button onClick={handleMistakeDialog} class="calendarClosePopup">
+                  No mistake!
+                </button>
+              </div>
+            </>
+          )}
+          {confirm && (
+             <>
+              <div className="overlay_two" onClick={handleConfirmCancel}></div>
+              <div className="dialog_two">
+                <p>Are you sure you want to proceed with your decision?</p>
+                {!selectedEvent.extendedProps.isCancelled &&(
+                  <p>May I send Session cancel messages to Patients?</p>
+                )}
+                {selectedEvent.extendedProps.isCancelled &&(
+                  <p>May I Active the session again?</p>
+                )}
+                <button
+                  onClick={handleToggleCancellable}
+                  className="calendarAcCanPopup"
+                >
+                {!selectedEvent.extendedProps.isCancelled
+                      ? "Yes Send"
+                      : "Yes Active"}
+                </button>
+                <button onClick={handleConfirmCancel} class="calendarClosePopup">
+                  No mistake!
+                </button>
+              </div>
+           </>
           )}
         </div>
       </motion.div>
