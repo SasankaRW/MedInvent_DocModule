@@ -132,21 +132,6 @@ export default function NewDoctorForm() {
     return dateOnly;
   }
 
-  function validateEmail(email) {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(String(email).toLowerCase());
-  }
-
-  function formatDate(dateString) {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = ("0" + (date.getMonth() + 1)).slice(-2);
-    const day = ("0" + date.getDate()).slice(-2);
-    const dateOnly = `${year}-${month}-${day}`;
-
-    return dateOnly;
-  }
-
   function validatePassword(password) {
     if (password.length < 8) {
       return false;
@@ -164,6 +149,21 @@ export default function NewDoctorForm() {
   function formatMobileNo(number) {
     const formattedNumber = number.replace(/^0/, "+94");
     return formattedNumber;
+  }
+
+  function validateMobileNumber(number) {
+    const mobileNumberRegex = /^[\d\s+\-()]{10,15}$/;
+    return mobileNumberRegex.test(String(number));
+  }  
+
+  function validateNic(nicNo) {
+    const nicRegex = /^[a-zA-Z0-9]+$/;
+    return nicRegex.test(String(nicNo));
+  }
+
+  function validateName(docName) {
+    const nameRegex = /^[a-zA-Z\s]+$/;
+    return nameRegex.test(String(docName));
   }
 
   function onSubmit(e) {
@@ -194,6 +194,21 @@ export default function NewDoctorForm() {
         "error",
         "Password must contain at least 8 characters and a digit."
       );
+      return;
+    }
+
+    if(!validateMobileNumber(contactNo)){
+      showAlert("error", "Please enter a valid mobile number");
+      return;
+    }
+
+    if(!validateNic(nicNo)){
+      showAlert("error", "Please enter a valid nic number");
+      return;
+    }
+
+    if(!validateName(firstName) || !validateName(lastName)){
+      showAlert("error", "Name can contain only letters");
       return;
     }
 
