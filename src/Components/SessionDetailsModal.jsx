@@ -111,7 +111,7 @@ export function SessionDetailsModal({
       <div className="row">
         <div className="col-6">
           <div>
-            <small className="text-secondary">Redundable appointments</small>
+            <small className="text-secondary">Refundable appointments</small>
           </div>
           <div>
             <strong>{session.isRefundable ? "Yes" : "No"}</strong>
