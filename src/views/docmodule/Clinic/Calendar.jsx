@@ -275,11 +275,6 @@ function Calendar() {
                   Update as doctor Arrived
                 </button>
               )}
-              {(selectedEvent.extendedProps.activePatients==0) && (
-               <p class="noPatients">
-                 No patients
-               </p>
-              )}
               {selectedEvent.extendedProps.isArrived && (
                 <button class="calendarClosePopup">Arrived</button>
               )}
