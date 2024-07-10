@@ -137,7 +137,7 @@ function NewAppointment() {
 
     setIsLoading(true);
     const appointmentDetails = {
-      user_id: userId,
+      ...(userId && { user_id: userId }),
       patientTitle: title,
       patientName,
       contactNo: "+94" + mobileNumber.substring(1),
