@@ -9,14 +9,12 @@ import { VisitingElement } from "../../../Components/VisitingElement";
 import { Pending } from "../../../Components/Pending";
 import { Requested } from "../../../Components/Requested";
 import AddClinicModal from "../../../Components/AddClinicModal";
-import Loader from "../../../Components/Loader/Loader";
 import Loader2 from "../../../Components/Loader2/Loader2";
 import { useAuth } from "../../../Contexts/AuthContext";
 import { useAlert } from "../../../Contexts/AlertContext";
 import config from "../../../config";
 import { motion } from "framer-motion";
 import Button from "../../../Components/Button/Button";
-import { LineWave } from "react-loader-spinner";
 
 function Profile() {
   const [value, setValue] = useState(0);

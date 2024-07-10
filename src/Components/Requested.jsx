@@ -98,14 +98,6 @@ export function Requested({ item, type, setRequestedClinics }) {
                 />
               </IconButton>
             </span>
-            <span>
-              <IconButton>
-                <VisibilityOutlinedIcon
-                  fontSize="medium"
-                  style={{ color: "black" }}
-                />
-              </IconButton>
-            </span>
           </>
         )}
       </div>

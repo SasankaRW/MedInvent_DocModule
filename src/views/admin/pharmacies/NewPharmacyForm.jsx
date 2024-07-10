@@ -113,6 +113,16 @@ export default function NewPharmacyForm() {
     return emailRegex.test(String(email).toLowerCase());
   }
 
+  function formatMobileNo(number) {
+    const formattedNumber = number.replace(/^0/, "+94");
+    return formattedNumber;
+  }
+
+  function validateMobileNumber(number) {
+    const mobileNumberRegex = /^[\d\s+\-()]{10,15}$/;
+    return mobileNumberRegex.test(String(number));
+  }
+
   function extractLatLongFromGoogleMapsURL(url) {
     var regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/;
 
@@ -171,6 +181,11 @@ export default function NewPharmacyForm() {
       return;
     }
 
+    if (!validateMobileNumber(contactNumber)) {
+      showAlert("error", "Please enter a valid mobile number");
+      return;
+    }
+
     if (email !== "" && !validateEmail(email)) {
       showAlert("error", "Please enter a valid email address");
       return;
@@ -184,7 +199,7 @@ export default function NewPharmacyForm() {
     setIsLoading(true);
     const pharmacyData = {
       name: pharmacyName,
-      contactNo: contactNumber,
+      contactNo: formatMobileNo(contactNumber),
       openHoursFrom: getTime(openHoursFrom),
       openHoursTo: getTime(openHoursTo),
       openDays: openDays,

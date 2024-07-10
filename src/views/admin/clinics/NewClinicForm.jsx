@@ -182,6 +182,11 @@ export default function NewClinicForm() {
     return formattedNumber;
   }
 
+  function validateMobileNumber(number) {
+    const mobileNumberRegex = /^[\d\s+\-()]{10,15}$/;
+    return mobileNumberRegex.test(String(number));
+  }
+
   function validatePassword(password) {
     if (password.length < 8) {
       return false;
@@ -215,6 +220,11 @@ export default function NewClinicForm() {
 
     if (email !== "" && !validateEmail(email)) {
       showAlert("error", "Please enter a valid email address");
+      return;
+    }
+
+    if (!validateMobileNumber(contactNumber)) {
+      showAlert("error", "Please enter a valid mobile number");
       return;
     }
 
