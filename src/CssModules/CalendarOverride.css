@@ -8,6 +8,14 @@
     background-color: #2980B9;
     color: white;
 }
+.noPatients{
+    margin: 2px;
+    padding: 2px;
+    border-radius: 5px;
+    background-color: #2980B9;
+    color: white;
+    text-align: center;
+}
 .calendarAcCanPopup{
     margin: 2px;
     border-radius: 5px;

@@ -270,10 +270,15 @@ function Calendar() {
               <button onClick={handleCloseDialog} class="calendarClosePopup">
                 Close
               </button>
-              {!selectedEvent.extendedProps.isArrived && (
+              {!selectedEvent.extendedProps.isArrived && (selectedEvent.extendedProps.activePatients!=0) && !selectedEvent.extendedProps.isCancelled && (
                 <button onClick={confirmationPopUp} class="calendarClosePopup">
                   Update as doctor Arrived
                 </button>
+              )}
+              {(selectedEvent.extendedProps.activePatients==0) && (
+               <p class="noPatients">
+                 No patients
+               </p>
               )}
               {selectedEvent.extendedProps.isArrived && (
                 <button class="calendarClosePopup">Arrived</button>
